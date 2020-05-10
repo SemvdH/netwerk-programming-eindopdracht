@@ -4,6 +4,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import netwerkprog.game.MainGame;
 import temp.Animator;
 import netwerkprog.game.GameApplicationConfiguration;
+import temp.Networking;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
