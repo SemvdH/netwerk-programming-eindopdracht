@@ -1,3 +1,5 @@
+
+
 top down shooter
 platformer
     (super mario?)
@@ -13,6 +15,14 @@ strategy game
 virtueel jenga
 
 hacking game
+    Meerdere scenarios
+        militaire basis
+        bank
+    1 iemand is de hacker en de rest moet hem tegenhouden
+    AI bij elk team die random dingen doen
+    cameras die gehackt kunnen worden
+    iets visueels
+    special soorten mensen
 
 choose your own adventure
     keuzes hebben effect op verhaal van anderen
@@ -20,3 +30,7 @@ choose your own adventure
 secret hitler
 
 cards agains humanity (TI version)
+
+combo tussen genres?
+    platformer met commands invoeren
+
