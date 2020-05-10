@@ -44,10 +44,8 @@ public class Server {
                 this.clients.add(serverClient);
 
                 sendMessage(nickname, "--- Welcome! ---\nPeople online : " + clients.size());
-                
-                for (ServerClient client : clients) {
-                    sendToEveryoneExcept(nickname,nickname + " joined the server! [" + socket.getInetAddress().getHostAddress() + "]");
-                }
+
+                clients.forEach(yeet -> sendToEveryoneExcept(nickname,nickname + " joined the server! [" + socket.getInetAddress().getHostAddress() + "]"));
 
             }
 
