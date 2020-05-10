@@ -1,4 +1,4 @@
-package netwerkprog.game;
+package temp;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+/**
+ * code got from https://github.com/libgdx/libgdx/wiki/2D-Animation
+ */
 public class Animator implements ApplicationListener {
 
     // Constant rows and columns of the sprite sheet
