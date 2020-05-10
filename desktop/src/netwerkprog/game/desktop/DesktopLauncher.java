@@ -1,12 +1,13 @@
 package netwerkprog.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import netwerkprog.game.MainGame;
+import temp.Animator;
+import netwerkprog.game.GameApplicationConfiguration;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		GameApplicationConfiguration config = new GameApplicationConfiguration(1200,800);
 		new LwjglApplication(new MainGame(), config);
 	}
 }
