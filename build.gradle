@@ -53,6 +53,8 @@ project(":desktop") {
 }
 
 project(":core") {
+    project.ext.lwjglVersion = "3.2.3"
+    project.ext.lwjglNatives = "natives-windows"
     apply plugin: "java-library"
 
 
@@ -62,6 +64,11 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+
+        implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+
+        implementation "org.lwjgl:lwjgl"
+        runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
         
     }
 }
