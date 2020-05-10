@@ -2,4 +2,10 @@ top down shooter
 platformer
     (super mario?)
     (super smash bros?)
-    
+top down race game
+boter kaas en eieren 2
+    groter grid
+    meerdere mensen
+    power ups
+    meerdere vormen / icons
+monopoly
