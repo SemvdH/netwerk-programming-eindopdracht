@@ -1,7 +1,11 @@
 package netwerkprog.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.backends.lwjgl.audio.Mp3;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,11 +25,17 @@ public class MainGame extends ApplicationAdapter {
         float ratio = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
         xUpdate = ratio;
         yUpdate = ratio;
+
+        // play music
+        Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("core/assets/music.mp3", Files.FileType.Internal));
+        music.setVolume(.1f);
+        music.play();
+        music.setLooping(true);
     }
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(1, 0, 0, 1);
+        Gdx.gl.glClearColor(xPos/Gdx.graphics.getWidth(), 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         updatePos();
