@@ -1,5 +1,10 @@
 package netwerkprog.game.server;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
+import com.badlogic.gdx.net.ServerSocketHints;
+import com.badlogic.gdx.net.SocketHints;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,6 +13,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+//TODO rewrite this with the GDX library https://www.gamefromscratch.com/post/2014/03/11/LibGDX-Tutorial-10-Basic-networking.aspx
 public class Server {
     private ServerSocket serverSocket;
     private static final int PORT = 8000;
@@ -17,6 +23,7 @@ public class Server {
     public static void main(String[] args) {
         Server server = new Server();
         server.connect();
+
     }
 
     public void connect() {
