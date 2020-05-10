@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class Server {
     private ServerSocket serverSocket;
-    private int port = 8000;
+    private static final int PORT = 8000;
     private ArrayList<ServerClient> clients = new ArrayList<>();
     private HashMap<String, Thread> clientThreads = new HashMap<>();
 
@@ -21,10 +21,10 @@ public class Server {
 
     public void connect() {
         try {
-            this.serverSocket = new ServerSocket(port);
+            this.serverSocket = new ServerSocket(PORT);
             boolean running = true;
             while (running) {
-                System.out.println("[SERVER] listening on port " + port);
+                System.out.println("[SERVER] listening on port " + PORT);
                 Socket socket = serverSocket.accept();
 
                 System.out.println("[SERVER] got new client on " + socket.getInetAddress().getHostAddress());
@@ -46,7 +46,6 @@ public class Server {
                 sendMessage(nickname, "--- Welcome! ---\nPeople online : " + clients.size());
 
                 clients.forEach(yeet -> sendToEveryoneExcept(nickname,nickname + " joined the server! [" + socket.getInetAddress().getHostAddress() + "]"));
-
             }
 
             this.serverSocket.close();
