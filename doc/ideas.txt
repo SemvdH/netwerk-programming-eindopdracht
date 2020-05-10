@@ -1,3 +1,5 @@
+
+
 top down shooter
 platformer
     (super mario?)
@@ -9,3 +11,26 @@ boter kaas en eieren 2
     power ups
     meerdere vormen / icons
 monopoly
+strategy game
+virtueel jenga
+
+hacking game
+    Meerdere scenarios
+        militaire basis
+        bank
+    1 iemand is de hacker en de rest moet hem tegenhouden
+    AI bij elk team die random dingen doen
+    cameras die gehackt kunnen worden
+    iets visueels
+    special soorten mensen
+
+choose your own adventure
+    keuzes hebben effect op verhaal van anderen
+
+secret hitler
+
+cards agains humanity (TI version)
+
+combo tussen genres?
+    platformer met commands invoeren
+
