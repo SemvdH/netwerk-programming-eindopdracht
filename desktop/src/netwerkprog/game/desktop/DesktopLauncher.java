@@ -8,7 +8,7 @@ import temp.Networking;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
-		GameApplicationConfiguration config = new GameApplicationConfiguration(1200,800);
+		GameApplicationConfiguration config = new GameApplicationConfiguration("Netwerk Game",1200,800);
 		new LwjglApplication(new MainGame(), config);
 	}
 }
