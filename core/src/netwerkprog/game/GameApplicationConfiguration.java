@@ -1,6 +1,7 @@
 package netwerkprog.game;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 /**
  * custom application config class  for the game

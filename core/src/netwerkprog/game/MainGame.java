@@ -17,6 +17,7 @@ public class MainGame extends ApplicationAdapter {
     float yPos = 500;
     float xUpdate;
     float yUpdate;
+    private FrameRate frameRate;
 
     @Override
     public void create() {
@@ -25,6 +26,7 @@ public class MainGame extends ApplicationAdapter {
         float ratio = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
         xUpdate = ratio;
         yUpdate = ratio;
+        frameRate = new FrameRate();
 
         // play music
         Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("core/assets/music.mp3", Files.FileType.Internal));
@@ -41,6 +43,8 @@ public class MainGame extends ApplicationAdapter {
         updatePos();
         batch.draw(img, xPos, yPos);
         batch.end();
+        frameRate.update();
+        frameRate.render();
     }
 
     private void updatePos() {
