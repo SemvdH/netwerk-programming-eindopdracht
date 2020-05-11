@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 public class Server {
     private ServerSocket serverSocket;
-    private static final int PORT = 8000;
+    public static final int PORT = 8000;
     private ArrayList<ServerClient> clients = new ArrayList<>();
     private HashMap<String, Thread> clientThreads = new HashMap<>();
 

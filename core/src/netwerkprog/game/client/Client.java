@@ -6,15 +6,14 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client {
+public class Client extends Thread{
     private int port;
     private String hostname;
     private boolean isConnected = true;
 
-    public static void main(String[] args) {
-        Client client = new Client("localhost",8000);
-        client.connect();
-
+    @Override
+    public void run() {
+        this.connect();
     }
 
     public Client(String hostname, int port) {
