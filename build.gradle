@@ -64,11 +64,7 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-
-        implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
-
-        implementation "org.lwjgl:lwjgl"
-        runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+        api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         
     }
 }
