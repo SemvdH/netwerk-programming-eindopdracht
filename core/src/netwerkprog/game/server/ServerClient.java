@@ -1,5 +1,7 @@
 package netwerkprog.game.server;
 
+import netwerkprog.game.server.controllers.SessionController;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -10,10 +12,10 @@ public class ServerClient implements Runnable {
     private DataOutputStream out;
     private Socket socket;
     private String name;
-    private Server server;
+    private SessionController server;
     private boolean isConnected = false;
 
-    public ServerClient(String name, Socket socket, Server server) {
+    public ServerClient(String name, Socket socket, SessionController server) {
         this.name = name;
         this.server = server;
         this.socket = socket;

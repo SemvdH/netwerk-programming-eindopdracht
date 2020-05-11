@@ -2,8 +2,8 @@ package netwerkprog.game.client.controllers;
 
 import netwerkprog.game.util.Controller;
 
-public class SessionController extends Controller {
-    public SessionController() {
+public class InputController extends Controller {
+    public InputController() {
 
     }
 

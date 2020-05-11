@@ -1,5 +1,5 @@
 package netwerkprog.game.util;
 
-public abstract class Controller {
+public abstract class Controller implements Runnable {
 
 }
