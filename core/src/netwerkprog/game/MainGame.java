@@ -19,7 +19,10 @@ public class MainGame extends ApplicationAdapter {
     float yPos = 500;
     float xUpdate;
     float yUpdate;
+    float screenWidth;
+    float screenHeight;
     private FrameRate frameRate;
+    private Client client;
 
     @Override
     public void create() {
@@ -28,6 +31,8 @@ public class MainGame extends ApplicationAdapter {
         float ratio = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
         xUpdate = ratio;
         yUpdate = ratio;
+        screenWidth = Gdx.graphics.getWidth();
+        screenHeight = Gdx.graphics.getHeight();
         frameRate = new FrameRate();
 
         // play music
@@ -40,14 +45,21 @@ public class MainGame extends ApplicationAdapter {
     }
 
     private void connectToServer() {
-        Client client = new Client("localhost", Server.PORT);
-        client.start();
+        client = new Client("localhost", Server.PORT);
+        try {
+            client.start();
+        } catch (Exception e) {
+            System.out.println("There was an error connecting : " + e.getMessage());
+        }
     }
 
+    /**
+     * render method that is called after the update method
+     */
     @Override
     public void render() {
         update();
-        Gdx.gl.glClearColor(xPos/Gdx.graphics.getWidth(), 0, 0, 1);
+        Gdx.gl.glClearColor(xPos / Gdx.graphics.getWidth(), 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         batch.draw(img, xPos, yPos);
@@ -66,13 +78,26 @@ public class MainGame extends ApplicationAdapter {
     private void updatePos() {
         yPos += yUpdate;
         xPos += xUpdate;
-        if (yPos > Gdx.graphics.getHeight() - img.getHeight() || yPos < 0) {
+
+        if (yPos > screenHeight - img.getHeight() || yPos < 0) {
             yUpdate = -yUpdate;
         }
 
-        if (xPos > Gdx.graphics.getWidth() - img.getWidth() || xPos < 0) {
+        if (xPos > screenWidth - img.getWidth() || xPos < 0) {
             xUpdate = -xUpdate;
         }
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        screenHeight = height;
+        screenWidth = width;
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
     }
 
     @Override
