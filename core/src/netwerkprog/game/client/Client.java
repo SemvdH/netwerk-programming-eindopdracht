@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
 
-//TODO rewrite with GDX library https://www.gamefromscratch.com/post/2014/03/11/LibGDX-Tutorial-10-Basic-networking.aspx
 public class Client {
     private int port;
     private String hostname;

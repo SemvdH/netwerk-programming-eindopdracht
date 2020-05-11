@@ -13,7 +13,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-//TODO rewrite this with the GDX library https://www.gamefromscratch.com/post/2014/03/11/LibGDX-Tutorial-10-Basic-networking.aspx
 public class Server {
     private ServerSocket serverSocket;
     private static final int PORT = 8000;
