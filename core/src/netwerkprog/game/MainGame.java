@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import netwerkprog.game.client.Client;
+import netwerkprog.game.server.Server;
 
 public class MainGame extends ApplicationAdapter {
     SpriteBatch batch;
@@ -33,18 +35,32 @@ public class MainGame extends ApplicationAdapter {
         music.setVolume(.1f);
         music.play();
         music.setLooping(true);
+
+        connectToServer();
+    }
+
+    private void connectToServer() {
+        Client client = new Client("localhost", Server.PORT);
+        client.start();
     }
 
     @Override
     public void render() {
+        update();
         Gdx.gl.glClearColor(xPos/Gdx.graphics.getWidth(), 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        updatePos();
         batch.draw(img, xPos, yPos);
         batch.end();
-        frameRate.update();
         frameRate.render();
+    }
+
+    /**
+     * update method that does all calculation before something is being drawn
+     */
+    public void update() {
+        frameRate.update();
+        updatePos();
     }
 
     private void updatePos() {
