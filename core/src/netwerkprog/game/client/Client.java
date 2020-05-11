@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Client extends Thread{
@@ -53,7 +54,10 @@ public class Client extends Thread{
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("[CLIENT] there was an error connecting : " + e.getMessage());
+            StringBuilder sb = new StringBuilder("         Stacktrace : ");
+            Arrays.stream(e.getStackTrace()).forEach(n -> sb.append("\t\t").append(n).append("\n"));
+            System.out.println(sb.toString());
         }
     }
 
