@@ -4,13 +4,12 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.backends.lwjgl.audio.Mp3;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import netwerkprog.game.client.Client;
 import netwerkprog.game.server.Server;
+import netwerkprog.game.util.FrameRate;
 
 public class MainGame extends ApplicationAdapter {
     SpriteBatch batch;
