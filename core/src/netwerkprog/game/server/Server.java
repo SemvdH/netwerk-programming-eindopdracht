@@ -27,6 +27,7 @@ public class Server {
 
     private void run() {
         setTestGames();
+        this.sessionThread.start();
     }
 
     private void setTestGames() {
@@ -34,9 +35,10 @@ public class Server {
             gameThreads.put("game " + i, new Thread(new GameController(i)));
         }
 
-        for (String thread : gameThreads.keySet()) {
-            gameThreads.get(thread).start();
+        for (String game : gameThreads.keySet()) {
+            gameThreads.get(game).start();
         }
+
 
     }
 }
