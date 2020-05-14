@@ -40,7 +40,8 @@ topdown
 grid based
 attack op anderen als je er tegenover staat
 XCOM achtig (strategy)
-
+Alleen multiplayer
+Vaste aantal character types voor elke groep
 game met hacking elementen
     - matrix achtig
     - groepen: hackers (white hat) & mega corporations
@@ -63,7 +64,9 @@ met 2 mensen op 1 map
 Thema: cyberpunk (dystopian future)
 
 -----------OPTIONEEL:------------
-    environmental hazards
+environmental hazards
+verschillende character types
+
 
 
 
