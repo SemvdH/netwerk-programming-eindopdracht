@@ -1,4 +1,15 @@
 package netwerkprog.game.client.controllers;
 
-public class LogicController {
+import netwerkprog.game.util.Controller;
+
+public class LogicController extends Controller {
+
+    public LogicController() {
+
+    }
+
+    @Override
+    public void run() {
+
+    }
 }
