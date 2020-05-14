@@ -2,8 +2,8 @@ package netwerkprog.game.client.controllers;
 
 import netwerkprog.game.util.Controller;
 
-public class GrapicsController extends Controller {
-    public GrapicsController() {
+public class GraphicsController extends Controller {
+    public GraphicsController() {
 
     }
 
