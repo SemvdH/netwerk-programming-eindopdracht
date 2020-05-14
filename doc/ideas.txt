@@ -34,3 +34,40 @@ cards agains humanity (TI version)
 combo tussen genres?
     platformer met commands invoeren
 
+
+===================Definitief idee:==================
+topdown
+grid based
+attack op anderen als je er tegenover staat
+XCOM achtig (strategy)
+
+game met hacking elementen
+    - matrix achtig
+    - groepen: hackers (white hat) & mega corporations
+        - AI: 3e groep die door de game zelf bestuurd wordt
+DOELEN:
+    Hackers : cause chaos
+        Kan AI hacken
+    Megacorporations : keep control
+
+Omgeving: 1 grote flat waar onderin de hackers wonen en bovenin de megacorporations
+          gevecht neemt plaats op verdiepingen
+          1 verdieping is een map
+          hackers beginnen op zuiden megacorporations op noorden
+            moet aan de kant van de andere partij komen
+          vechten om een verdieping:
+            hackers gaan 1 omhoog als ze winnen
+            megacorporations gaan 1 omlaag als ze winnen
+
+met 2 mensen op 1 map
+Thema: cyberpunk (dystopian future)
+
+-----------OPTIONEEL:------------
+    environmental hazards
+
+
+
+
+
+
+
