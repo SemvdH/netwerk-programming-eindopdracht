@@ -10,12 +10,7 @@ public class Server {
     private HashMap<String, Thread> gameThreads;
     public static final int PORT = 8000;
 
-    public static void main(String[] args) {
-        Server server = new Server();
-        server.start();
-    }
-
-    private void start() {
+    public void start() {
         this.sessionController = new SessionController();
 
         this.gameThreads = new HashMap<>();
