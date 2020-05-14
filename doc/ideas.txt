@@ -34,7 +34,6 @@ cards agains humanity (TI version)
 combo tussen genres?
     platformer met commands invoeren
 
-
 ===================Definitief idee:==================
 topdown
 grid based
