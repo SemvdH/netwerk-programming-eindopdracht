@@ -35,6 +35,8 @@ combo tussen genres?
     platformer met commands invoeren
 
 ===================Definitief idee:==================
+naam: iets met anarchy
+
 topdown
 grid based
 attack op anderen als je er tegenover staat

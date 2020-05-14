@@ -1,2 +1,5 @@
 map:
 grid based op basis van 2d char array dat bepaalde tiles corresponderen met verschillende characters
+
+
+kleuren: https://heirey.itch.io/district-tileset
