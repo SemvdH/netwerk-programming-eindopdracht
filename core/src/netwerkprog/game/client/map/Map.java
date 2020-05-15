@@ -10,6 +10,25 @@ public class Map {
         this(size,size);
     }
 
+    public Map(String[] strings) {
+        if (strings == null) {
+            throw new NullPointerException("The array of strings given cannot be null!");
+        }
+
+        int width = 0;
+        //get max width in string array
+        for (String s : strings) {
+            if (s.length() > width) {
+                width = s.length();
+            }
+        }
+        char[][] res = new char[strings.length][width];
+        for (int i = 0; i < strings.length; i++) {
+            res[i] = strings[i].toCharArray();
+        }
+        this.map = res;
+    }
+
     public Map(int width, int height) {
         this.map = new char[height][width];
     }

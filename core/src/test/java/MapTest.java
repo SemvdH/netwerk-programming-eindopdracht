@@ -6,7 +6,7 @@ public class MapTest {
 
     @Test
     public void testNull() {
-        Map map = new Map(null);
+        Map map = new Map((char[][]) null);
 
         Assert.assertEquals(-1,map.getHeight());
         Assert.assertEquals(-1,map.getWidth());
@@ -41,5 +41,29 @@ public class MapTest {
         Assert.assertEquals(Character.MIN_VALUE,map.get(1,8));
         Assert.assertEquals(Character.MIN_VALUE,map.get(4,2));
         Assert.assertEquals(Character.MIN_VALUE,map.get(4,8));
+    }
+
+    @Test
+    public void testStringArray() {
+        String[] strings = new String[]{
+                "####",
+                "#  #",
+                "####"
+        };
+
+        char[][] testArr = new char[][]{
+          strings[0].toCharArray(),
+          strings[1].toCharArray(),
+          strings[2].toCharArray()
+        };
+
+        Map map = new Map(strings);
+
+        Assert.assertEquals(4,map.getWidth());
+        Assert.assertEquals(3,map.getHeight());
+        Assert.assertEquals('#',map.get(0,0));
+        Assert.assertEquals(' ',map.get(1,1));
+        Assert.assertArrayEquals(testArr,map.get());
+
     }
 }
