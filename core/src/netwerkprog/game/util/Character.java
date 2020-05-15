@@ -9,7 +9,7 @@ public abstract class Character {
     protected HashSet<Ability> abilities;
     protected boolean override;
 
-    Character(String name, Faction faction, Ability... abilities) {
+    public Character(String name, Faction faction, Ability... abilities) {
         this.name = name;
         this.faction = faction;
         this.abilities = new HashSet<>(Arrays.asList(abilities));
