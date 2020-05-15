@@ -1,4 +1,4 @@
-package netwerkprog.game.client;
+package netwerkprog.game.client.map;
 
 /**
  * Map class to hold a 2d array of tiles which will specify the map

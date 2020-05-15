@@ -1,4 +1,4 @@
-import netwerkprog.game.client.Map;
+import netwerkprog.game.client.map.Map;
 import org.junit.Assert;
 import org.junit.Test;
 

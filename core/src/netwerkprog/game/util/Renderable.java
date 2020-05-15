@@ -1,5 +1,5 @@
 package netwerkprog.game.util;
 
-public interface Drawable extends Updatable {
+public interface Renderable extends Updatable {
     void render();
 }
