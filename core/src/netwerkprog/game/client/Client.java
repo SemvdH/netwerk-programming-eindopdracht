@@ -1,5 +1,7 @@
 package netwerkprog.game.client;
 
+import netwerkprog.game.util.Controller;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -7,7 +9,7 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Client extends Thread{
+public class Client extends Controller {
     private int port;
     private String hostname;
     private boolean isConnected = true;
