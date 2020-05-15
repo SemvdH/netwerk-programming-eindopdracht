@@ -14,10 +14,7 @@ public class Client extends Controller {
     private String hostname;
     private boolean isConnected = true;
 
-    @Override
-    public void run() {
-        this.connect();
-    }
+
 
     public Client(String hostname, int port) {
         this.port = port;
@@ -73,5 +70,10 @@ public class Client extends Controller {
                 System.out.println("exception caught - " + e.getMessage());;
             }
         }
+    }
+
+    @Override
+    public void run() {
+        this.connect();
     }
 }

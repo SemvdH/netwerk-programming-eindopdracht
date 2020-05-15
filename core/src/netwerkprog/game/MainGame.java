@@ -21,7 +21,7 @@ public class MainGame extends ApplicationAdapter {
     float screenWidth;
     float screenHeight;
     private FrameRate frameRate;
-    private Client client;
+    private Thread client;
 
     @Override
     public void create() {
@@ -39,12 +39,12 @@ public class MainGame extends ApplicationAdapter {
         music.setVolume(.1f);
         music.play();
         music.setLooping(true);
-
         connectToServer();
     }
 
+
     private void connectToServer() {
-        client = new Client("localhost", Server.PORT);
+        client = new Thread(new Client("localhost", Server.PORT));
         try {
             client.start();
         } catch (Exception e) {
