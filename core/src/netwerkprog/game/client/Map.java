@@ -1,8 +1,10 @@
 package netwerkprog.game.client;
 
+/**
+ * Map class to hold a 2d array of tiles which will specify the map
+ */
 public class Map {
     private char[][] map;
-    private int tileWidth = 16;
 
     public Map(int size) {
         this(size,size);
@@ -10,14 +12,6 @@ public class Map {
 
     public Map(int width, int height) {
         this.map = new char[height][width];
-    }
-
-    public void setTileWidth(int tileWidth) {
-        this.tileWidth = tileWidth;
-    }
-
-    public int getTileWidth() {
-        return tileWidth;
     }
 
     public char[][] get() {
