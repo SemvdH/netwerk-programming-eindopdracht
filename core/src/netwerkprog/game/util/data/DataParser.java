@@ -1,4 +1,4 @@
-package netwerkprog.game.server.data;
+package netwerkprog.game.util.data;
 
 public class DataParser {
     public DataParser() {

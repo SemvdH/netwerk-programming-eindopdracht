@@ -1,4 +1,4 @@
-package netwerkprog.game;
+package netwerkprog.game.client;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Files;
@@ -7,8 +7,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import netwerkprog.game.client.Client;
-import netwerkprog.game.util.FrameRate;
+import netwerkprog.game.util.graphics.FrameRate;
 
 public class MainGame extends ApplicationAdapter {
     SpriteBatch batch;
