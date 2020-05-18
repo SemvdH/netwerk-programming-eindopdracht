@@ -19,6 +19,7 @@ import java.util.Set;
  * The sessionController manages any connections from new clients and assigns individual threads to said clients.
  */
 public class SessionController extends Controller {
+    private ServerSocket serverSocket;
     private final DataParser parser;
     private final ArrayList<ServerClient> clients = new ArrayList<>();
     private final HashMap<String, Thread> clientThreads = new HashMap<>();
@@ -34,6 +35,7 @@ public class SessionController extends Controller {
      */
     @Override
     public void run() {
+        this.listening = true;
         while (listening) {
             listen();
         }
@@ -44,10 +46,10 @@ public class SessionController extends Controller {
      */
     public void listen() {
         try {
-            ServerSocket serverSocket = new ServerSocket(ServerData.port());
+            this.serverSocket = new ServerSocket(ServerData.port());
             System.out.println("[SERVER] listening on port " + ServerData.port());
             registerClient(serverSocket.accept());
-            serverSocket.close();
+            this.serverSocket.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -140,5 +142,11 @@ public class SessionController extends Controller {
      */
     public void shutdown() {
         this.listening = false;
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("[SERVER] networking shutdown ");
     }
 }
