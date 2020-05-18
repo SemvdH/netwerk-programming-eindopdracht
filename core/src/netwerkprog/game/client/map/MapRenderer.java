@@ -1,16 +1,35 @@
 package netwerkprog.game.client.map;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import netwerkprog.game.util.Renderable;
 
 public class MapRenderer implements Renderable {
     private int tileWidth;
     private Map map;
+    private SpriteBatch batch;
+    private static String tilePath = "core/assets/map/scifitiles-sheet.png";
+    public static TextureRegion FLOOR_TILE;
+    public static TextureRegion WALL_TILE;
+    private OrthographicCamera cam;
+    private static int x = 0;
+    private static int y = 0;
 
-    public MapRenderer(Map map, int tileWidth) {
+    public MapRenderer(Map map, int tileWidth, SpriteBatch batch) {
         this.map = map;
         this.tileWidth = tileWidth;
+        this.batch = batch;
+        cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Texture texture = new Texture(Gdx.files.internal(tilePath));
+        TextureRegion[][] tiles = TextureRegion.split(texture, 32, 32);
+        FLOOR_TILE = tiles[1][6];
+        WALL_TILE = tiles[0][4];
+        System.out.println(map);
+        System.out.println(map.getHeight());
+        System.out.println(map.getWidth());
     }
 
     public int getTileWidth() {
@@ -31,12 +50,35 @@ public class MapRenderer implements Renderable {
 
     @Override
     public void render() {
-        Batch batch = new SpriteBatch();
+        batch.begin();
 
+        for (int row = 0; row < map.getHeight(); row++) {
+            y += 32;
+            x = 0;
+            for (int col = 0; col < map.getWidth(); col++) {
+                if (map.get(row, col) == ' ') {
+                    batch.draw(FLOOR_TILE, x, y);
+                } else if (map.get(row, col) == '#') {
+                    batch.draw(WALL_TILE, x, y);
+                }
+                x += 32;
+            }
+        }
+//        batch.draw(FLOOR_TILE,100,100);
+        batch.end();
+        x = 0;
+        y = 0;
     }
 
     @Override
     public void update(double deltaTime) {
 
+    }
+
+    public void resize(int screenWidth, int screenHeight) {
+        cam = new OrthographicCamera(screenWidth, screenHeight);
+        cam.translate(screenWidth / 2, screenHeight / 2);
+        cam.update();
+        batch.setProjectionMatrix(cam.combined);
     }
 }

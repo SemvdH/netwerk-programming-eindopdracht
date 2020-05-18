@@ -1,5 +1,7 @@
 package netwerkprog.game.client.map;
 
+import java.util.Arrays;
+
 /**
  * Map class to hold a 2d array of tiles which will specify the map
  */
@@ -67,5 +69,15 @@ public class Map {
         return this.map == null || this.map.length == 0 ? -1 : this.map[0].length;
     }
 
-
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int row = 0; row < getHeight(); row++) {
+            for (int col = 0; col < getWidth(); col++) {
+                sb.append(this.map[row][col]);
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
 }

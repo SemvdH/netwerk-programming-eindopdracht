@@ -8,39 +8,49 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import netwerkprog.game.client.Client;
+import netwerkprog.game.client.map.Map;
+import netwerkprog.game.client.map.MapRenderer;
 import netwerkprog.game.server.Server;
 import netwerkprog.game.util.FrameRate;
 
 public class MainGame extends ApplicationAdapter {
     SpriteBatch batch;
-    Texture img;
-    float xPos = 500;
-    float yPos = 500;
-    float xUpdate;
-    float yUpdate;
     float screenWidth;
     float screenHeight;
     private FrameRate frameRate;
     private Client client;
 
+    private Map map;
+    private MapRenderer mapRenderer;
+
     @Override
     public void create() {
         batch = new SpriteBatch();
-        img = new Texture("badlogic.jpg");
-        float ratio = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-        xUpdate = ratio;
-        yUpdate = ratio;
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
         frameRate = new FrameRate();
 
+
+        String[] strings = new String[]{
+                "####",
+                "#  #",
+                "####"
+        };
+        map = new Map(strings);
+        mapRenderer = new MapRenderer(map,32,batch);
+
+//        playSong();
+
+
+//        connectToServer();
+    }
+
+    private void playSong() {
         // play music
         Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("core/assets/music.mp3", Files.FileType.Internal));
         music.setVolume(.1f);
         music.play();
         music.setLooping(true);
-
-        connectToServer();
     }
 
     private void connectToServer() {
@@ -58,11 +68,10 @@ public class MainGame extends ApplicationAdapter {
     @Override
     public void render() {
         update();
-        Gdx.gl.glClearColor(xPos / Gdx.graphics.getWidth(), 0, 0, 1);
+        // clear screen
+        Gdx.gl.glClearColor(1, 1, 1, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        batch.draw(img, xPos, yPos);
-        batch.end();
+        mapRenderer.render();
         frameRate.render();
     }
 
@@ -71,20 +80,6 @@ public class MainGame extends ApplicationAdapter {
      */
     public void update() {
         frameRate.update();
-        updatePos();
-    }
-
-    private void updatePos() {
-        yPos += yUpdate;
-        xPos += xUpdate;
-
-        if (yPos > screenHeight - img.getHeight() || yPos < 0) {
-            yUpdate = -yUpdate;
-        }
-
-        if (xPos > screenWidth - img.getWidth() || xPos < 0) {
-            xUpdate = -xUpdate;
-        }
     }
 
     @Override
@@ -92,6 +87,8 @@ public class MainGame extends ApplicationAdapter {
         super.resize(width, height);
         screenHeight = height;
         screenWidth = width;
+        frameRate.resize(width,height);
+        mapRenderer.resize(width,height);
     }
 
     @Override
@@ -102,6 +99,5 @@ public class MainGame extends ApplicationAdapter {
     @Override
     public void dispose() {
         batch.dispose();
-        img.dispose();
     }
 }
