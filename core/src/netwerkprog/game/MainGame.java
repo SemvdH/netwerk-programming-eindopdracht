@@ -39,8 +39,6 @@ public class MainGame extends ApplicationAdapter {
         screenHeight = Gdx.graphics.getHeight();
         frameRate = new FrameRate();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.translate(0, 0);
-        camera.update();
 
 
         String[] strings = new String[]{
@@ -62,7 +60,10 @@ public class MainGame extends ApplicationAdapter {
         gameInputProcessor = new GameInputProcessor(camera, this);
         Gdx.input.setInputProcessor(gameInputProcessor);
         mapRenderer = new MapRenderer(map, 32, batch, camera);
-        camera.translate(screenWidth/2,screenHeight/2);
+        camera.position.set(screenWidth/2,screenHeight/2,0);
+        camera.viewportWidth = screenWidth / 2;
+        camera.viewportHeight = screenHeight / 2;
+        camera.update();
 
 
 //        playSong();
@@ -130,7 +131,19 @@ public class MainGame extends ApplicationAdapter {
         batch.dispose();
     }
 
-    private void keyDown() {
+    public float getScreenWidth() {
+        return screenWidth;
+    }
 
+    public float getScreenHeight() {
+        return screenHeight;
+    }
+
+    public int getVerticalTileAmount() {
+        return map.getHeight();
+    }
+
+    public int getHorizontalTileAmount() {
+        return map.getWidth();
     }
 }

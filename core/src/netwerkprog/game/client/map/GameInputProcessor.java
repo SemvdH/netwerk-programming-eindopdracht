@@ -3,6 +3,7 @@ package netwerkprog.game.client.map;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.MainGame;
 
@@ -34,6 +35,14 @@ public class GameInputProcessor implements InputProcessor {
         keysList.add(Input.Keys.A);
         keysList.add(Input.Keys.S);
         keysList.add(Input.Keys.D);
+
+        camera.zoom = MathUtils.clamp(camera.zoom, 1.5f, 1.8f);
+//
+//        float effectiveViewportWidth = camera.viewportWidth * camera.zoom;
+//        float effectiveViewportHeight = camera.viewportHeight * camera.zoom;
+//
+//        camera.position.x = MathUtils.clamp(camera.position.x, effectiveViewportWidth / 2f, game.getScreenWidth() - effectiveViewportWidth / 2f);
+//        camera.position.y = MathUtils.clamp(camera.position.y, effectiveViewportHeight / 2f, game.getScreenHeight() - effectiveViewportHeight / 2f);
 
     }
 
@@ -79,6 +88,7 @@ public class GameInputProcessor implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
+        System.out.println(camera.position.x + " , " + camera.position.y);
         if (keysList.contains(keycode)) {
             if (keycode == keysList.get(0)) {
                 this.isWPressed = false;
@@ -96,6 +106,7 @@ public class GameInputProcessor implements InputProcessor {
                 this.isDPressed = false;
                 return true;
             }
+
             return true;
         }
         return false;
@@ -128,23 +139,34 @@ public class GameInputProcessor implements InputProcessor {
 
     @Override
     public boolean scrolled(int amount) {
+        float nextZoom = camera.zoom + amount / 5f;
+        if (nextZoom >= 0.5 && nextZoom <= 2.5) {
+            camera.zoom += amount / 2f;
+            return true;
+        }
         return false;
     }
 
     public void update() {
         long delta = TimeUtils.timeSinceMillis(lastTimeCounted);
         lastTimeCounted = TimeUtils.millis();
-        if (isWPressed()) {
-            camera.position.add(0, -CAMERA_MOVE_SPEED * delta, 0);
-        }
-        if (isSPressed()) {
-            camera.position.add(0, CAMERA_MOVE_SPEED * delta, 0);
-        }
-        if (isAPressed()) {
-            camera.position.add(CAMERA_MOVE_SPEED * delta, 0, 0);
-        }
-        if (isDPressed()) {
-            camera.position.add(-CAMERA_MOVE_SPEED * delta, 0, 0);
-        }
+        if (camera.position.x > 5 * game.getHorizontalTileAmount())
+            if (isAPressed()) {
+                camera.position.add(-CAMERA_MOVE_SPEED * delta, 0, 0);
+            }
+        if (camera.position.y < 30 * game.getVerticalTileAmount())
+            if (isWPressed()) {
+                camera.position.add(0, CAMERA_MOVE_SPEED * delta, 0);
+            }
+
+        if (camera.position.y > 5 * game.getVerticalTileAmount())
+            if (isSPressed()) {
+                camera.position.add(0, -CAMERA_MOVE_SPEED * delta, 0);
+            }
+
+        if (camera.position.x < game.getScreenWidth() / 2 + 5 * game.getHorizontalTileAmount())
+            if (isDPressed()) {
+                camera.position.add(CAMERA_MOVE_SPEED * delta, 0, 0);
+            }
     }
 }
