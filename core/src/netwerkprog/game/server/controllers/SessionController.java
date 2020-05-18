@@ -6,8 +6,6 @@ import netwerkprog.game.server.data.DataParser;
 import netwerkprog.game.util.Controller;
 import netwerkprog.game.util.ServerData;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -19,43 +17,44 @@ public class SessionController extends Controller {
     private DataParser parser;
     private ArrayList<ServerClient> clients = new ArrayList<>();
     private HashMap<String, Thread> clientThreads = new HashMap<>();
+    private boolean listening;
 
     public SessionController() {
-
+        this.listening = true;
     }
 
-    public void connect() {
-        try {
-            this.serverSocket = new ServerSocket(ServerData.port());
-            System.out.println("[SERVER] listening on port " + ServerData.port());
-            Socket socket = serverSocket.accept();
-
-            System.out.println("[SERVER] got new client on " + socket.getInetAddress().getHostAddress());
-            DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-            DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-
-            outputStream.writeUTF("Enter username: ");
-            String username = inputStream.readUTF();
-
-            System.out.println("[SERVER] got username " + username);
-            ServerClient serverClient = new ServerClient(username, socket, this);
-
-            Thread t = new Thread(serverClient);
-            t.start();
-
-            clientThreads.put(username, t);
-            this.clients.add(serverClient);
-
-            sendMessage(username, "--- Welcome! ---\nPeople online : " + clients.size());
-
-            clients.forEach(yeet -> sendToEveryoneExcept(username, username + " joined the server! [" + socket.getInetAddress().getHostAddress() + "]"));
-
-
-            this.serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void connect() {
+//        try {
+//            this.serverSocket = new ServerSocket(ServerData.port());
+//            System.out.println("[SERVER] listening on port " + ServerData.port());
+//            Socket socket = serverSocket.accept();
+//
+//            System.out.println("[SERVER] got new client on " + socket.getInetAddress().getHostAddress());
+//            DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+//            DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+//
+//            outputStream.writeUTF("Enter username: ");
+//            String username = inputStream.readUTF();
+//
+//            System.out.println("[SERVER] got username " + username);
+//            ServerClient serverClient = new ServerClient(username, socket, this);
+//
+//            Thread t = new Thread(serverClient);
+//            t.start();
+//
+//            clientThreads.put(username, t);
+//            this.clients.add(serverClient);
+//
+//            sendMessage(username, "--- Welcome! ---\nPeople online : " + clients.size());
+//
+//            clients.forEach(yeet -> sendToEveryoneExcept(username, username + " joined the server! [" + socket.getInetAddress().getHostAddress() + "]"));
+//
+//
+//            this.serverSocket.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public void sendToEveryone(String text) {
         for (ServerClient serverClient : clients) {
@@ -92,21 +91,21 @@ public class SessionController extends Controller {
 
     @Override
     public void run() {
-        boolean running = true;
-        while (running) {
-            System.out.println("Session thread active.");
-            connect();
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        while (listening) {
+            listen();
         }
     }
 
     public void listen() {
+        try {
+            this.serverSocket = new ServerSocket(ServerData.port());
+            System.out.println("[SERVER] listening on port " + ServerData.port());
+            Socket socket = serverSocket.accept();
+            this.serverSocket.close();
 
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     //will most likely be removed.
