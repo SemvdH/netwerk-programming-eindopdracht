@@ -3,11 +3,16 @@ package netwerkprog.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import netwerkprog.game.client.Client;
+import netwerkprog.game.client.map.GameInputProcessor;
 import netwerkprog.game.client.map.Map;
 import netwerkprog.game.client.map.MapRenderer;
 import netwerkprog.game.server.Server;
@@ -19,9 +24,13 @@ public class MainGame extends ApplicationAdapter {
     float screenHeight;
     private FrameRate frameRate;
     private Client client;
+    private OrthographicCamera camera;
+    private GameInputProcessor gameInputProcessor;
 
     private Map map;
     private MapRenderer mapRenderer;
+
+
 
     @Override
     public void create() {
@@ -29,6 +38,9 @@ public class MainGame extends ApplicationAdapter {
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
         frameRate = new FrameRate();
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.translate(0, 0);
+        camera.update();
 
 
         String[] strings = new String[]{
@@ -47,13 +59,18 @@ public class MainGame extends ApplicationAdapter {
                 "#########################"
         };
         map = new Map(strings);
-        mapRenderer = new MapRenderer(map,32,batch);
+        gameInputProcessor = new GameInputProcessor(camera, this);
+        Gdx.input.setInputProcessor(gameInputProcessor);
+        mapRenderer = new MapRenderer(map, 32, batch, camera);
+        camera.translate(screenWidth/2,screenHeight/2);
+
 
 //        playSong();
 
 
 //        connectToServer();
     }
+
 
     private void playSong() {
         // play music
@@ -90,6 +107,8 @@ public class MainGame extends ApplicationAdapter {
      */
     public void update() {
         frameRate.update();
+        camera.update();
+        this.gameInputProcessor.update();
     }
 
     @Override
@@ -97,8 +116,8 @@ public class MainGame extends ApplicationAdapter {
         super.resize(width, height);
         screenHeight = height;
         screenWidth = width;
-        frameRate.resize(width,height);
-        mapRenderer.resize(width,height);
+        frameRate.resize(width, height);
+        mapRenderer.resize(width, height);
     }
 
     @Override
@@ -109,5 +128,9 @@ public class MainGame extends ApplicationAdapter {
     @Override
     public void dispose() {
         batch.dispose();
+    }
+
+    private void keyDown() {
+
     }
 }

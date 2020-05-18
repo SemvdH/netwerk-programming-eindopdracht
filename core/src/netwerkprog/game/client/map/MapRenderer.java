@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import netwerkprog.game.util.Renderable;
 
 public class MapRenderer implements Renderable {
+    private final OrthographicCamera camera;
     private int tileWidth;
     private Map map;
     private SpriteBatch batch;
@@ -22,11 +23,12 @@ public class MapRenderer implements Renderable {
     public static TextureRegion PATH_TILE;
 
 
-    public MapRenderer(Map map, int tileWidth, SpriteBatch batch) {
+    public MapRenderer(Map map, int tileWidth, SpriteBatch batch, OrthographicCamera camera) {
         this.map = map;
         this.tileWidth = tileWidth;
         this.batch = batch;
         cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.camera = camera;
         makeTiles();
     }
 
@@ -58,6 +60,7 @@ public class MapRenderer implements Renderable {
     @Override
     public void render() {
         batch.begin();
+        batch.setProjectionMatrix(camera.combined);
         for (int row = map.getHeight(); row >= 0; row--) {
             y += 32;
             x = 0;
