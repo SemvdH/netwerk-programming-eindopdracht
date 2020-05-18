@@ -1,7 +1,7 @@
 package netwerkprog.game.server;
 
 import netwerkprog.game.server.controllers.SessionController;
-import netwerkprog.game.server.data.Data;
+import netwerkprog.game.util.data.Data;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

@@ -1,4 +1,4 @@
-package netwerkprog.game.util;
+package netwerkprog.game.util.application;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 

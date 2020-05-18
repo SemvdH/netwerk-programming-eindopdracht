@@ -1,4 +1,4 @@
-package netwerkprog.game.util;
+package netwerkprog.game.util.game;
 
 public abstract class Ability {
     protected String name;

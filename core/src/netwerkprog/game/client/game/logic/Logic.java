@@ -1,6 +1,6 @@
 package netwerkprog.game.client.game.logic;
 
-import netwerkprog.game.util.Controller;
+import netwerkprog.game.util.application.Controller;
 
 public class Logic extends Controller {
 

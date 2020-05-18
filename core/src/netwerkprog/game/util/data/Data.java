@@ -1,7 +1,6 @@
-package netwerkprog.game.util;
+package netwerkprog.game.util.data;
 
-public class ServerData {
-
+public class Data {
     public static int port() {
         return 8000;
     }

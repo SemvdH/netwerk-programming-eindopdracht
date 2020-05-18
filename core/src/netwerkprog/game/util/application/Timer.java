@@ -1,4 +1,4 @@
-package netwerkprog.game.util;
+package netwerkprog.game.util.application;
 
 public class Timer implements Updatable {
     private double wait;

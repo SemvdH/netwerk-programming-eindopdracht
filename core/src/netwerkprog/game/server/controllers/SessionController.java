@@ -1,10 +1,9 @@
 package netwerkprog.game.server.controllers;
 
 import netwerkprog.game.server.ServerClient;
-import netwerkprog.game.server.data.Data;
-import netwerkprog.game.server.data.DataParser;
-import netwerkprog.game.util.Controller;
-import netwerkprog.game.util.ServerData;
+import netwerkprog.game.util.data.Data;
+import netwerkprog.game.util.data.DataParser;
+import netwerkprog.game.util.application.Controller;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -46,8 +45,8 @@ public class SessionController extends Controller {
      */
     public void listen() {
         try {
-            this.serverSocket = new ServerSocket(ServerData.port());
-            System.out.println("[SERVER] listening on port " + ServerData.port());
+            this.serverSocket = new ServerSocket(Data.port());
+            System.out.println("[SERVER] listening on port " + Data.port());
             registerClient(serverSocket.accept());
             this.serverSocket.close();
         } catch (IOException ex) {

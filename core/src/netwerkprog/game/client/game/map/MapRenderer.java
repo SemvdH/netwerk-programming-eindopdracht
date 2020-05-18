@@ -2,7 +2,7 @@ package netwerkprog.game.client.game.map;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import netwerkprog.game.util.Renderable;
+import netwerkprog.game.util.graphics.Renderable;
 
 public class MapRenderer implements Renderable {
     private int tileWidth;

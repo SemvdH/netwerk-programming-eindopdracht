@@ -1,4 +1,4 @@
-package netwerkprog.game.util;
+package netwerkprog.game.util.game;
 
 import java.util.Arrays;
 import java.util.HashSet;
