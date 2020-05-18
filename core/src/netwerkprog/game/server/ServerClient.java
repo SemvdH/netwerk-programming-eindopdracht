@@ -1,6 +1,7 @@
 package netwerkprog.game.server;
 
 import netwerkprog.game.server.controllers.SessionController;
+import netwerkprog.game.server.data.Data;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -50,12 +51,14 @@ public class ServerClient implements Runnable {
         while (isConnected) {
             try {
                 String received = this.in.readUTF();
-                if (received.equals("\\quit")) {
-                    isConnected = false;
+                Data data = server.parseData(received);
+                if (data.toString().equals("\\quit")) {
+                    this.isConnected = false;
                     this.server.removeClient(this);
                 } else {
-                    this.server.sendToEveryoneExcept(this.name,"<" + this.name + "> : " + received);
+                    this.out.writeUTF(data.toString());
                 }
+
             } catch (IOException e) {
                 System.out.println("[SERVERCLIENT] caught exception - " + e.getMessage());
                 System.out.println("[SERVERCLIENT] terminating failing connection...");
