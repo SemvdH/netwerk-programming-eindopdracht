@@ -12,24 +12,31 @@ public class MapRenderer implements Renderable {
     private Map map;
     private SpriteBatch batch;
     private static String tilePath = "core/assets/map/scifitiles-sheet.png";
-    public static TextureRegion FLOOR_TILE;
-    public static TextureRegion WALL_TILE;
     private OrthographicCamera cam;
     private static int x = 0;
     private static int y = 0;
+
+
+    public static TextureRegion FLOOR_TILE;
+    public static TextureRegion WALL_TILE;
+    public static TextureRegion PATH_TILE;
+
 
     public MapRenderer(Map map, int tileWidth, SpriteBatch batch) {
         this.map = map;
         this.tileWidth = tileWidth;
         this.batch = batch;
         cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        makeTiles();
+    }
+
+    private void makeTiles() {
         Texture texture = new Texture(Gdx.files.internal(tilePath));
         TextureRegion[][] tiles = TextureRegion.split(texture, 32, 32);
         FLOOR_TILE = tiles[1][6];
         WALL_TILE = tiles[0][4];
-        System.out.println(map);
-        System.out.println(map.getHeight());
-        System.out.println(map.getWidth());
+        PATH_TILE = tiles[4][6];
+
     }
 
     public int getTileWidth() {
@@ -51,8 +58,7 @@ public class MapRenderer implements Renderable {
     @Override
     public void render() {
         batch.begin();
-
-        for (int row = 0; row < map.getHeight(); row++) {
+        for (int row = map.getHeight(); row >= 0; row--) {
             y += 32;
             x = 0;
             for (int col = 0; col < map.getWidth(); col++) {
@@ -60,6 +66,8 @@ public class MapRenderer implements Renderable {
                     batch.draw(FLOOR_TILE, x, y);
                 } else if (map.get(row, col) == '#') {
                     batch.draw(WALL_TILE, x, y);
+                } else if (map.get(row,col) == 'x') {
+                    batch.draw(PATH_TILE,x,y);
                 }
                 x += 32;
             }

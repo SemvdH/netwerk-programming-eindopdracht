@@ -32,9 +32,19 @@ public class MainGame extends ApplicationAdapter {
 
 
         String[] strings = new String[]{
-                "####",
-                "#  #",
-                "####"
+                "#########################",
+                "#xxxx                   #",
+                "#   x                   #",
+                "#   xxxx                #",
+                "#      xx               #",
+                "#       x               #",
+                "#       x               #",
+                "#       x               #",
+                "#       x               #",
+                "#           xxxxxx      #",
+                "#            x          #",
+                "#       x      xxxx x x #",
+                "#########################"
         };
         map = new Map(strings);
         mapRenderer = new MapRenderer(map,32,batch);
@@ -69,7 +79,7 @@ public class MainGame extends ApplicationAdapter {
     public void render() {
         update();
         // clear screen
-        Gdx.gl.glClearColor(1, 1, 1, 0);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         mapRenderer.render();
         frameRate.render();
