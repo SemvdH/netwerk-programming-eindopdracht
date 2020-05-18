@@ -1,6 +1,7 @@
 package netwerkprog.game.client;
 
 import netwerkprog.game.util.Controller;
+import netwerkprog.game.util.ServerData;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -16,8 +17,8 @@ public class Client extends Controller {
 
 
 
-    public Client(String hostname, int port) {
-        this.port = port;
+    public Client(String hostname) {
+        this.port = ServerData.port();
         this.hostname = hostname;
     }
 

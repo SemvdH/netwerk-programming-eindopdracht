@@ -1,8 +1,10 @@
 package netwerkprog.game.server.controllers;
 
-import netwerkprog.game.server.Server;
 import netwerkprog.game.server.ServerClient;
+import netwerkprog.game.server.data.Data;
+import netwerkprog.game.server.data.DataParser;
 import netwerkprog.game.util.Controller;
+import netwerkprog.game.util.ServerData;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 
 public class SessionController extends Controller {
     private ServerSocket serverSocket;
+    private DataParser parser;
     private ArrayList<ServerClient> clients = new ArrayList<>();
     private HashMap<String, Thread> clientThreads = new HashMap<>();
 
@@ -23,29 +26,29 @@ public class SessionController extends Controller {
 
     public void connect() {
         try {
-            this.serverSocket = new ServerSocket(Server.PORT);
-            System.out.println("[SERVER] listening on port " + Server.PORT);
+            this.serverSocket = new ServerSocket(ServerData.port());
+            System.out.println("[SERVER] listening on port " + ServerData.port());
             Socket socket = serverSocket.accept();
 
             System.out.println("[SERVER] got new client on " + socket.getInetAddress().getHostAddress());
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
-            outputStream.writeUTF("Enter nickname: ");
-            String nickname = inputStream.readUTF();
+            outputStream.writeUTF("Enter username: ");
+            String username = inputStream.readUTF();
 
-            System.out.println("[SERVER] got nickname " + nickname);
-            ServerClient serverClient = new ServerClient(nickname, socket, this);
+            System.out.println("[SERVER] got username " + username);
+            ServerClient serverClient = new ServerClient(username, socket, this);
 
             Thread t = new Thread(serverClient);
             t.start();
 
-            clientThreads.put(nickname, t);
+            clientThreads.put(username, t);
             this.clients.add(serverClient);
 
-            sendMessage(nickname, "--- Welcome! ---\nPeople online : " + clients.size());
+            sendMessage(username, "--- Welcome! ---\nPeople online : " + clients.size());
 
-            clients.forEach(yeet -> sendToEveryoneExcept(nickname, nickname + " joined the server! [" + socket.getInetAddress().getHostAddress() + "]"));
+            clients.forEach(yeet -> sendToEveryoneExcept(username, username + " joined the server! [" + socket.getInetAddress().getHostAddress() + "]"));
 
 
             this.serverSocket.close();
@@ -100,5 +103,18 @@ public class SessionController extends Controller {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void listen() {
+
+    }
+
+    //will most likely be removed.
+    public void parseData(String request) {
+        Data data = this.parser.parse(request);
+    }
+
+    public void sendData(Data data) {
+
     }
 }

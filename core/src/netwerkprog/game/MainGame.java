@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import netwerkprog.game.client.Client;
-import netwerkprog.game.server.Server;
 import netwerkprog.game.util.FrameRate;
 
 public class MainGame extends ApplicationAdapter {
@@ -44,7 +43,7 @@ public class MainGame extends ApplicationAdapter {
 
 
     private void connectToServer() {
-        client = new Thread(new Client("localhost", Server.PORT));
+        client = new Thread(new Client("localhost"));
         try {
             client.start();
         } catch (Exception e) {
