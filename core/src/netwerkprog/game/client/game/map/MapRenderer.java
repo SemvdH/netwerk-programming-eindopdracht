@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import netwerkprog.game.client.map.Tile;
+import netwerkprog.game.client.map.GameTile;
 import netwerkprog.game.util.graphics.Renderable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -23,9 +23,8 @@ public class MapRenderer implements Renderable {
     public static TextureRegion WALL_TILE;
     public static TextureRegion PATH_TILE;
 
-    private Tile[][] tiles;
-
-    private boolean isStarted = false;
+    private GameTile[][] gameTiles;
+    
 
 
     /**
@@ -55,18 +54,18 @@ public class MapRenderer implements Renderable {
         WALL_TILE = tileTextures[0][4];
         PATH_TILE = tileTextures[4][6];
 
-        this.tiles = new Tile[map.getHeight()][map.getWidth()];
+        this.gameTiles = new GameTile[map.getHeight()][map.getWidth()];
 
         for (int row = map.getHeight(); row >= 0; row--) {
             y += 32;
             x = 0;
             for (int col = 0; col < map.getWidth(); col++) {
                 if (map.get(row, col) == ' ') {
-                    tiles[row][col] = new Tile(FLOOR_TILE,x,y, ' ');
+                    gameTiles[row][col] = new GameTile(FLOOR_TILE,x,y, ' ');
                 } else if (map.get(row, col) == '#') {
-                    tiles[row][col] = new Tile(WALL_TILE,x,y, '#');
+                    gameTiles[row][col] = new GameTile(WALL_TILE,x,y, '#');
                 } else if (map.get(row, col) == 'x') {
-                    tiles[row][col] = new Tile(PATH_TILE,x,y, 'x');
+                    gameTiles[row][col] = new GameTile(PATH_TILE,x,y, 'x');
                 }
                 x += 32;
             }
@@ -94,9 +93,9 @@ public class MapRenderer implements Renderable {
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
 
-        for (Tile[] tileRow : tiles) {
-            for (int col = 0; col < tiles[0].length; col++) {
-                Tile cur = tileRow[col];
+        for (GameTile[] gameTileRow : gameTiles) {
+            for (int col = 0; col < gameTiles[0].length; col++) {
+                GameTile cur = gameTileRow[col];
                 batch.draw(cur.getTextureRegion(), cur.x, cur.y);
             }
         }
@@ -118,7 +117,7 @@ public class MapRenderer implements Renderable {
         batch.setProjectionMatrix(cam.combined);
     }
 
-    public Tile[][] getTiles() {
-        return tiles;
+    public GameTile[][] getGameTiles() {
+        return gameTiles;
     }
 }

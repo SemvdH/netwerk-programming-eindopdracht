@@ -10,8 +10,6 @@ import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.client.MainGame;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 public class GameInputProcessor implements InputProcessor {
     private final OrthographicCamera camera;
@@ -125,11 +123,11 @@ public class GameInputProcessor implements InputProcessor {
         Vector3 touchPoint = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(touchPoint);
 
-        for (int row = 0; row < game.mapRenderer.getTiles().length; row++) {
-            for (int col = 0; col < game.mapRenderer.getTiles()[0].length; col++) {
-                Tile tile = game.mapRenderer.getTiles()[row][col];
-                if (tile.contains(touchPoint.x, touchPoint.y)) {
-                    System.out.println(tile + " row: " + row + ", col: " + col);
+        for (int row = 0; row < game.mapRenderer.getGameTiles().length; row++) {
+            for (int col = 0; col < game.mapRenderer.getGameTiles()[0].length; col++) {
+                GameTile gameTile = game.mapRenderer.getGameTiles()[row][col];
+                if (gameTile.contains(touchPoint.x, touchPoint.y)) {
+                    System.out.println(gameTile + " row: " + row + ", col: " + col);
                     //TODO make stuff happen with the tile
                     return true;
                 }

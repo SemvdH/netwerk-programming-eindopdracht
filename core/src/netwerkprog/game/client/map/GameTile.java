@@ -5,11 +5,11 @@ import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Objects;
 
-public class Tile extends Rectangle {
+public class GameTile extends Rectangle {
     private TextureRegion textureRegion;
     private char symbol;
 
-    public Tile(TextureRegion textureRegion, int xPos, int yPos, char symbol) {
+    public GameTile(TextureRegion textureRegion, int xPos, int yPos, char symbol) {
         this.textureRegion = textureRegion;
         this.symbol = symbol;
         super.x = xPos;
@@ -38,14 +38,14 @@ public class Tile extends Rectangle {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Tile)) return false;
+        if (!(o instanceof GameTile)) return false;
         if (!super.equals(o)) return false;
-        Tile tile = (Tile) o;
-        return getSymbol() == tile.getSymbol() &&
-                tile.x == this.x &&
-                tile.y == this.y &&
-                this.width == tile.width &&
-                this.height == tile.height;
+        GameTile gameTile = (GameTile) o;
+        return getSymbol() == gameTile.getSymbol() &&
+                gameTile.x == this.x &&
+                gameTile.y == this.y &&
+                this.width == gameTile.width &&
+                this.height == gameTile.height;
     }
 
     @Override
