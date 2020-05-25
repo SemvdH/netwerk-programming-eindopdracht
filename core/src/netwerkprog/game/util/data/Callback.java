@@ -1,4 +1,4 @@
-package netwerkprog.game.util;
+package netwerkprog.game.util.data;
 
 public interface Callback {
     void onDataReceived();

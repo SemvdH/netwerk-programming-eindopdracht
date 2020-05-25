@@ -1,5 +1,9 @@
 package netwerkprog.game.client;
 
+import netwerkprog.game.util.application.Controller;
+import netwerkprog.game.util.data.Data;
+import netwerkprog.game.util.data.DataParser;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -7,19 +11,23 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Client extends Thread{
+public class Client extends Controller {
     private int port;
     private String hostname;
+    private DataParser parser;
     private boolean isConnected = true;
+
+
+
+    public Client(String hostname) {
+        this.port = Data.port();
+        this.hostname = hostname;
+        this.parser = new DataParser();
+    }
 
     @Override
     public void run() {
         this.connect();
-    }
-
-    public Client(String hostname, int port) {
-        this.port = port;
-        this.hostname = hostname;
     }
 
     public void connect() {
@@ -66,10 +74,12 @@ public class Client extends Thread{
         while (isConnected) {
             try {
                 received = in.readUTF();
-                System.out.println(received);
+
             } catch (IOException e) {
                 System.out.println("exception caught - " + e.getMessage());;
             }
         }
     }
+
+
 }

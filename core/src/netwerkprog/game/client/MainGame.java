@@ -1,4 +1,4 @@
-package netwerkprog.game;
+package netwerkprog.game.client;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Files;
@@ -12,18 +12,17 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import netwerkprog.game.client.Client;
+import netwerkprog.game.client.game.map.Map;
+import netwerkprog.game.client.game.map.MapRenderer;
 import netwerkprog.game.client.map.GameInputProcessor;
-import netwerkprog.game.client.map.Map;
-import netwerkprog.game.client.map.MapRenderer;
-import netwerkprog.game.server.Server;
-import netwerkprog.game.util.FrameRate;
+import netwerkprog.game.util.graphics.FrameRate;
 
 public class MainGame extends ApplicationAdapter {
     SpriteBatch batch;
     float screenWidth;
     float screenHeight;
     private FrameRate frameRate;
-    private Client client;
+    private Thread client;
     private OrthographicCamera camera;
     private GameInputProcessor gameInputProcessor;
 
@@ -79,10 +78,13 @@ public class MainGame extends ApplicationAdapter {
         music.setVolume(.1f);
         music.play();
         music.setLooping(true);
+
+        connectToServer();
     }
 
+
     private void connectToServer() {
-        client = new Client("localhost", Server.PORT);
+        client = new Thread(new Client("localhost"));
         try {
             client.start();
         } catch (Exception e) {

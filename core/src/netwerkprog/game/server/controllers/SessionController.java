@@ -1,8 +1,9 @@
 package netwerkprog.game.server.controllers;
 
-import netwerkprog.game.server.Server;
 import netwerkprog.game.server.ServerClient;
-import netwerkprog.game.util.Controller;
+import netwerkprog.game.util.data.Data;
+import netwerkprog.game.util.data.DataParser;
+import netwerkprog.game.util.application.Controller;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -11,63 +12,99 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
+/**
+ * The sessionController manages any connections from new clients and assigns individual threads to said clients.
+ */
 public class SessionController extends Controller {
     private ServerSocket serverSocket;
-    private ArrayList<ServerClient> clients = new ArrayList<>();
-    private HashMap<String, Thread> clientThreads = new HashMap<>();
+    private final DataParser parser;
+    private final ArrayList<ServerClient> clients = new ArrayList<>();
+    private final HashMap<String, Thread> clientThreads = new HashMap<>();
+    private boolean listening;
 
     public SessionController() {
-
+        this.parser = new DataParser();
+        this.listening = true;
     }
 
-    public void connect() {
-        try {
-            this.serverSocket = new ServerSocket(Server.PORT);
-            System.out.println("[SERVER] listening on port " + Server.PORT);
-            Socket socket = serverSocket.accept();
+    /**
+     * Thread run method.
+     */
+    @Override
+    public void run() {
+        this.listening = true;
+        while (listening) {
+            listen();
+        }
+    }
 
+    /**
+     * Listens for any new clients.
+     */
+    public void listen() {
+        try {
+            this.serverSocket = new ServerSocket(Data.port());
+            System.out.println("[SERVER] listening on port " + Data.port());
+            registerClient(serverSocket.accept());
+            this.serverSocket.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Registers a client to the server.
+     * @param socket The socket used for the client connections.
+     */
+    public void registerClient(Socket socket) {
+        try {
             System.out.println("[SERVER] got new client on " + socket.getInetAddress().getHostAddress());
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
-            outputStream.writeUTF("Enter nickname: ");
-            String nickname = inputStream.readUTF();
+            outputStream.writeUTF("Enter username: ");
+            String username = inputStream.readUTF();
 
-            System.out.println("[SERVER] got nickname " + nickname);
-            ServerClient serverClient = new ServerClient(nickname, socket, this);
+            System.out.println("[SERVER] got username " + username);
+            ServerClient serverClient = new ServerClient(username, socket, this);
 
             Thread t = new Thread(serverClient);
             t.start();
 
-            clientThreads.put(nickname, t);
+            this.clientThreads.put(username,t);
             this.clients.add(serverClient);
-
-            sendMessage(nickname, "--- Welcome! ---\nPeople online : " + clients.size());
-
-            clients.forEach(yeet -> sendToEveryoneExcept(nickname, nickname + " joined the server! [" + socket.getInetAddress().getHostAddress() + "]"));
-
-
-            this.serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
-    public void sendToEveryone(String text) {
+    /**
+     * Parses the request to the requested Data.
+     * @param request The request to parse.
+     * @return Parsed Data.
+     */
+    public Data parseData(String request) {
+        return this.parser.parse(request);
+    }
+
+    /**
+     * Sends a server message to all connected clients.
+     * @param text message.
+     */
+    public void serverMessage(String text) {
         for (ServerClient serverClient : clients) {
             serverClient.writeUTF(text);
         }
     }
 
-    public void sendToEveryoneExcept(String name, String text) {
-        for (ServerClient serverClient : clients) {
-            if (!serverClient.getName().equals(name))
-                serverClient.writeUTF(text);
-        }
-    }
-
-    public void sendMessage(String name, String text) {
+    /**
+     * Sends a message to a specific user.
+     * @param name user.
+     * @param text message.
+     */
+    public void personalMessage(String name, String text) {
         for (ServerClient serverClient : clients) {
             if (serverClient.getName().equals(name)) {
                 serverClient.writeUTF(text);
@@ -76,6 +113,10 @@ public class SessionController extends Controller {
         }
     }
 
+    /**
+     * Removes a client from the server.
+     * @param serverClient The client to remove.
+     */
     public void removeClient(ServerClient serverClient) {
         this.clients.remove(serverClient);
         try {
@@ -84,21 +125,27 @@ public class SessionController extends Controller {
             e.printStackTrace();
         }
         this.clientThreads.remove(serverClient.getName());
-        this.sendToEveryone(serverClient.getName() + " left!");
+        this.serverMessage(serverClient.getName() + " left!");
     }
 
-    @Override
-    public void run() {
-        boolean running = true;
-        while (running) {
-            System.out.println("Session thread active.");
-            connect();
+    /**
+     * Gets a list of all connected users.
+     * @return Set of all connected users.
+     */
+    public Set<String> getUsernames() {
+        return this.clientThreads.keySet();
+    }
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+    /**
+     * Shuts down the sessionController.
+     */
+    public void shutdown() {
+        this.listening = false;
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        System.out.println("[SERVER] networking shutdown ");
     }
 }

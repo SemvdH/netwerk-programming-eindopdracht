@@ -1,11 +1,11 @@
-package netwerkprog.game.client.map;
+package netwerkprog.game.client.game.map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import netwerkprog.game.util.graphics.Renderable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import netwerkprog.game.util.Renderable;
 
 public class MapRenderer implements Renderable {
     private final OrthographicCamera camera;

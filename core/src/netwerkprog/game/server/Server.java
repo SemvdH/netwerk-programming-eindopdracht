@@ -8,7 +8,6 @@ public class Server {
     private SessionController sessionController;
     private Thread sessionThread;
     private HashMap<String, Thread> gameThreads;
-    public static final int PORT = 8000;
 
     public void start() {
         this.sessionController = new SessionController();

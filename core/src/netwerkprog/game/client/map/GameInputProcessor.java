@@ -5,7 +5,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.TimeUtils;
-import netwerkprog.game.MainGame;
+import netwerkprog.game.client.MainGame;
 
 import java.util.ArrayList;
 import java.util.Arrays;

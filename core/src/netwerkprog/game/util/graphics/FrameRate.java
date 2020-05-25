@@ -1,4 +1,4 @@
-package netwerkprog.game.util;
+package netwerkprog.game.util.graphics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;

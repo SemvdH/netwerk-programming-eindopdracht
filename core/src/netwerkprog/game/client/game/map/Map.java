@@ -1,4 +1,4 @@
-package netwerkprog.game.client.map;
+package netwerkprog.game.client.game.map;
 
 import java.util.Arrays;
 
