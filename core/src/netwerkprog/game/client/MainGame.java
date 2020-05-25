@@ -3,18 +3,13 @@ package netwerkprog.game.client;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
-import netwerkprog.game.client.Client;
 import netwerkprog.game.client.game.map.Map;
 import netwerkprog.game.client.game.map.MapRenderer;
-import netwerkprog.game.client.map.GameInputProcessor;
+import netwerkprog.game.client.game.map.GameInputProcessor;
 import netwerkprog.game.util.graphics.FrameRate;
 
 public class MainGame extends ApplicationAdapter{
