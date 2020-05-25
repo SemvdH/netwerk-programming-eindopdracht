@@ -1,30 +1,28 @@
 package netwerkprog.game.util.game;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import java.util.Arrays;
 import java.util.HashSet;
 
-public abstract class Character extends Actor {
+public abstract class GameCharacter extends Actor {
     protected String name;
     protected Faction faction;
     protected HashSet<Ability> abilities;
-    protected TextureRegion[] sprites;
+    protected TextureRegion[][] sprites;
     protected boolean override;
-    protected int x;
-    protected int y;
-    private final int maxSize = 1;
 
-
-    public Character(String name, Faction faction, Texture spriteSheet, Ability... abilities) {
+    public GameCharacter(String name, Faction faction, String spriteSheet, Ability... abilities) {
         this.name = name;
         this.faction = faction;
-        this.sprites = new TextureRegion[this.maxSize];
         this.abilities = new HashSet<>(Arrays.asList(abilities));
         this.override = false;
-        loadSprites(spriteSheet);
+        this.sprites = TextureRegion.split(new Texture(spriteSheet),32,32);
+        super.setX(0);
+        super.setY(0);
     }
 
     public void addAbilities(Ability ability) {
@@ -39,17 +37,10 @@ public abstract class Character extends Actor {
         this.override = !this.override;
     }
 
-    private void loadSprites(Texture spriteSheet) {
-        int counter = 0;
-        TextureRegion[][] temp = TextureRegion.split(spriteSheet,32,32);
-        for (TextureRegion[] array : temp) {
-            for (TextureRegion sprite : array) {
-                this.sprites[counter] = sprite;
-                counter++;
-                if (counter >= this.maxSize) {
-                    break;
-                }
-            }
-        }
+    public void draw(SpriteBatch batch) {
+        batch.begin();
+        batch.draw(this.sprites[0][0],super.getX(),super.getY());
+        batch.end();
     }
+
 }
