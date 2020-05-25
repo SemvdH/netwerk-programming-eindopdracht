@@ -24,7 +24,7 @@ public class MapRenderer implements Renderable {
     public static TextureRegion PATH_TILE;
 
     private GameTile[][] gameTiles;
-    
+
 
 
     /**
