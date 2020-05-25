@@ -17,7 +17,7 @@ import netwerkprog.game.client.game.map.MapRenderer;
 import netwerkprog.game.client.map.GameInputProcessor;
 import netwerkprog.game.util.graphics.FrameRate;
 
-public class MainGame extends ApplicationAdapter {
+public class MainGame extends ApplicationAdapter{
     SpriteBatch batch;
     float screenWidth;
     float screenHeight;
@@ -148,4 +148,6 @@ public class MainGame extends ApplicationAdapter {
     public int getHorizontalTileAmount() {
         return map.getWidth();
     }
+
+
 }
