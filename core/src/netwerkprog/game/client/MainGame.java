@@ -3,40 +3,82 @@ package netwerkprog.game.client;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
+import netwerkprog.game.client.Client;
+import netwerkprog.game.client.game.map.Map;
+import netwerkprog.game.client.game.map.MapRenderer;
+import netwerkprog.game.client.map.GameInputProcessor;
 import netwerkprog.game.util.graphics.FrameRate;
 
 public class MainGame extends ApplicationAdapter {
     SpriteBatch batch;
-    Texture img;
-    float xPos = 500;
-    float yPos = 500;
-    float xUpdate;
-    float yUpdate;
     float screenWidth;
     float screenHeight;
     private FrameRate frameRate;
     private Thread client;
+    private OrthographicCamera camera;
+    private GameInputProcessor gameInputProcessor;
+
+    private Map map;
+    private MapRenderer mapRenderer;
+
+
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        img = new Texture("badlogic.jpg");
-        float ratio = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-        xUpdate = ratio;
-        yUpdate = ratio;
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
         frameRate = new FrameRate();
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+
+        String[] strings = new String[]{
+                "#########################",
+                "#xxxx                   #",
+                "#   x                   #",
+                "#   xxxx                #",
+                "#      xx               #",
+                "#       x               #",
+                "#       x               #",
+                "#       x               #",
+                "#       x               #",
+                "#           xxxxxx      #",
+                "#            x          #",
+                "#       x      xxxx x x #",
+                "#########################"
+        };
+        map = new Map(strings);
+        gameInputProcessor = new GameInputProcessor(camera, this);
+        Gdx.input.setInputProcessor(gameInputProcessor);
+        mapRenderer = new MapRenderer(map, 32, batch, camera);
+        camera.position.set(screenWidth/2,screenHeight/2,0);
+        camera.viewportWidth = screenWidth / 2;
+        camera.viewportHeight = screenHeight / 2;
+        camera.update();
+
+
+//        playSong();
+
+
+//        connectToServer();
+    }
+
+
+    private void playSong() {
         // play music
         Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("core/assets/music.mp3", Files.FileType.Internal));
         music.setVolume(.1f);
         music.play();
         music.setLooping(true);
+
         connectToServer();
     }
 
@@ -56,11 +98,10 @@ public class MainGame extends ApplicationAdapter {
     @Override
     public void render() {
         update();
-        Gdx.gl.glClearColor(xPos / Gdx.graphics.getWidth(), 0, 0, 1);
+        // clear screen
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        batch.draw(img, xPos, yPos);
-        batch.end();
+        mapRenderer.render();
         frameRate.render();
     }
 
@@ -69,20 +110,8 @@ public class MainGame extends ApplicationAdapter {
      */
     public void update() {
         frameRate.update();
-        updatePos();
-    }
-
-    private void updatePos() {
-        yPos += yUpdate;
-        xPos += xUpdate;
-
-        if (yPos > screenHeight - img.getHeight() || yPos < 0) {
-            yUpdate = -yUpdate;
-        }
-
-        if (xPos > screenWidth - img.getWidth() || xPos < 0) {
-            xUpdate = -xUpdate;
-        }
+        camera.update();
+        this.gameInputProcessor.update();
     }
 
     @Override
@@ -90,6 +119,8 @@ public class MainGame extends ApplicationAdapter {
         super.resize(width, height);
         screenHeight = height;
         screenWidth = width;
+        frameRate.resize(width, height);
+        mapRenderer.resize(width, height);
     }
 
     @Override
@@ -100,6 +131,21 @@ public class MainGame extends ApplicationAdapter {
     @Override
     public void dispose() {
         batch.dispose();
-        img.dispose();
+    }
+
+    public float getScreenWidth() {
+        return screenWidth;
+    }
+
+    public float getScreenHeight() {
+        return screenHeight;
+    }
+
+    public int getVerticalTileAmount() {
+        return map.getHeight();
+    }
+
+    public int getHorizontalTileAmount() {
+        return map.getWidth();
     }
 }
