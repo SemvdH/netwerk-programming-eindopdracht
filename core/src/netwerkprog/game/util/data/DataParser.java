@@ -7,4 +7,8 @@ public class DataParser {
     public Data parse(String request) {
         return null;
     }
+
+    public String parse(Data data) {
+        return null;
+    }
 }

@@ -1,9 +1,11 @@
 package netwerkprog.game.client.map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.client.MainGame;
 
@@ -25,6 +27,12 @@ public class GameInputProcessor implements InputProcessor {
     private final float CAMERA_MOVE_SPEED = .3f;
 
 
+    /**
+     * makes a new game input processor
+     *
+     * @param camera the camera object to use
+     * @param game   the game object to get objects from
+     */
     public GameInputProcessor(OrthographicCamera camera, MainGame game) {
         this.camera = camera;
         this.game = game;
@@ -37,12 +45,6 @@ public class GameInputProcessor implements InputProcessor {
         keysList.add(Input.Keys.D);
 
         camera.zoom = MathUtils.clamp(camera.zoom, 1.5f, 1.8f);
-//
-//        float effectiveViewportWidth = camera.viewportWidth * camera.zoom;
-//        float effectiveViewportHeight = camera.viewportHeight * camera.zoom;
-//
-//        camera.position.x = MathUtils.clamp(camera.position.x, effectiveViewportWidth / 2f, game.getScreenWidth() - effectiveViewportWidth / 2f);
-//        camera.position.y = MathUtils.clamp(camera.position.y, effectiveViewportHeight / 2f, game.getScreenHeight() - effectiveViewportHeight / 2f);
 
     }
 
@@ -88,7 +90,7 @@ public class GameInputProcessor implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        System.out.println(camera.position.x + " , " + camera.position.y);
+//        System.out.println(camera.position.x + " , " + camera.position.y);
         if (keysList.contains(keycode)) {
             if (keycode == keysList.get(0)) {
                 this.isWPressed = false;
@@ -119,6 +121,20 @@ public class GameInputProcessor implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
+        Vector3 touchPoint = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(touchPoint);
+
+        for (int row = 0; row < game.mapRenderer.getTiles().length; row++) {
+            for (int col = 0; col < game.mapRenderer.getTiles()[0].length; col++) {
+                Tile tile = game.mapRenderer.getTiles()[row][col];
+                if (tile.contains(touchPoint.x, touchPoint.y)) {
+                    System.out.println(tile + " row: " + row + ", col: " + col);
+                    //TODO make stuff happen with the tile
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
