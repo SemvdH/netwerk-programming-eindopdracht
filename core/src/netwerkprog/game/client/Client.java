@@ -9,15 +9,15 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Arrays;
-import java.util.Scanner;
 
 public class Client extends Controller {
-    private int port;
-    private String hostname;
-    private DataParser parser;
+    private final int port;
+    private final String hostname;
+    private final DataParser parser;
     private boolean isConnected = true;
-
-
+    private Socket socket;
+    private Thread receiveThread;
+    private DataOutputStream outputStream;
 
     public Client(String hostname) {
         this.port = Data.port();
@@ -25,41 +25,26 @@ public class Client extends Controller {
         this.parser = new DataParser();
     }
 
+    /**
+     * Starts the client process.
+     */
     @Override
     public void run() {
         this.connect();
+        this.receiveThread.start();
     }
 
+    /**
+     * Connects the client to the server.
+     */
     public void connect() {
-        System.out.println("[CLIENT] connecting to server on port " + port);
-        Scanner scanner = new Scanner(System.in);
+        System.out.println("[CLIENT] connecting to server on port " + this.port);
         try {
-            Socket socket = new Socket(hostname,port);
+            this.socket = new Socket(this.hostname, this.port);
             DataInputStream in = new DataInputStream(socket.getInputStream());
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            this.outputStream = new DataOutputStream(socket.getOutputStream());
 
-            Thread readSocketThread = new Thread( () -> {
-                receiveDataFromSocket(in);
-            });
-
-            readSocketThread.start();
-
-            String input = "";
-
-            while (!input.equals("\\quit")) {
-                input = scanner.nextLine();
-                out.writeUTF(input);
-            }
-
-            isConnected = false;
-
-            socket.close();
-
-            try {
-                readSocketThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            this.receiveThread = new Thread( () -> receive(in));
 
         } catch (IOException e) {
             System.out.println("[CLIENT] there was an error connecting : " + e.getMessage());
@@ -69,17 +54,50 @@ public class Client extends Controller {
         }
     }
 
-    private void receiveDataFromSocket(DataInputStream in) {
-        String received = "";
+    /**
+     * Sends a message to the server.
+     * @param message The message to send.
+     */
+    public void send(String message) {
+        try {
+            this.outputStream.writeUTF(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Receives a message from the server.
+     * @param in The inputStream
+     */
+    public void receive(DataInputStream in) {
+        Data data = null;
         while (isConnected) {
             try {
-                received = in.readUTF();
-
+                data = this.parser.parse(in.readUTF());
             } catch (IOException e) {
-                System.out.println("exception caught - " + e.getMessage());;
+                e.printStackTrace();
+            }
+            if (data != null) {
+                send(this.parser.parse(data));
             }
         }
     }
 
+    public void disconnect() {
+        this.isConnected = false;
+        try {
+            this.receiveThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
+        send("Disconnect");
+
+        try {
+            this.socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
