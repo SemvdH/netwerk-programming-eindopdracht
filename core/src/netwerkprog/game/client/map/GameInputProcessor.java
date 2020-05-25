@@ -1,9 +1,11 @@
 package netwerkprog.game.client.map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.client.MainGame;
 import netwerkprog.game.util.application.InputTransform;
@@ -89,7 +91,7 @@ public class GameInputProcessor implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        System.out.println(camera.position.x + " , " + camera.position.y);
+//        System.out.println(camera.position.x + " , " + camera.position.y);
         if (keysList.contains(keycode)) {
             if (keycode == keysList.get(0)) {
                 this.isWPressed = false;
@@ -120,8 +122,20 @@ public class GameInputProcessor implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        float pointerX = InputTransform.getCursorToModelX((int)game.getScreenWidth(), (int)game.getScreenWidth(),screenX);
-        float pointerY = InputTransform.getCursorToModelY((int)game.getScreenHeight(),(int)game.getScreenHeight(),screenY);
+
+        Vector3 touchPoint = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(touchPoint);
+
+        for (int row = 0; row < game.mapRenderer.getTiles().length; row++) {
+            for (int col = 0; col < game.mapRenderer.getTiles()[0].length; col++) {
+                Tile tile = game.mapRenderer.getTiles()[row][col];
+                if (tile.contains(touchPoint.x,touchPoint.y)) {
+                    System.out.println(tile + " row: " + row + ", col: " + col);
+                    //TODO make stuff happen with the tile
+                    return true;
+                }
+            }
+        }
         return false;
     }
 

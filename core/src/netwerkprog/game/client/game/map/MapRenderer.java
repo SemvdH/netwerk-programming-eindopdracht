@@ -52,11 +52,11 @@ public class MapRenderer implements Renderable {
             x = 0;
             for (int col = 0; col < map.getWidth(); col++) {
                 if (map.get(row, col) == ' ') {
-                    tiles[row][col] = new Tile(FLOOR_TILE,x,y);
+                    tiles[row][col] = new Tile(FLOOR_TILE,x,y, ' ');
                 } else if (map.get(row, col) == '#') {
-                    tiles[row][col] = new Tile(WALL_TILE,x,y);
+                    tiles[row][col] = new Tile(WALL_TILE,x,y, '#');
                 } else if (map.get(row, col) == 'x') {
-                    tiles[row][col] = new Tile(PATH_TILE,x,y);
+                    tiles[row][col] = new Tile(PATH_TILE,x,y, 'x');
                 }
                 x += 32;
             }
@@ -83,26 +83,14 @@ public class MapRenderer implements Renderable {
     public void render() {
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
-//        for (int row = map.getHeight(); row >= 0; row--) {
-//            y += 32;
-//            x = 0;
-//            for (int col = 0; col < map.getWidth(); col++) {
-//                if (map.get(row, col) == ' ') {
-//                    batch.draw(FLOOR_TILE, x, y);
-//                } else if (map.get(row, col) == '#') {
-//                    batch.draw(WALL_TILE, x, y);
-//                } else if (map.get(row, col) == 'x') {
-//                    batch.draw(PATH_TILE, x, y);
-//                }
-//                x += 32;
-    //            }
-//        }
-        for (int row = 0; row < tiles.length; row++) {
+
+        for (Tile[] tileRow : tiles) {
             for (int col = 0; col < tiles[0].length; col++) {
-                Tile cur = tiles[row][col];
-                batch.draw(cur.getTextureRegion(),cur.x,cur.y);
+                Tile cur = tileRow[col];
+                batch.draw(cur.getTextureRegion(), cur.x, cur.y);
             }
         }
+
         batch.end();
         x = 0;
         y = 0;

@@ -27,7 +27,7 @@ public class MainGame extends ApplicationAdapter{
     private GameInputProcessor gameInputProcessor;
 
     private Map map;
-    private MapRenderer mapRenderer;
+    public MapRenderer mapRenderer;
 
 
 
