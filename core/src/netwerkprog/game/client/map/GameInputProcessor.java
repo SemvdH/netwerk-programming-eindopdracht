@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.client.MainGame;
+import netwerkprog.game.util.application.InputTransform;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,6 +120,8 @@ public class GameInputProcessor implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        float pointerX = InputTransform.getCursorToModelX((int)game.getScreenWidth(), (int)game.getScreenWidth(),screenX);
+        float pointerY = InputTransform.getCursorToModelY((int)game.getScreenHeight(),(int)game.getScreenHeight(),screenY);
         return false;
     }
 

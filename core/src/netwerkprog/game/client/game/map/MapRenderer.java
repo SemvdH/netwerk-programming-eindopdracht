@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import netwerkprog.game.util.graphics.Renderable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -22,6 +23,8 @@ public class MapRenderer implements Renderable {
     public static TextureRegion WALL_TILE;
     public static TextureRegion PATH_TILE;
 
+    private TextureRegion[][] sprites;
+
 
     public MapRenderer(Map map, int tileWidth, SpriteBatch batch, OrthographicCamera camera) {
         this.map = map;
@@ -35,10 +38,12 @@ public class MapRenderer implements Renderable {
     private void makeTiles() {
         Texture texture = new Texture(Gdx.files.internal(tilePath));
         TextureRegion[][] tiles = TextureRegion.split(texture, 32, 32);
+
         FLOOR_TILE = tiles[1][6];
         WALL_TILE = tiles[0][4];
         PATH_TILE = tiles[4][6];
 
+        this.sprites = new TextureRegion[map.getHeight()][map.getWidth()];
     }
 
     public int getTileWidth() {
@@ -69,8 +74,8 @@ public class MapRenderer implements Renderable {
                     batch.draw(FLOOR_TILE, x, y);
                 } else if (map.get(row, col) == '#') {
                     batch.draw(WALL_TILE, x, y);
-                } else if (map.get(row,col) == 'x') {
-                    batch.draw(PATH_TILE,x,y);
+                } else if (map.get(row, col) == 'x') {
+                    batch.draw(PATH_TILE, x, y);
                 }
                 x += 32;
             }
@@ -91,5 +96,9 @@ public class MapRenderer implements Renderable {
         cam.translate(screenWidth / 2, screenHeight / 2);
         cam.update();
         batch.setProjectionMatrix(cam.combined);
+    }
+
+    public TextureRegion[][] getSprites() {
+        return sprites;
     }
 }
