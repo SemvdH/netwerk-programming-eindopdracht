@@ -28,6 +28,13 @@ public class MapRenderer implements Renderable {
     private boolean isStarted = false;
 
 
+    /**
+     * makea a new mapRenderer object
+     * @param map the map object
+     * @param tileWidth the width of the tile
+     * @param batch the batch object so no new ones have to be made
+     * @param camera the camera object
+     */
     public MapRenderer(Map map, int tileWidth, SpriteBatch batch, OrthographicCamera camera) {
         this.map = map;
         this.tileWidth = tileWidth;
@@ -37,6 +44,9 @@ public class MapRenderer implements Renderable {
         makeTiles();
     }
 
+    /**
+     * loads all the images for the tiles and adds all the tiles to the array
+     */
     private void makeTiles() {
         Texture texture = new Texture(Gdx.files.internal(tilePath));
         TextureRegion[][] tileTextures = TextureRegion.split(texture, 32, 32);
@@ -103,7 +113,7 @@ public class MapRenderer implements Renderable {
 
     public void resize(int screenWidth, int screenHeight) {
         cam = new OrthographicCamera(screenWidth, screenHeight);
-        cam.translate(screenWidth / 2, screenHeight / 2);
+        cam.translate(screenWidth / 2f, screenHeight / 2f);
         cam.update();
         batch.setProjectionMatrix(cam.combined);
     }
