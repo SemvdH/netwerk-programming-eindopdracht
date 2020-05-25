@@ -1,20 +1,20 @@
 package netwerkprog.game.client.map;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 
-public class Tile {
+public class Tile extends Rectangle{
     private TextureRegion textureRegion;
-    private int xPos;
-    private int yPos;
 
     public Tile(TextureRegion textureRegion, int xPos, int yPos) {
         this.textureRegion = textureRegion;
-        this.xPos = xPos;
-        this.yPos = yPos;
+        super.x = xPos;
+        super.y = yPos;
+        super.width = textureRegion.getRegionWidth();
+        super.height = textureRegion.getRegionHeight();
     }
 
-    public boolean contains(int x, int y) {
-
-        return false;
+    public TextureRegion getTextureRegion() {
+        return textureRegion;
     }
 }

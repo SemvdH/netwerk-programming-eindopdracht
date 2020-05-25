@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import netwerkprog.game.client.map.Tile;
 import netwerkprog.game.util.graphics.Renderable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -23,7 +23,9 @@ public class MapRenderer implements Renderable {
     public static TextureRegion WALL_TILE;
     public static TextureRegion PATH_TILE;
 
-    private TextureRegion[][] sprites;
+    private Tile[][] tiles;
+
+    private boolean isStarted = false;
 
 
     public MapRenderer(Map map, int tileWidth, SpriteBatch batch, OrthographicCamera camera) {
@@ -37,13 +39,28 @@ public class MapRenderer implements Renderable {
 
     private void makeTiles() {
         Texture texture = new Texture(Gdx.files.internal(tilePath));
-        TextureRegion[][] tiles = TextureRegion.split(texture, 32, 32);
+        TextureRegion[][] tileTextures = TextureRegion.split(texture, 32, 32);
 
-        FLOOR_TILE = tiles[1][6];
-        WALL_TILE = tiles[0][4];
-        PATH_TILE = tiles[4][6];
+        FLOOR_TILE = tileTextures[1][6];
+        WALL_TILE = tileTextures[0][4];
+        PATH_TILE = tileTextures[4][6];
 
-        this.sprites = new TextureRegion[map.getHeight()][map.getWidth()];
+        this.tiles = new Tile[map.getHeight()][map.getWidth()];
+
+        for (int row = map.getHeight(); row >= 0; row--) {
+            y += 32;
+            x = 0;
+            for (int col = 0; col < map.getWidth(); col++) {
+                if (map.get(row, col) == ' ') {
+                    tiles[row][col] = new Tile(FLOOR_TILE,x,y);
+                } else if (map.get(row, col) == '#') {
+                    tiles[row][col] = new Tile(WALL_TILE,x,y);
+                } else if (map.get(row, col) == 'x') {
+                    tiles[row][col] = new Tile(PATH_TILE,x,y);
+                }
+                x += 32;
+            }
+        }
     }
 
     public int getTileWidth() {
@@ -66,21 +83,26 @@ public class MapRenderer implements Renderable {
     public void render() {
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
-        for (int row = map.getHeight(); row >= 0; row--) {
-            y += 32;
-            x = 0;
-            for (int col = 0; col < map.getWidth(); col++) {
-                if (map.get(row, col) == ' ') {
-                    batch.draw(FLOOR_TILE, x, y);
-                } else if (map.get(row, col) == '#') {
-                    batch.draw(WALL_TILE, x, y);
-                } else if (map.get(row, col) == 'x') {
-                    batch.draw(PATH_TILE, x, y);
-                }
-                x += 32;
+//        for (int row = map.getHeight(); row >= 0; row--) {
+//            y += 32;
+//            x = 0;
+//            for (int col = 0; col < map.getWidth(); col++) {
+//                if (map.get(row, col) == ' ') {
+//                    batch.draw(FLOOR_TILE, x, y);
+//                } else if (map.get(row, col) == '#') {
+//                    batch.draw(WALL_TILE, x, y);
+//                } else if (map.get(row, col) == 'x') {
+//                    batch.draw(PATH_TILE, x, y);
+//                }
+//                x += 32;
+    //            }
+//        }
+        for (int row = 0; row < tiles.length; row++) {
+            for (int col = 0; col < tiles[0].length; col++) {
+                Tile cur = tiles[row][col];
+                batch.draw(cur.getTextureRegion(),cur.x,cur.y);
             }
         }
-//        batch.draw(FLOOR_TILE,100,100);
         batch.end();
         x = 0;
         y = 0;
@@ -98,7 +120,7 @@ public class MapRenderer implements Renderable {
         batch.setProjectionMatrix(cam.combined);
     }
 
-    public TextureRegion[][] getSprites() {
-        return sprites;
+    public Tile[][] getTiles() {
+        return tiles;
     }
 }
