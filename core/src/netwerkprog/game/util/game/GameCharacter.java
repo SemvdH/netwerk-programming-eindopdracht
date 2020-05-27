@@ -2,12 +2,13 @@ package netwerkprog.game.util.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 
-public abstract class GameCharacter implements Comparable<GameCharacter> {
+public abstract class GameCharacter extends Actor implements Comparable<GameCharacter> {
     protected String name;
     protected Faction faction;
     protected HashSet<Ability> abilities;
