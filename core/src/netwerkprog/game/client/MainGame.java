@@ -12,9 +12,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import netwerkprog.game.client.game.characters.Agent;
 import netwerkprog.game.client.game.characters.Hacker;
+import netwerkprog.game.client.game.characters.SelectedCharacter;
 import netwerkprog.game.client.game.characters.abilities.BodySwap;
 import netwerkprog.game.client.game.characters.abilities.Implant;
-import netwerkprog.game.client.game.characters.abilities.Scrambler;
+import netwerkprog.game.client.game.map.GameTile;
 import netwerkprog.game.client.game.map.Map;
 import netwerkprog.game.client.game.map.MapRenderer;
 import netwerkprog.game.client.game.map.GameInputProcessor;
@@ -22,7 +23,7 @@ import netwerkprog.game.util.game.Character;
 import netwerkprog.game.util.graphics.FrameRate;
 import netwerkprog.game.util.tree.BST;
 
-public class MainGame extends ApplicationAdapter{
+public class MainGame extends ApplicationAdapter {
     SpriteBatch batch;
     float screenWidth;
     float screenHeight;
@@ -30,6 +31,7 @@ public class MainGame extends ApplicationAdapter{
     private Thread client;
     private OrthographicCamera camera;
     private GameInputProcessor gameInputProcessor;
+    private Character selectedCharacter;
 
     private Map map;
     public MapRenderer mapRenderer;
@@ -37,6 +39,17 @@ public class MainGame extends ApplicationAdapter{
     private BST<Character> tree;
     public Character testCharacter;
 
+    private static MainGame INSTANCE;
+
+    private MainGame() {
+    }
+
+    public static MainGame getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new MainGame();
+        }
+        return INSTANCE;
+    }
 
 
     @Override
@@ -64,15 +77,15 @@ public class MainGame extends ApplicationAdapter{
                 "#########################"
         };
         map = new Map(strings);
-        gameInputProcessor = new GameInputProcessor(camera, this);
+        gameInputProcessor = new GameInputProcessor(camera);
         Gdx.input.setInputProcessor(gameInputProcessor);
         mapRenderer = new MapRenderer(map, 32, batch, camera);
-        camera.position.set(screenWidth/2,screenHeight/2,0);
+        camera.position.set(screenWidth / 2, screenHeight / 2, 0);
         camera.viewportWidth = screenWidth / 2;
         camera.viewportHeight = screenHeight / 2;
         camera.update();
         this.tree = new BST<>();
-        initCharaters();
+        initCharacters();
 //        this.tree.insert(new Hacker(,new BodySwap()));
 
 
@@ -82,12 +95,15 @@ public class MainGame extends ApplicationAdapter{
 //        connectToServer();
     }
 
-    private void initCharaters() {
+    private void initCharacters() {
         Texture texture = new Texture(Gdx.files.internal("core/assets/characters.png"));
-        TextureRegion[][] characters = TextureRegion.split(texture,32,32);
-        this.testCharacter = new Hacker(characters[1][0],new BodySwap("test"));
+        TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
+        this.testCharacter = new Hacker(characters[1][0], new BodySwap("test"));
         this.tree.insert(testCharacter);
-        this.tree.insert(new Agent(characters[2][0],new Implant("test")));
+        this.tree.insert(new Agent(characters[2][0], new Implant("test")));
+        this.setSelectedCharacter(testCharacter);
+        mapRenderer.getGameTiles()[1][1].setCharacter(testCharacter);
+
     }
 
 
@@ -172,4 +188,16 @@ public class MainGame extends ApplicationAdapter{
         return tree;
     }
 
+    public void setSelectedCharacter(Character character) {
+        this.selectedCharacter = character;
+        System.out.println("selected character set to : " + character);
+    }
+
+    public Character getSelectedCharacter() {
+        return selectedCharacter;
+    }
+
+    public boolean hasCharacterSelected() {
+        return selectedCharacter != null;
+    }
 }

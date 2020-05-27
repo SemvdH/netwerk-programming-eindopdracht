@@ -8,12 +8,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.client.MainGame;
+import netwerkprog.game.util.game.Character;
 
 import java.util.ArrayList;
 
 public class GameInputProcessor implements InputProcessor {
     private final OrthographicCamera camera;
-    private MainGame game;
+    private MainGame mainGame;
     private ArrayList<Integer> keysList;
     private boolean isWPressed = false;
     private boolean isAPressed = false;
@@ -29,11 +30,10 @@ public class GameInputProcessor implements InputProcessor {
      * makes a new game input processor
      *
      * @param camera the camera object to use
-     * @param game   the game object to get objects from
      */
-    public GameInputProcessor(OrthographicCamera camera, MainGame game) {
+    public GameInputProcessor(OrthographicCamera camera) {
         this.camera = camera;
-        this.game = game;
+        this.mainGame = MainGame.getInstance();
         keysList = new ArrayList<>();
         lastTimeCounted = TimeUtils.millis();
 
@@ -123,18 +123,41 @@ public class GameInputProcessor implements InputProcessor {
         Vector3 touchPoint = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(touchPoint);
 
-        for (int row = 0; row < game.mapRenderer.getGameTiles().length; row++) {
-            for (int col = 0; col < game.mapRenderer.getGameTiles()[0].length; col++) {
-                GameTile gameTile = game.mapRenderer.getGameTiles()[row][col];
+        for (int row = 0; row < mainGame.mapRenderer.getGameTiles().length; row++) {
+            for (int col = 0; col < mainGame.mapRenderer.getGameTiles()[0].length; col++) {
+                GameTile gameTile = mainGame.mapRenderer.getGameTiles()[row][col];
                 if (gameTile.contains(touchPoint.x, touchPoint.y)) {
                     System.out.println(gameTile + " row: " + row + ", col: " + col);
-                    gameTile.setCharacter(this.game.testCharacter);
-                    //TODO make stuff happen with the tile
+                    if (mainGame.hasCharacterSelected() && !gameTile.containsCharacter()) {
+                        System.out.println(mainGame.getSelectedCharacter());
+                        removeCharacterFromTile(mainGame.getSelectedCharacter());
+                        gameTile.setCharacter(mainGame.getSelectedCharacter());
+                    }
+                    if (!mainGame.hasCharacterSelected() && gameTile.containsCharacter()) {
+                        mainGame.setSelectedCharacter(gameTile.getCharacter());
+                    }
+
+
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    private void removeCharacterFromTile(Character character) {
+        rowLoop:
+        for (int row = 0; row < mainGame.mapRenderer.getGameTiles().length; row++) {
+            for (int col = 0; col < mainGame.mapRenderer.getGameTiles()[0].length; col++) {
+                GameTile gameTile = mainGame.mapRenderer.getGameTiles()[row][col];
+                if (gameTile.containsCharacter() && gameTile.getCharacter().equals(character)) {
+                    gameTile.setCharacter(null);
+                    System.out.println("set character of gametile " + gameTile + " to null");
+                    System.out.println("tile " + mainGame.mapRenderer.getGameTiles()[1][1] + " now has character " + mainGame.mapRenderer.getGameTiles()[1][1].getCharacter());
+                    break rowLoop;
+                }
+            }
+        }
     }
 
     @Override
@@ -165,21 +188,21 @@ public class GameInputProcessor implements InputProcessor {
     public void update() {
         long delta = TimeUtils.timeSinceMillis(lastTimeCounted);
         lastTimeCounted = TimeUtils.millis();
-        if (camera.position.x > 5 * game.getHorizontalTileAmount())
+        if (camera.position.x > 5 * mainGame.getHorizontalTileAmount())
             if (isAPressed()) {
                 camera.position.add(-CAMERA_MOVE_SPEED * delta, 0, 0);
             }
-        if (camera.position.y < 30 * game.getVerticalTileAmount())
+        if (camera.position.y < 30 * mainGame.getVerticalTileAmount())
             if (isWPressed()) {
                 camera.position.add(0, CAMERA_MOVE_SPEED * delta, 0);
             }
 
-        if (camera.position.y > 5 * game.getVerticalTileAmount())
+        if (camera.position.y > 5 * mainGame.getVerticalTileAmount())
             if (isSPressed()) {
                 camera.position.add(0, -CAMERA_MOVE_SPEED * delta, 0);
             }
 
-        if (camera.position.x < game.getScreenWidth() / 2 + 5 * game.getHorizontalTileAmount())
+        if (camera.position.x < mainGame.getScreenWidth() / 2 + 5 * mainGame.getHorizontalTileAmount())
             if (isDPressed()) {
                 camera.position.add(CAMERA_MOVE_SPEED * delta, 0, 0);
             }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 
 public abstract class Character implements Comparable<Character> {
     protected String name;
@@ -47,6 +48,23 @@ public abstract class Character implements Comparable<Character> {
         batch.begin();
         batch.draw(this.textureRegion, x, y);
         batch.end();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        if (!(o instanceof Character)) return false;
+        Character character = (Character) o;
+        return override == character.override &&
+                Objects.equals(name, character.name) &&
+                faction == character.faction &&
+                Objects.equals(abilities, character.abilities);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, faction, abilities, override);
     }
 
     @Override

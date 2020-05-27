@@ -47,6 +47,10 @@ public class GameTile extends Rectangle {
         return textureRegion;
     }
 
+    public void setTextureRegion(TextureRegion textureRegion) {
+        this.textureRegion = textureRegion;
+    }
+
     public char getSymbol() {
         return symbol;
     }
