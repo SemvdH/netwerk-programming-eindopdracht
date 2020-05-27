@@ -1,4 +1,4 @@
-package netwerkprog.game.client.map;
+package netwerkprog.game.client.game.map;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
