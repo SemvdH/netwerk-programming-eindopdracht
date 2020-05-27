@@ -26,6 +26,10 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
         this.textureRegion = textureRegion;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public void addAbilities(Ability ability) {
         this.abilities.add(ability);
     }
