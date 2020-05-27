@@ -1,39 +1,31 @@
 package netwerkprog.game.server;
 
 import netwerkprog.game.server.controllers.SessionController;
-import netwerkprog.game.util.data.Data;
+import netwerkprog.game.util.data.ParserCallback;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class ServerClient implements Runnable {
+public class ServerClient implements Runnable, ParserCallback {
     private DataInputStream in;
     private DataOutputStream out;
-    private Socket socket;
-    private String name;
-    private SessionController server;
-    private boolean isConnected = false;
+    private final String name;
+    private final SessionController server;
+    private final Parser parser;
+    private boolean isConnected;
 
     public ServerClient(String name, Socket socket, SessionController server) {
         this.name = name;
         this.server = server;
-        this.socket = socket;
+        this.parser = new Parser(this);
         try {
             this.in = new DataInputStream(socket.getInputStream());
             this.out = new DataOutputStream(socket.getOutputStream());
             this.isConnected = true;
         } catch (IOException e) {
             this.isConnected = false;
-            e.printStackTrace();
-        }
-    }
-
-    public void readUTF() {
-        try {
-            System.out.println("[SERVERCLIENT] got message: " + in.readUTF());
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -48,27 +40,26 @@ public class ServerClient implements Runnable {
 
     @Override
     public void run() {
-        while (isConnected) {
+        while (this.isConnected) {
             try {
                 String received = this.in.readUTF();
-                Data data = server.parseData(received);
-                if (data.toString().equals("\\quit")) {
-                    this.isConnected = false;
-                    this.server.removeClient(this);
-                } else {
-                    this.out.writeUTF(data.toString());
-                }
+                this.parser.parse(received);
 
             } catch (IOException e) {
                 System.out.println("[SERVERCLIENT] caught exception - " + e.getMessage());
                 System.out.println("[SERVERCLIENT] terminating failing connection...");
-                isConnected = false;
+                this.isConnected = false;
                 System.out.println("[SERVERCLIENT] done!");
             }
         }
     }
 
     public String getName() {
-        return name;
+        return this.name;
+    }
+
+    @Override
+    public void onDataReceived(String data) {
+        writeUTF(data);
     }
 }
