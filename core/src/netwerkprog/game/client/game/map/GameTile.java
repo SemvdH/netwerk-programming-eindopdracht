@@ -25,7 +25,7 @@ public class GameTile extends Rectangle {
     }
 
     public boolean containsCharacter() {
-        return character == null;
+        return character != null;
     }
 
     /**

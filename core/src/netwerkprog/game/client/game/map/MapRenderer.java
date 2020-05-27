@@ -97,7 +97,7 @@ public class MapRenderer implements Renderable {
                 GameTile cur = gameTileRow[col];
                 batch.draw(cur.getTextureRegion(), cur.x, cur.y);
                 if (cur.containsCharacter()) {
-                    batch.draw(cur.getCharacter().getTextureRegion(), x, y);
+                    batch.draw(cur.getCharacter().getTextureRegion(), cur.x, cur.y);
                 }
             }
         }

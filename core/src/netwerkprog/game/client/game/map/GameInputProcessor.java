@@ -128,6 +128,7 @@ public class GameInputProcessor implements InputProcessor {
                 GameTile gameTile = game.mapRenderer.getGameTiles()[row][col];
                 if (gameTile.contains(touchPoint.x, touchPoint.y)) {
                     System.out.println(gameTile + " row: " + row + ", col: " + col);
+                    gameTile.setCharacter(this.game.testCharacter);
                     //TODO make stuff happen with the tile
                     return true;
                 }

@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public abstract class Character {
+public abstract class Character implements Comparable<Character> {
     protected String name;
     protected Faction faction;
     protected HashSet<Ability> abilities;
@@ -39,9 +39,18 @@ public abstract class Character {
         return textureRegion;
     }
 
+    public void setTextureRegion(TextureRegion textureRegion) {
+        this.textureRegion = textureRegion;
+    }
+
     public void render(float x, float y) {
         batch.begin();
         batch.draw(this.textureRegion, x, y);
         batch.end();
+    }
+
+    @Override
+    public int compareTo(Character o) {
+        return this.name.compareTo(o.name);
     }
 }
