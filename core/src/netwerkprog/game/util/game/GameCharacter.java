@@ -19,6 +19,7 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
     protected TextureRegion textureRegion;
 
     public GameCharacter(String name, Faction faction, TextureRegion textureRegion, Ability... abilities) {
+        super();
         this.name = name;
         this.faction = faction;
         this.abilities = new HashSet<>(Arrays.asList(abilities));
@@ -77,6 +78,8 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
         return "GameCharacter{" +
                 "name='" + name + '\'' +
                 ", faction=" + faction +
+                ", x=" + super.getX() +
+                ", y=" + super.getY() +
                 '}';
     }
 }

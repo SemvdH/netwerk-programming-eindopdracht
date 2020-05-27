@@ -96,12 +96,9 @@ public class MainGame extends ApplicationAdapter {
         TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
         this.testCharacter = new Hacker("harry",characters[1][0], new BodySwap("test"));
         GameCharacter character2 = new Hacker("test2",characters[2][0], new BodySwap("test"));
-//        this.tree.insert(testCharacter);
-//        this.tree.insert(character2);
-//        this.tree.insert(new Agent(characters[2][0], new Implant("test")));
         this.setSelectedCharacter(testCharacter);
-        mapRenderer.getGameTiles()[0][1].visit(testCharacter);
-        mapRenderer.getGameTiles()[0][2].visit(character2);
+        mapRenderer.getGameTiles()[1][1].visit(testCharacter);
+        mapRenderer.getGameTiles()[1][2].visit(character2);
 
     }
 

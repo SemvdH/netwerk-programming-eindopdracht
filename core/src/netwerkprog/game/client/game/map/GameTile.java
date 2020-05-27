@@ -36,6 +36,8 @@ public class GameTile extends Rectangle {
     public boolean visit(GameCharacter character) {
         if (this.character != null) return false;
         this.character = character;
+        this.character.setX(this.x);
+        this.character.setY(this.y);
         return true;
     }
 
@@ -61,6 +63,7 @@ public class GameTile extends Rectangle {
                 "symbol=" + symbol +
                 ", x=" + x +
                 ", y=" + y +
+                ", character=" + this.character +
                 '}';
     }
 
