@@ -25,6 +25,10 @@ public abstract class GameCharacter extends Actor {
         super.setY(0);
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public void addAbilities(Ability ability) {
         this.abilities.add(ability);
     }

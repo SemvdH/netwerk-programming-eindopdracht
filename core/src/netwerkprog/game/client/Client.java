@@ -99,6 +99,6 @@ public class Client extends Controller implements ParserCallback {
 
     @Override
     public void onDataReceived(String data) {
-        send(data);
+        System.out.println(data);
     }
 }
