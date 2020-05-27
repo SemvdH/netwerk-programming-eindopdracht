@@ -1,4 +1,14 @@
 package netwerkprog.game.client.game.characters.abilities;
 
-public class BodySwap {
+import netwerkprog.game.util.game.Ability;
+
+public class BodySwap extends Ability {
+    public BodySwap(String name) {
+        super(name);
+    }
+
+    @Override
+    public String getCommand() {
+        return null;
+    }
 }

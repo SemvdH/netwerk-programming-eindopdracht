@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import netwerkprog.game.client.MainGame;
 import netwerkprog.game.util.graphics.Renderable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -17,6 +18,8 @@ public class MapRenderer implements Renderable {
     private static int x = 0;
     private static int y = 0;
 
+    private MainGame mainGame;
+
 
     public static TextureRegion FLOOR_TILE;
     public static TextureRegion WALL_TILE;
@@ -25,13 +28,13 @@ public class MapRenderer implements Renderable {
     private GameTile[][] gameTiles;
 
 
-
     /**
      * makea a new mapRenderer object
-     * @param map the map object
+     *
+     * @param map       the map object
      * @param tileWidth the width of the tile
-     * @param batch the batch object so no new ones have to be made
-     * @param camera the camera object
+     * @param batch     the batch object so no new ones have to be made
+     * @param camera    the camera object
      */
     public MapRenderer(Map map, int tileWidth, SpriteBatch batch, OrthographicCamera camera) {
         this.map = map;
@@ -39,6 +42,7 @@ public class MapRenderer implements Renderable {
         this.batch = batch;
         cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.camera = camera;
+        this.mainGame = MainGame.getInstance();
         makeTiles();
     }
 
@@ -60,11 +64,11 @@ public class MapRenderer implements Renderable {
             x = 0;
             for (int col = 0; col < map.getWidth(); col++) {
                 if (map.get(row, col) == ' ') {
-                    gameTiles[row][col] = new GameTile(FLOOR_TILE,x,y, ' ');
+                    gameTiles[row][col] = new GameTile(FLOOR_TILE, x, y, ' ');
                 } else if (map.get(row, col) == '#') {
-                    gameTiles[row][col] = new GameTile(WALL_TILE,x,y, '#');
+                    gameTiles[row][col] = new GameTile(WALL_TILE, x, y, '#');
                 } else if (map.get(row, col) == 'x') {
-                    gameTiles[row][col] = new GameTile(PATH_TILE,x,y, 'x');
+                    gameTiles[row][col] = new GameTile(PATH_TILE, x, y, 'x');
                 }
                 x += 32;
             }
@@ -96,6 +100,10 @@ public class MapRenderer implements Renderable {
             for (int col = 0; col < gameTiles[0].length; col++) {
                 GameTile cur = gameTileRow[col];
                 batch.draw(cur.getTextureRegion(), cur.x, cur.y);
+                if (cur.containsCharacter()) {
+                    batch.draw(cur.getCharacter().getTextureRegion(), cur.x, cur.y);
+//                    System.out.println("drawing character at " + cur.x + " " + cur.y);
+                }
             }
         }
 
