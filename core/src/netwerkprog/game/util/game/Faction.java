@@ -1,6 +1,13 @@
 package netwerkprog.game.util.game;
 
 public enum Faction {
-    HACKER,
-    MEGACORPORATION
+    MEGACORPORATION("MegaCorp"),
+    HACKER("Hacker"),
+    AI("AI");
+
+    String name;
+
+    Faction(String name) {
+        this.name = name;
+    }
 }

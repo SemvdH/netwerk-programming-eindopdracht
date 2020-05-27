@@ -1,13 +1,12 @@
 package netwerkprog.game.server.controllers;
 
 import netwerkprog.game.server.ServerClient;
-import netwerkprog.game.util.data.Data;
-import netwerkprog.game.util.data.DataParser;
 import netwerkprog.game.util.application.Controller;
+import netwerkprog.game.util.data.Data;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -19,13 +18,11 @@ import java.util.Set;
  */
 public class SessionController extends Controller {
     private ServerSocket serverSocket;
-    private final DataParser parser;
     private final ArrayList<ServerClient> clients = new ArrayList<>();
     private final HashMap<String, Thread> clientThreads = new HashMap<>();
     private boolean listening;
 
     public SessionController() {
-        this.parser = new DataParser();
         this.listening = true;
     }
 
@@ -61,7 +58,7 @@ public class SessionController extends Controller {
     public void registerClient(Socket socket) {
         try {
             System.out.println("[SERVER] got new client on " + socket.getInetAddress().getHostAddress());
-            DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
             outputStream.writeUTF("Enter username: ");
@@ -78,15 +75,6 @@ public class SessionController extends Controller {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-    }
-
-    /**
-     * Parses the request to the requested Data.
-     * @param request The request to parse.
-     * @return Parsed Data.
-     */
-    public Data parseData(String request) {
-        return this.parser.parse(request);
     }
 
     /**

@@ -2,7 +2,7 @@ package netwerkprog.game.client;
 
 import netwerkprog.game.util.application.Controller;
 import netwerkprog.game.util.data.Data;
-import netwerkprog.game.util.data.DataParser;
+import netwerkprog.game.util.data.ParserCallback;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -10,10 +10,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Arrays;
 
-public class Client extends Controller {
+public class Client extends Controller implements ParserCallback {
     private final int port;
     private final String hostname;
-    private final DataParser parser;
+    private final Parser parser;
     private boolean isConnected = true;
     private Socket socket;
     private Thread receiveThread;
@@ -22,7 +22,7 @@ public class Client extends Controller {
     public Client(String hostname) {
         this.port = Data.port();
         this.hostname = hostname;
-        this.parser = new DataParser();
+        this.parser = new Parser(this);
     }
 
     /**
@@ -71,15 +71,11 @@ public class Client extends Controller {
      * @param in The inputStream
      */
     public void receive(DataInputStream in) {
-        Data data = null;
         while (isConnected) {
             try {
-                data = this.parser.parse(in.readUTF());
+                this.parser.parse(in.readUTF());
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-            if (data != null) {
-                send(this.parser.parse(data));
             }
         }
     }
@@ -99,5 +95,10 @@ public class Client extends Controller {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onDataReceived(String data) {
+        send(data);
     }
 }
