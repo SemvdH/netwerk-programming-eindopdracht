@@ -1,11 +1,14 @@
 package netwerkprog.game.util.game;
 
+
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import java.util.Arrays;
 import java.util.HashSet;
+
 import java.util.Objects;
 
 public abstract class GameCharacter extends Actor implements Comparable<GameCharacter> {
@@ -14,7 +17,6 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
     protected HashSet<Ability> abilities;
     protected boolean override;
     protected TextureRegion textureRegion;
-    protected SpriteBatch batch;
 
     public GameCharacter(String name, Faction faction, TextureRegion textureRegion, Ability... abilities) {
         this.name = name;
@@ -22,7 +24,6 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
         this.abilities = new HashSet<>(Arrays.asList(abilities));
         this.override = false;
         this.textureRegion = textureRegion;
-        batch = new SpriteBatch();
     }
 
     public void addAbilities(Ability ability) {
@@ -43,12 +44,6 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
 
     public void setTextureRegion(TextureRegion textureRegion) {
         this.textureRegion = textureRegion;
-    }
-
-    public void render(float x, float y) {
-        batch.begin();
-        batch.draw(this.textureRegion, x, y);
-        batch.end();
     }
 
     @Override
