@@ -2,12 +2,14 @@ package netwerkprog.game.client.game.map;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import netwerkprog.game.util.game.Character;
 
 import java.util.Objects;
 
 public class GameTile extends Rectangle {
     private TextureRegion textureRegion;
     private char symbol;
+    private Character character;
 
     public GameTile(TextureRegion textureRegion, int xPos, int yPos, char symbol) {
         this.textureRegion = textureRegion;
@@ -16,6 +18,29 @@ public class GameTile extends Rectangle {
         super.y = yPos;
         super.width = textureRegion.getRegionWidth();
         super.height = textureRegion.getRegionHeight();
+    }
+
+    public Character getCharacter() {
+        return character;
+    }
+
+    public boolean containsCharacter() {
+        return character == null;
+    }
+
+    /**
+     * sets the character on this tile
+     * @param character the character to visit this tile
+     * @return false if this tile already had a character on it.
+     */
+    public boolean setCharacter(Character character) {
+        if (this.character != null) return false;
+        this.character = character;
+        return true;
+    }
+
+    public void removeCharacter() {
+        this.character = null;
     }
 
     public TextureRegion getTextureRegion() {
