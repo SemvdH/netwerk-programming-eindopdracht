@@ -15,7 +15,7 @@ import netwerkprog.game.client.game.characters.abilities.BodySwap;
 import netwerkprog.game.client.game.map.Map;
 import netwerkprog.game.client.game.map.MapRenderer;
 import netwerkprog.game.client.game.map.GameInputProcessor;
-import netwerkprog.game.util.game.Character;
+import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.FrameRate;
 import netwerkprog.game.util.tree.BST;
 
@@ -27,13 +27,13 @@ public class MainGame extends ApplicationAdapter {
     private Thread client;
     private OrthographicCamera camera;
     private GameInputProcessor gameInputProcessor;
-    private Character selectedCharacter;
+    private GameCharacter selectedCharacter;
 
     private Map map;
     public MapRenderer mapRenderer;
 
-    private BST<Character> tree;
-    public Character testCharacter;
+    private BST<GameCharacter> tree;
+    public GameCharacter testCharacter;
 
     private static MainGame INSTANCE;
 
@@ -95,7 +95,7 @@ public class MainGame extends ApplicationAdapter {
         Texture texture = new Texture(Gdx.files.internal("core/assets/characters.png"));
         TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
         this.testCharacter = new Hacker("harry",characters[1][0], new BodySwap("test"));
-        Character character2 = new Hacker("test2",characters[2][0], new BodySwap("test"));
+        GameCharacter character2 = new Hacker("test2",characters[2][0], new BodySwap("test"));
 //        this.tree.insert(testCharacter);
 //        this.tree.insert(character2);
 //        this.tree.insert(new Agent(characters[2][0], new Implant("test")));
@@ -183,16 +183,16 @@ public class MainGame extends ApplicationAdapter {
         return map.getWidth();
     }
 
-    public BST<Character> getTree() {
+    public BST<GameCharacter> getTree() {
         return tree;
     }
 
-    public void setSelectedCharacter(Character character) {
+    public void setSelectedCharacter(GameCharacter character) {
         this.selectedCharacter = character;
         System.out.println("selected character set to : " + character);
     }
 
-    public Character getSelectedCharacter() {
+    public GameCharacter getSelectedCharacter() {
         return selectedCharacter;
     }
 

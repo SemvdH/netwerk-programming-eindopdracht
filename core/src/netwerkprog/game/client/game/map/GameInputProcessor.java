@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.client.MainGame;
-import netwerkprog.game.util.game.Character;
+import netwerkprog.game.util.game.GameCharacter;
 
 import java.util.ArrayList;
 
@@ -148,7 +148,7 @@ public class GameInputProcessor implements InputProcessor {
         return false;
     }
 
-    private void removeCharacterFromTile(Character character) {
+    private void removeCharacterFromTile(GameCharacter character) {
         rowLoop:
         for (int row = 0; row < mainGame.mapRenderer.getGameTiles().length; row++) {
             for (int col = 0; col < mainGame.mapRenderer.getGameTiles()[0].length; col++) {
