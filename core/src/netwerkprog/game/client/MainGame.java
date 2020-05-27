@@ -10,12 +10,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import netwerkprog.game.client.game.characters.Agent;
 import netwerkprog.game.client.game.characters.Hacker;
-import netwerkprog.game.client.game.characters.SelectedCharacter;
 import netwerkprog.game.client.game.characters.abilities.BodySwap;
-import netwerkprog.game.client.game.characters.abilities.Implant;
-import netwerkprog.game.client.game.map.GameTile;
 import netwerkprog.game.client.game.map.Map;
 import netwerkprog.game.client.game.map.MapRenderer;
 import netwerkprog.game.client.game.map.GameInputProcessor;
@@ -98,11 +94,14 @@ public class MainGame extends ApplicationAdapter {
     private void initCharacters() {
         Texture texture = new Texture(Gdx.files.internal("core/assets/characters.png"));
         TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
-        this.testCharacter = new Hacker(characters[1][0], new BodySwap("test"));
-        this.tree.insert(testCharacter);
-        this.tree.insert(new Agent(characters[2][0], new Implant("test")));
+        this.testCharacter = new Hacker("harry",characters[1][0], new BodySwap("test"));
+        Character character2 = new Hacker("test2",characters[2][0], new BodySwap("test"));
+//        this.tree.insert(testCharacter);
+//        this.tree.insert(character2);
+//        this.tree.insert(new Agent(characters[2][0], new Implant("test")));
         this.setSelectedCharacter(testCharacter);
-        mapRenderer.getGameTiles()[1][1].setCharacter(testCharacter);
+        mapRenderer.getGameTiles()[0][1].visit(testCharacter);
+        mapRenderer.getGameTiles()[0][2].visit(character2);
 
     }
 

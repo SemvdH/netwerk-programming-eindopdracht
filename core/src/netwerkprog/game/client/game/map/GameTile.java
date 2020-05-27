@@ -33,7 +33,7 @@ public class GameTile extends Rectangle {
      * @param character the character to visit this tile
      * @return false if this tile already had a character on it.
      */
-    public boolean setCharacter(Character character) {
+    public boolean visit(Character character) {
         if (this.character != null) return false;
         this.character = character;
         return true;

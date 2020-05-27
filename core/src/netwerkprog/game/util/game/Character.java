@@ -71,4 +71,12 @@ public abstract class Character implements Comparable<Character> {
     public int compareTo(Character o) {
         return this.name.compareTo(o.name);
     }
+
+    @Override
+    public String toString() {
+        return "Character{" +
+                "name='" + name + '\'' +
+                ", faction=" + faction +
+                '}';
+    }
 }

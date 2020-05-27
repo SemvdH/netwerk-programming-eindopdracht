@@ -6,7 +6,7 @@ import netwerkprog.game.util.game.Character;
 import netwerkprog.game.util.game.Faction;
 
 public class Hacker extends Character {
-    public Hacker(TextureRegion textureRegion, Ability... abilities) {
-        super("Hacker", Faction.HACKER, textureRegion, abilities);
+    public Hacker(String name, TextureRegion textureRegion, Ability... abilities) {
+        super(name, Faction.HACKER, textureRegion, abilities);
     }
 }

@@ -127,18 +127,21 @@ public class GameInputProcessor implements InputProcessor {
             for (int col = 0; col < mainGame.mapRenderer.getGameTiles()[0].length; col++) {
                 GameTile gameTile = mainGame.mapRenderer.getGameTiles()[row][col];
                 if (gameTile.contains(touchPoint.x, touchPoint.y)) {
-                    System.out.println(gameTile + " row: " + row + ", col: " + col);
-                    if (mainGame.hasCharacterSelected() && !gameTile.containsCharacter()) {
-                        System.out.println(mainGame.getSelectedCharacter());
-                        removeCharacterFromTile(mainGame.getSelectedCharacter());
-                        gameTile.setCharacter(mainGame.getSelectedCharacter());
+                    if (button == Input.Buttons.LEFT) {
+//                        System.out.println(gameTile + " row: " + row + ", col: " + col);
+                        if (mainGame.hasCharacterSelected() && !gameTile.containsCharacter()) {
+//                            System.out.println(mainGame.getSelectedCharacter());
+                            removeCharacterFromTile(mainGame.getSelectedCharacter());
+                            gameTile.visit(mainGame.getSelectedCharacter());
+                        }
+                        if (!mainGame.hasCharacterSelected() && gameTile.containsCharacter()) {
+                            mainGame.setSelectedCharacter(gameTile.getCharacter());
+                        }
+                        if (gameTile.containsCharacter() && !mainGame.getSelectedCharacter().equals(gameTile.getCharacter())) {
+                            mainGame.setSelectedCharacter(gameTile.getCharacter());
+                        }
+                        return true;
                     }
-                    if (!mainGame.hasCharacterSelected() && gameTile.containsCharacter()) {
-                        mainGame.setSelectedCharacter(gameTile.getCharacter());
-                    }
-
-
-                    return true;
                 }
             }
         }
@@ -151,9 +154,7 @@ public class GameInputProcessor implements InputProcessor {
             for (int col = 0; col < mainGame.mapRenderer.getGameTiles()[0].length; col++) {
                 GameTile gameTile = mainGame.mapRenderer.getGameTiles()[row][col];
                 if (gameTile.containsCharacter() && gameTile.getCharacter().equals(character)) {
-                    gameTile.setCharacter(null);
-                    System.out.println("set character of gametile " + gameTile + " to null");
-                    System.out.println("tile " + mainGame.mapRenderer.getGameTiles()[1][1] + " now has character " + mainGame.mapRenderer.getGameTiles()[1][1].getCharacter());
+                    gameTile.removeCharacter();
                     break rowLoop;
                 }
             }
