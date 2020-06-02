@@ -3,9 +3,6 @@ package netwerkprog.game.client.game.characters;
 import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.tree.BST;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 public class Team {
     private BST<GameCharacter> members;
 
@@ -55,5 +52,13 @@ public class Team {
             i++;
         }
         return null;
+    }
+
+    public boolean isDead() {
+        int dead = 0;
+        for (GameCharacter character : this.members) {
+            if (character.isDead()) dead++;
+        }
+        return  dead >= this.members.getSize();
     }
 }
