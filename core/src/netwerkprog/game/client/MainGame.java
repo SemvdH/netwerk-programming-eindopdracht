@@ -11,13 +11,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import netwerkprog.game.client.game.characters.Hacker;
+import netwerkprog.game.client.game.characters.Team;
 import netwerkprog.game.client.game.characters.abilities.BodySwap;
 import netwerkprog.game.client.game.map.Map;
 import netwerkprog.game.client.game.map.MapRenderer;
 import netwerkprog.game.client.game.map.GameInputProcessor;
 import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.FrameRate;
-import netwerkprog.game.util.tree.BST;
 
 public class MainGame extends ApplicationAdapter {
     SpriteBatch batch;
@@ -28,11 +28,11 @@ public class MainGame extends ApplicationAdapter {
     private OrthographicCamera camera;
     private GameInputProcessor gameInputProcessor;
     private GameCharacter selectedCharacter;
+    private Team team;
 
     private Map map;
     public MapRenderer mapRenderer;
 
-    private BST<GameCharacter> tree;
     public GameCharacter testCharacter;
 
     private static MainGame INSTANCE;
@@ -80,7 +80,6 @@ public class MainGame extends ApplicationAdapter {
         camera.viewportWidth = screenWidth / 2;
         camera.viewportHeight = screenHeight / 2;
         camera.update();
-        this.tree = new BST<>();
         initCharacters();
 //        this.tree.insert(new Hacker(,new BodySwap()));
 
@@ -99,6 +98,7 @@ public class MainGame extends ApplicationAdapter {
         this.setSelectedCharacter(testCharacter);
         mapRenderer.getGameTiles()[1][1].visit(testCharacter);
         mapRenderer.getGameTiles()[1][2].visit(character2);
+        this.team = new Team();
 
     }
 
@@ -178,10 +178,6 @@ public class MainGame extends ApplicationAdapter {
 
     public int getHorizontalTileAmount() {
         return map.getWidth();
-    }
-
-    public BST<GameCharacter> getTree() {
-        return tree;
     }
 
     public void setSelectedCharacter(GameCharacter character) {
