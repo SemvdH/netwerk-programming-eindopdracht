@@ -99,6 +99,7 @@ public class MainGame extends ApplicationAdapter {
         mapRenderer.getGameTiles()[1][1].visit(testCharacter);
         mapRenderer.getGameTiles()[1][2].visit(character2);
         this.team = new Team();
+        this.team.addMember(this.testCharacter, character2);
 
     }
 
@@ -191,5 +192,9 @@ public class MainGame extends ApplicationAdapter {
 
     public boolean hasCharacterSelected() {
         return selectedCharacter != null;
+    }
+
+    public Team getTeam() {
+        return team;
     }
 }

@@ -17,6 +17,7 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
     protected HashSet<Ability> abilities;
     protected boolean override;
     protected TextureRegion textureRegion;
+    protected int health;
 
     public GameCharacter(String name, Faction faction, TextureRegion textureRegion, Ability... abilities) {
         super();
@@ -25,6 +26,7 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
         this.abilities = new HashSet<>(Arrays.asList(abilities));
         this.override = false;
         this.textureRegion = textureRegion;
+        this.health = 100;
     }
 
     public String getName() {
@@ -37,6 +39,28 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
 
     public void removeAbility(Ability ability) {
         this.abilities.remove(ability);
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void heal(int amount) {
+        this.health += amount;
+        if (this.health > 100) this.health = 100;
+    }
+
+    public void damage(int amount) {
+        this.health -= amount;
+        if (this.health < 0) this. health = 0;
+    }
+
+    public boolean isDead() {
+        return this.health <= 0;
     }
 
     public void changeControl() {

@@ -30,6 +30,12 @@ public class Team {
         this.members = members;
     }
 
+    public void addMember(GameCharacter... characters) {
+        for (GameCharacter gameCharacter : characters) {
+            this.members.insert(gameCharacter);
+        }
+    }
+
     public GameCharacter get(GameCharacter character) {
         for (GameCharacter cur : this.members) {
             if (cur.equals(character)) {
