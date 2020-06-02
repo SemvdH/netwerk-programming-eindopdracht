@@ -94,7 +94,7 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
 
     @Override
     public int compareTo(GameCharacter o) {
-        return this.name.compareTo(o.name);
+        return this.name.compareTo(o.name) + this.health - o.health;
     }
 
     @Override
