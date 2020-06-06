@@ -54,11 +54,24 @@ public class Team {
         return null;
     }
 
+    public void update(double deltaTime) {
+        for (GameCharacter character : this.members) {
+            character.update(deltaTime);
+        }
+    }
+
     public boolean isDead() {
         int dead = 0;
         for (GameCharacter character : this.members) {
             if (character.isDead()) dead++;
         }
         return  dead >= this.members.getSize();
+    }
+
+    @Override
+    public String toString() {
+        return "Team{" +
+                "members=" + members +
+                '}';
     }
 }

@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.client.game.GAMESTATE;
 import netwerkprog.game.client.game.characters.Agent;
 import netwerkprog.game.client.game.characters.Hacker;
@@ -44,6 +45,7 @@ public class MainGame extends ApplicationAdapter {
     private GlyphLayout layout;
     private GAMESTATE gamestate;
     private Faction chosenFaction;
+    private long lastTimeCounted = 0;
 
     private Map map;
     public MapRenderer mapRenderer;
@@ -76,13 +78,13 @@ public class MainGame extends ApplicationAdapter {
 
         String[] strings = new String[]{
                 "#########################",
-                "#xxxx                   #",
-                "#   x                   #",
-                "#   xxxx     xxxxx      #",
-                "#   xxxx     xxxxx      #",
-                "#   xxxx     xx xx      #",
-                "#       x    xxxxx      #",
-                "#       x    xxxx       #",
+                "#xxxx        #          #",
+                "#   x        #          #",
+                "#   xxxx     #xxxx      #",
+                "#   xxxx     #xxxx      #",
+                "#   xxxx     #x xx      #",
+                "#       x    #xxxx      #",
+                "#       x    #xxx       #",
                 "#       x               #",
                 "#           xxxxxx      #",
                 "#            x          #",
@@ -113,22 +115,31 @@ public class MainGame extends ApplicationAdapter {
         Texture texture = assets.get("core/assets/characters.png");
         TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
         this.team = new Team();
+        this.enemyTeam = new Team();
 
+
+        System.out.println(this.chosenFaction);
         for (int i = 1; i <= 5; i++) {
             GameCharacter temp = new Hacker("hacker" + i, characters[5][0], new BodySwap("test"));
             mapRenderer.getGameTiles()[1][i].visit(temp);
+
+            GameCharacter temp2 = new Agent("Agent" + i, characters[11][0], new BodySwap("Test"));
+            int width = mapRenderer.getGameTiles()[0].length;
+            mapRenderer.getGameTiles()[3][width - (i + 1)].visit(temp2);
+
             if (chosenFaction == Faction.HACKER) {
+                System.out.println("adding " + temp);
                 this.team.addMember(temp);
+                this.enemyTeam.addMember(temp2);
+            }  if (chosenFaction == Faction.MEGACORPORATION) {
+                System.out.println("adding " + temp2);
+                this.team.addMember(temp2);
+                this.enemyTeam.addMember(temp);
             }
         }
 
-        for (int i = 1; i <= 5; i++) {
-            GameCharacter temp = new Agent("Agent" + i, characters[11][0], new BodySwap("Test"));
-            mapRenderer.getGameTiles()[3][i].visit(temp);
-            if (chosenFaction == Faction.MEGACORPORATION) {
-                this.team.addMember(temp);
-            }
-        }
+        System.out.println(this.team);
+        System.out.println(this.enemyTeam);
         this.setSelectedCharacter(this.team.get(0));
 
     }
@@ -136,12 +147,11 @@ public class MainGame extends ApplicationAdapter {
 
     private void playSong() {
         // play music
-        Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("core/assets/music.mp3", Files.FileType.Internal));
+        Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("core/assets/earrape.mp3", Files.FileType.Internal));
         music.setVolume(.1f);
         music.play();
         music.setLooping(true);
 
-        connectToServer();
     }
 
 
@@ -195,9 +205,12 @@ public class MainGame extends ApplicationAdapter {
      * update method that does all calculation before something is being drawn
      */
     public void update() {
+
         frameRate.update();
         camera.update();
         this.gameInputProcessor.update();
+        this.team.update(Gdx.graphics.getDeltaTime());
+        this.enemyTeam.update(Gdx.graphics.getDeltaTime());
     }
 
     @Override

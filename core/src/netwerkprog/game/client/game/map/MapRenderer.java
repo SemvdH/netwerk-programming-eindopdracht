@@ -26,6 +26,7 @@ public class MapRenderer implements Renderable {
     private MainGame mainGame;
     private Texture square;
     private Texture square2;
+    private Texture hitMarker;
 
 
     public static TextureRegion FLOOR_TILE;
@@ -61,9 +62,11 @@ public class MapRenderer implements Renderable {
         mainGame.assets.load("square.png", Texture.class);
         mainGame.assets.load("square2.png", Texture.class);
         mainGame.assets.load(tilePath, Texture.class);
+        mainGame.assets.load("hit.png",Texture.class);
         mainGame.assets.finishLoading();
         square = mainGame.assets.get("square.png");
         square2 = mainGame.assets.get("square2.png");
+        hitMarker = mainGame.assets.get("hit.png");
 
         Texture texture = mainGame.assets.get(tilePath);
         TextureRegion[][] tileTextures = TextureRegion.split(texture, 32, 32);
@@ -117,10 +120,17 @@ public class MapRenderer implements Renderable {
                 batch.draw(cur.getTextureRegion(), cur.x, cur.y);
 
                 if (cur.containsCharacter()) {
-                    batch.draw(cur.getCharacter().getTextureRegion(), cur.x, cur.y);
+                    GameCharacter character = cur.getCharacter();
+                    batch.draw(character.getTextureRegion(), cur.x, cur.y);
+//                    System.out.println("character " + character.getName() + " showing: " + character.isShowingAnimation());
+                    if (character.isShowingAnimation()) {
+//                        System.out.println("animation");
+                        batch.draw(hitMarker,cur.x,cur.y);
+                    }
+
+
                     if (cur.getCharacter().equals(mainGame.getSelectedCharacter())) {
                         batch.draw(square, cur.x, cur.y);
-
                     }
                 }
             }
