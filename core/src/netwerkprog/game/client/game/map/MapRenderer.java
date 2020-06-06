@@ -3,14 +3,11 @@ package netwerkprog.game.client.game.map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import netwerkprog.game.client.MainGame;
 import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.Renderable;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -25,9 +22,6 @@ public class MapRenderer implements Renderable {
     private OrthographicCamera cam;
     private static int x = 0;
     private static int y = 0;
-    private BitmapFont font;
-
-    private ShapeRenderer shapeRenderer;
 
     private MainGame mainGame;
     private Texture square;
@@ -57,7 +51,6 @@ public class MapRenderer implements Renderable {
         cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.camera = camera;
         this.mainGame = MainGame.getInstance();
-        font = new BitmapFont();
         makeTiles();
     }
 
@@ -143,7 +136,7 @@ public class MapRenderer implements Renderable {
         y = 0;
     }
 
-    private static int[][] directions = new int[][]{{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}};
+    public static int[][] directions = new int[][]{{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}};
 
     public List<GameTile> setSurroundedTilesOfCurrentCharacter(int x, int y) {
         List<GameTile> res = new ArrayList<GameTile>();

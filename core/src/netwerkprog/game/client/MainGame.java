@@ -11,17 +11,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import netwerkprog.game.client.game.GAMESTATE;
 import netwerkprog.game.client.game.characters.Agent;
 import netwerkprog.game.client.game.characters.Hacker;
 import netwerkprog.game.client.game.characters.Team;
 import netwerkprog.game.client.game.characters.abilities.BodySwap;
+import netwerkprog.game.client.game.map.GameInputProcessor;
 import netwerkprog.game.client.game.map.GameTile;
 import netwerkprog.game.client.game.map.Map;
 import netwerkprog.game.client.game.map.MapRenderer;
-import netwerkprog.game.client.game.map.GameInputProcessor;
 import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.FrameRate;
@@ -109,14 +108,14 @@ public class MainGame extends ApplicationAdapter {
     }
 
     public void initCharacters() {
-        assets.load("core/assets/characters.png",Texture.class);
+        assets.load("core/assets/characters.png", Texture.class);
         assets.finishLoading();
         Texture texture = assets.get("core/assets/characters.png");
         TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
         this.team = new Team();
 
         for (int i = 1; i <= 5; i++) {
-            GameCharacter temp =new Hacker("hacker" + i, characters[5][0], new BodySwap("test"));
+            GameCharacter temp = new Hacker("hacker" + i, characters[5][0], new BodySwap("test"));
             mapRenderer.getGameTiles()[1][i].visit(temp);
             if (chosenFaction == Faction.HACKER) {
                 this.team.addMember(temp);
@@ -124,7 +123,7 @@ public class MainGame extends ApplicationAdapter {
         }
 
         for (int i = 1; i <= 5; i++) {
-            GameCharacter temp = new Agent("Agent" + i,characters[11][0],new BodySwap("Test"));
+            GameCharacter temp = new Agent("Agent" + i, characters[11][0], new BodySwap("Test"));
             mapRenderer.getGameTiles()[3][i].visit(temp);
             if (chosenFaction == Faction.MEGACORPORATION) {
                 this.team.addMember(temp);
