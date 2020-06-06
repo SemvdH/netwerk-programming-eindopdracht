@@ -10,6 +10,9 @@ import netwerkprog.game.client.MainGame;
 import netwerkprog.game.util.graphics.Renderable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MapRenderer implements Renderable {
     private final OrthographicCamera camera;
     private int tileWidth;
@@ -25,6 +28,7 @@ public class MapRenderer implements Renderable {
 
     private MainGame mainGame;
     private Texture square;
+    private Texture square2;
 
 
     public static TextureRegion FLOOR_TILE;
@@ -32,6 +36,7 @@ public class MapRenderer implements Renderable {
     public static TextureRegion PATH_TILE;
 
     private GameTile[][] gameTiles;
+    private List<GameTile> surroundedTilesOfCurrentCharacter;
 
 
     /**
@@ -51,6 +56,7 @@ public class MapRenderer implements Renderable {
         this.mainGame = MainGame.getInstance();
         font = new BitmapFont();
         square = new Texture(Gdx.files.internal("square.png"));
+        square2 = new Texture(Gdx.files.internal("square2.png"));
         makeTiles();
     }
 
@@ -111,15 +117,51 @@ public class MapRenderer implements Renderable {
 
                 if (cur.containsCharacter()) {
                     batch.draw(cur.getCharacter().getTextureRegion(), cur.x, cur.y);
-                    if (cur.getCharacter().equals(mainGame.getSelectedCharacter()))
+                    if (cur.getCharacter().equals(mainGame.getSelectedCharacter())) {
                         batch.draw(square, cur.x, cur.y);
+
+                    }
                 }
+            }
+        }
+        if (surroundedTilesOfCurrentCharacter != null && !surroundedTilesOfCurrentCharacter.isEmpty()) {
+            for (GameTile gameTile : surroundedTilesOfCurrentCharacter) {
+                batch.draw(square2, gameTile.x, gameTile.y);
             }
         }
 
         batch.end();
         x = 0;
         y = 0;
+    }
+
+    private static int[][] directions = new int[][]{{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}};
+
+    public List<GameTile> setSurroundedTilesOfCurrentCharacter(int x, int y) {
+        List<GameTile> res = new ArrayList<GameTile>();
+        for (int[] direction : directions) {
+            int cx = x + direction[0];
+            int cy = y + direction[1];
+            if (cy >= 0 && cy < gameTiles.length)
+                if (cx >= 0 && cx < gameTiles[cy].length)
+                    res.add(gameTiles[cy][cx]);
+        }
+        surroundedTilesOfCurrentCharacter = res;
+        return res;
+    }
+
+    public int getPos(GameTile tile, String choice) {
+        for (int row = 0; row < this.gameTiles.length; row++) {
+            for (int col = 0; col < this.gameTiles[0].length; col++) {
+                if (gameTiles[row][col].equals(tile)) {
+                    if (choice.toLowerCase().equals("row"))
+                        return row;
+                    else if (choice.toLowerCase().equals("col"))
+                        return col;
+                }
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -136,5 +178,9 @@ public class MapRenderer implements Renderable {
 
     public GameTile[][] getGameTiles() {
         return gameTiles;
+    }
+
+    public List<GameTile> getSurroundedTilesOfCurrentCharacter() {
+        return surroundedTilesOfCurrentCharacter;
     }
 }

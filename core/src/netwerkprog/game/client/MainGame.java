@@ -8,16 +8,19 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import netwerkprog.game.client.game.GAMESTATE;
 import netwerkprog.game.client.game.characters.Hacker;
 import netwerkprog.game.client.game.characters.Team;
 import netwerkprog.game.client.game.characters.abilities.BodySwap;
 import netwerkprog.game.client.game.map.Map;
 import netwerkprog.game.client.game.map.MapRenderer;
 import netwerkprog.game.client.game.map.GameInputProcessor;
+import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.FrameRate;
 import netwerkprog.game.util.graphics.TextRenderer;
@@ -35,10 +38,14 @@ public class MainGame extends ApplicationAdapter {
     private Team enemyTeam;
     private TextRenderer textRenderer;
     private BitmapFont font;
+    private GlyphLayout layout;
+    private GAMESTATE gamestate;
+    private Faction chosenFaction;
 
 
     private Map map;
     public MapRenderer mapRenderer;
+
 
     public GameCharacter testCharacter;
 
@@ -64,17 +71,17 @@ public class MainGame extends ApplicationAdapter {
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         textRenderer = new TextRenderer();
         font = new BitmapFont();
-
+        layout = new GlyphLayout();
 
         String[] strings = new String[]{
                 "#########################",
                 "#xxxx                   #",
                 "#   x                   #",
-                "#   xxxx                #",
-                "#      xx               #",
-                "#       x               #",
-                "#       x               #",
-                "#       x               #",
+                "#   xxxx     xxxxx      #",
+                "#   xxxx     xxxxx      #",
+                "#   xxxx     xx xx      #",
+                "#       x    xxxxx      #",
+                "#       x    xxxx       #",
                 "#       x               #",
                 "#           xxxxxx      #",
                 "#            x          #",
@@ -89,6 +96,7 @@ public class MainGame extends ApplicationAdapter {
         camera.viewportWidth = screenWidth / 2;
         camera.viewportHeight = screenHeight / 2;
         camera.update();
+        setGamestate(GAMESTATE.SELECTING_FACTION);
 
         initCharacters();
 //        this.tree.insert(new Hacker(,new BodySwap()));
@@ -103,8 +111,8 @@ public class MainGame extends ApplicationAdapter {
     private void initCharacters() {
         Texture texture = new Texture(Gdx.files.internal("core/assets/characters.png"));
         TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
-        this.testCharacter = new Hacker("harryyyyyyyyyy",characters[1][0], new BodySwap("test"));
-        GameCharacter character2 = new Hacker("test2",characters[2][0], new BodySwap("test"));
+        this.testCharacter = new Hacker("harryyyyyyyyyy", characters[1][0], new BodySwap("test"));
+        GameCharacter character2 = new Hacker("test2", characters[2][0], new BodySwap("test"));
         this.setSelectedCharacter(testCharacter);
         mapRenderer.getGameTiles()[1][1].visit(testCharacter);
         mapRenderer.getGameTiles()[1][2].visit(character2);
@@ -139,19 +147,36 @@ public class MainGame extends ApplicationAdapter {
      */
     @Override
     public void render() {
-        update();
-        // clear screen
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        mapRenderer.render();
-        frameRate.render();
-        renderText();
+        if (this.gamestate == GAMESTATE.PLAYING) {
+            update();
+            // clear screen
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            mapRenderer.render();
+            frameRate.render();
+            renderText();
+        } else if (this.gamestate == GAMESTATE.SELECTING_FACTION) {
+            renderString("FACTION SELECT\nPress 1 for mega corporation, press 2 for hackers",Gdx.graphics.getWidth()/2f,Gdx.graphics.getHeight()/2f);
+        }
 
     }
 
     private void renderText() {
-        String text = "Selected character: " + selectedCharacter.getName();
-        textRenderer.render(text,Gdx.graphics.getWidth() - text.length() * 6.5f,Gdx.graphics.getHeight() - 3);
+        String text = "FACION: " + chosenFaction;
+        text += "\nSelected character: " + selectedCharacter.getName();
+        text += "\nHealth: " + selectedCharacter.getHealth();
+        layout.setText(font, text);
+        textRenderer.render(text, Gdx.graphics.getWidth() - layout.width - 5, Gdx.graphics.getHeight() - 3);
+    }
+
+    private void renderString(String text) {
+        layout.setText(font, text);
+        textRenderer.render(text, Gdx.graphics.getWidth() - layout.width - 5, Gdx.graphics.getHeight() - 3);
+    }
+
+    private void renderString(String text, float x, float y) {
+        layout.setText(font, text);
+        textRenderer.render(text, x - layout.width/2f, x - layout.height/2f);
     }
 
     /**
@@ -170,7 +195,7 @@ public class MainGame extends ApplicationAdapter {
         screenWidth = width;
         frameRate.resize(width, height);
         mapRenderer.resize(width, height);
-        textRenderer.resize(width,height);
+        textRenderer.resize(width, height);
     }
 
     @Override
@@ -205,6 +230,22 @@ public class MainGame extends ApplicationAdapter {
         System.out.println("selected character set to : " + character);
     }
 
+    public GAMESTATE getGamestate() {
+        return gamestate;
+    }
+
+    public void setGamestate(GAMESTATE gamestate) {
+        this.gamestate = gamestate;
+    }
+
+    public Faction getChosenFaction() {
+        return chosenFaction;
+    }
+
+    public void setChosenFaction(Faction chosenFaction) {
+        this.chosenFaction = chosenFaction;
+    }
+
     public GameCharacter getSelectedCharacter() {
         return selectedCharacter;
     }
@@ -216,4 +257,5 @@ public class MainGame extends ApplicationAdapter {
     public Team getTeam() {
         return team;
     }
+
 }
