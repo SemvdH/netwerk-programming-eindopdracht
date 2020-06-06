@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import netwerkprog.game.client.MainGame;
-import netwerkprog.game.util.application.Timer;
 import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.Renderable;
 
@@ -123,6 +122,7 @@ public class MapRenderer implements Renderable {
                 if (cur.containsCharacter()) {
                     GameCharacter character = cur.getCharacter();
                     batch.draw(character.getTextureRegion(), cur.x, cur.y);
+//                    System.out.println("character " + character.getName() + " showing: " + character.isShowingAnimation());
                     if (character.isShowingAnimation()) {
 //                        System.out.println("animation");
                         batch.draw(hitMarker,cur.x,cur.y);

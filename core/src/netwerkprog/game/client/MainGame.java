@@ -117,22 +117,29 @@ public class MainGame extends ApplicationAdapter {
         this.team = new Team();
         this.enemyTeam = new Team();
 
+
+        System.out.println(this.chosenFaction);
         for (int i = 1; i <= 5; i++) {
             GameCharacter temp = new Hacker("hacker" + i, characters[5][0], new BodySwap("test"));
             mapRenderer.getGameTiles()[1][i].visit(temp);
+
+            GameCharacter temp2 = new Agent("Agent" + i, characters[11][0], new BodySwap("Test"));
+            int width = mapRenderer.getGameTiles()[0].length;
+            mapRenderer.getGameTiles()[3][width - (i + 1)].visit(temp2);
+
             if (chosenFaction == Faction.HACKER) {
+                System.out.println("adding " + temp);
                 this.team.addMember(temp);
+                this.enemyTeam.addMember(temp2);
+            }  if (chosenFaction == Faction.MEGACORPORATION) {
+                System.out.println("adding " + temp2);
+                this.team.addMember(temp2);
+                this.enemyTeam.addMember(temp);
             }
         }
 
-        for (int i = 1; i <= 5; i++) {
-            GameCharacter temp = new Agent("Agent" + i, characters[11][0], new BodySwap("Test"));
-            int width = mapRenderer.getGameTiles()[0].length;
-            mapRenderer.getGameTiles()[3][width - (i + 1)].visit(temp);
-            if (chosenFaction == Faction.MEGACORPORATION) {
-                this.team.addMember(temp);
-            }
-        }
+        System.out.println(this.team);
+        System.out.println(this.enemyTeam);
         this.setSelectedCharacter(this.team.get(0));
 
     }

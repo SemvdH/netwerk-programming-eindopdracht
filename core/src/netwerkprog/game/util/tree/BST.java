@@ -1,5 +1,7 @@
 package netwerkprog.game.util.tree;
 
+import java.util.Iterator;
+
 public class BST<E extends Comparable<E>> extends AbstractTree<E> {
     protected TreeNode<E> root;
     protected int size = 0;
@@ -321,6 +323,19 @@ public class BST<E extends Comparable<E>> extends AbstractTree<E> {
     public void clear() {
         root = null;
         size = 0;
+    }
+
+    @Override
+    public String toString() {
+        String res = "";
+        for (E e : this) {
+            res += e.toString();
+        }
+        return "BST{" +
+                "root=" + root +
+                ", size=" + size +
+                ", " + res +
+                '}';
     }
 
     //         if (tree == null) {

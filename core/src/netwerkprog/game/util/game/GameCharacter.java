@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import netwerkprog.game.client.game.map.GameTile;
-import netwerkprog.game.util.application.Timer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,8 +20,8 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
     protected TextureRegion textureRegion;
     protected int health;
     protected List<GameTile> allowedToMove;
-    protected boolean damageAnimation = false;
-    protected Timer hitAnimationTimer;
+    protected boolean damageAnimation;
+    protected double hitTimout = 0;
 
     public GameCharacter(String name, Faction faction, TextureRegion textureRegion, Ability... abilities) {
         super();
@@ -32,8 +31,8 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
         this.override = false;
         this.textureRegion = textureRegion;
         this.health = 100;
+        this.damageAnimation = false;
         this.allowedToMove = new ArrayList<>();
-        this.hitAnimationTimer = new Timer(5000);
     }
 
     public String getName() {
@@ -63,10 +62,13 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
 
     public void damage(int amount) {
         this.health -= amount;
-        if (this.health < 0) this.health = 0;
+        if (this.health < 0) {
+            this.health = 0;
+        }
+
         this.damageAnimation = true;
-        this.hitAnimationTimer.start();
-        System.out.println("OUCH character " + name + " was damaged for " + amount);
+
+        System.out.println("OUCH character " + name + " was damaged for " + amount + ", animation: " + this.isShowingAnimation());
     }
 
     public boolean isDead() {
@@ -98,15 +100,14 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
     }
 
     public void update(double deltaTime) {
-        this.hitAnimationTimer.update(deltaTime);
+        if (this.damageAnimation) {
+            this.hitTimout += deltaTime;
+        }
+        if (this.hitTimout >= 0.4) {
+            this.damageAnimation = false;
+            this.hitTimout = 0;
+        }
 
-//        if (this.isShowingAnimation()) {
-//            System.out.println("showing");
-            if (this.hitAnimationTimer.timeout()) {
-                System.out.println("timout");
-                this.damageAnimation = false;
-                this.hitAnimationTimer.stop();
-            }
     }
 
     @Override
@@ -116,7 +117,7 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
 
     @Override
     public int compareTo(GameCharacter o) {
-        return this.health - o.health;
+        return (this.health - o.health) + this.name.compareTo(o.name) + this.faction.compareTo(o.faction);
     }
 
     @Override

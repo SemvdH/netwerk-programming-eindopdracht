@@ -67,4 +67,11 @@ public class Team {
         }
         return  dead >= this.members.getSize();
     }
+
+    @Override
+    public String toString() {
+        return "Team{" +
+                "members=" + members +
+                '}';
+    }
 }
