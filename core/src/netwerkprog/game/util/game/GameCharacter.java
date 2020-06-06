@@ -119,4 +119,8 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
     public void setAllowedToMove(List<GameTile> allowedToMove) {
         this.allowedToMove = allowedToMove;
     }
+
+    public Faction getFaction() {
+        return faction;
+    }
 }

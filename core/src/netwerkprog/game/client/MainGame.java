@@ -9,11 +9,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import netwerkprog.game.client.game.GAMESTATE;
+import netwerkprog.game.client.game.characters.Agent;
 import netwerkprog.game.client.game.characters.Hacker;
 import netwerkprog.game.client.game.characters.Team;
 import netwerkprog.game.client.game.characters.abilities.BodySwap;
@@ -48,9 +48,6 @@ public class MainGame extends ApplicationAdapter {
 
     private Map map;
     public MapRenderer mapRenderer;
-
-
-    public GameCharacter testCharacter;
 
     private static MainGame INSTANCE;
 
@@ -100,8 +97,6 @@ public class MainGame extends ApplicationAdapter {
         camera.viewportHeight = screenHeight / 2;
         camera.update();
         setGamestate(GAMESTATE.SELECTING_FACTION);
-
-        initCharacters();
 //        this.tree.insert(new Hacker(,new BodySwap()));
 
 
@@ -111,16 +106,27 @@ public class MainGame extends ApplicationAdapter {
 //        connectToServer();
     }
 
-    private void initCharacters() {
+    public void initCharacters() {
         Texture texture = new Texture(Gdx.files.internal("core/assets/characters.png"));
         TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
-        this.testCharacter = new Hacker("harryyyyyyyyyy", characters[1][0], new BodySwap("test"));
-        GameCharacter character2 = new Hacker("test2", characters[2][0], new BodySwap("test"));
-        mapRenderer.getGameTiles()[1][1].visit(testCharacter);
-        mapRenderer.getGameTiles()[1][2].visit(character2);
         this.team = new Team();
-        this.team.addMember(this.testCharacter, character2);
-        this.setSelectedCharacter(testCharacter);
+
+        for (int i = 1; i <= 5; i++) {
+            GameCharacter temp =new Hacker("hacker" + i, characters[5][0], new BodySwap("test"));
+            mapRenderer.getGameTiles()[1][i].visit(temp);
+            if (chosenFaction == Faction.HACKER) {
+                this.team.addMember(temp);
+            }
+        }
+
+        for (int i = 1; i <= 5; i++) {
+            GameCharacter temp = new Agent("Agent" + i,characters[11][0],new BodySwap("Test"));
+            mapRenderer.getGameTiles()[3][i].visit(temp);
+            if (chosenFaction == Faction.MEGACORPORATION) {
+                this.team.addMember(temp);
+            }
+        }
+        this.setSelectedCharacter(this.team.get(0));
 
     }
 

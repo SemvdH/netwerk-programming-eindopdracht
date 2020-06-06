@@ -117,11 +117,13 @@ public class GameInputProcessor implements InputProcessor {
             if (keycode == Input.Keys.NUM_1) {
                 System.out.println("MEGA CORP");
                 mainGame.setChosenFaction(Faction.MEGACORPORATION);
+                mainGame.initCharacters();
                 mainGame.setGamestate(GAMESTATE.PLAYING);
             }
             if (keycode == Input.Keys.NUM_2) {
                 System.out.println("HACKER");
                 mainGame.setChosenFaction(Faction.HACKER);
+                mainGame.initCharacters();
                 mainGame.setGamestate(GAMESTATE.PLAYING);
             }
         }
@@ -152,16 +154,20 @@ public class GameInputProcessor implements InputProcessor {
                                 if (gameTile.getSymbol() != '#' && mainGame.mapRenderer.getSurroundedTilesOfCurrentCharacter().contains(gameTile)) {
                                     removeCharacterFromTile(mainGame.getSelectedCharacter());
                                     gameTile.visit(mainGame.getSelectedCharacter());
-                                    mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col,row);
+                                    mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
                                 }
                             }
                             if (!mainGame.hasCharacterSelected() && gameTile.containsCharacter()) {
-                                mainGame.setSelectedCharacter(gameTile.getCharacter());
-                                mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col,row);
+                                if (gameTile.getCharacter().getFaction() == mainGame.getChosenFaction()) {
+                                    mainGame.setSelectedCharacter(gameTile.getCharacter());
+                                    mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
+                                }
                             }
-                            if (gameTile.containsCharacter() && !mainGame.getSelectedCharacter().equals(gameTile.getCharacter())) {
+                            if (gameTile.containsCharacter()
+                                    && !mainGame.getSelectedCharacter().equals(gameTile.getCharacter())
+                                    && gameTile.getCharacter().getFaction() == mainGame.getChosenFaction()) {
                                 mainGame.setSelectedCharacter(gameTile.getCharacter());
-                                mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col,row);
+                                mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
                             }
                             return true;
                         }
