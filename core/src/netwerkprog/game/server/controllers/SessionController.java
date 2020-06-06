@@ -1,12 +1,11 @@
 package netwerkprog.game.server.controllers;
 
+import netwerkprog.game.server.Server;
 import netwerkprog.game.server.ServerClient;
 import netwerkprog.game.util.application.Controller;
 import netwerkprog.game.util.data.Data;
 
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -17,12 +16,14 @@ import java.util.Set;
  * The sessionController manages any connections from new clients and assigns individual threads to said clients.
  */
 public class SessionController extends Controller {
+    private Server server;
     private ServerSocket serverSocket;
     private final ArrayList<ServerClient> clients = new ArrayList<>();
     private final HashMap<String, Thread> clientThreads = new HashMap<>();
     private boolean listening;
 
-    public SessionController() {
+    public SessionController(Server server) {
+        this.server = server;
         this.listening = true;
     }
 
@@ -56,46 +57,46 @@ public class SessionController extends Controller {
      * @param socket The socket used for the client connections.
      */
     public void registerClient(Socket socket) {
-        try {
-            System.out.println("[SERVER] got new client on " + socket.getInetAddress().getHostAddress());
-            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-            DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-
-            outputStream.writeUTF("Enter username: ");
-            String username = inputStream.readUTF();
-
-            System.out.println("[SERVER] got username " + username);
-            ServerClient serverClient = new ServerClient(username, socket, this);
-
-            Thread t = new Thread(serverClient);
-            t.start();
-
-            this.clientThreads.put(username,t);
-            this.clients.add(serverClient);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+//        try {
+//            System.out.println("[SERVER] got new client on " + socket.getInetAddress().getHostAddress());
+//            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+//            DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+//
+//            outputStream.writeUTF("Enter username: ");
+//            String username = inputStream.readUTF();
+//
+//            System.out.println("[SERVER] got username " + username);
+//            ServerClient serverClient = new ServerClient(username, socket, this);
+//
+//            Thread t = new Thread(serverClient);
+//            t.start();
+//
+//            this.clientThreads.put(username,t);
+//            this.clients.add(serverClient);
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
     }
 
     /**
      * Sends a server message to all connected clients.
-     * @param text message.
+     * @param data message.
      */
-    public void serverMessage(String text) {
+    public void serverMessage(Data data) {
         for (ServerClient serverClient : clients) {
-            serverClient.writeUTF(text);
+            serverClient.writeData(data);
         }
     }
 
     /**
      * Sends a message to a specific user.
      * @param name user.
-     * @param text message.
+     * @param data message.
      */
-    public void personalMessage(String name, String text) {
+    public void personalMessage(String name, Data data) {
         for (ServerClient serverClient : clients) {
             if (serverClient.getName().equals(name)) {
-                serverClient.writeUTF(text);
+                serverClient.writeData(data);
                 break;
             }
         }
@@ -113,7 +114,7 @@ public class SessionController extends Controller {
             e.printStackTrace();
         }
         this.clientThreads.remove(serverClient.getName());
-        this.serverMessage(serverClient.getName() + " left!");
+        //this.serverMessage(serverClient.getName() + " left!");
     }
 
     /**

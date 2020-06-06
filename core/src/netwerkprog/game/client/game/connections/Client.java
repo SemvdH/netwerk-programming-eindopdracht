@@ -1,28 +1,26 @@
-package netwerkprog.game.client;
+package netwerkprog.game.client.game.connections;
 
 import netwerkprog.game.util.application.Controller;
 import netwerkprog.game.util.data.Data;
-import netwerkprog.game.util.data.ParserCallback;
+import netwerkprog.game.util.data.DataCallback;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
 
-public class Client extends Controller implements ParserCallback {
+public class Client extends Controller {
     private final int port;
     private final String hostname;
-    private final Parser parser;
     private boolean isConnected = true;
     private Socket socket;
     private Thread receiveThread;
-    private DataOutputStream outputStream;
+    private DataCallback callback;
+    private ObjectOutputStream outputStream;
 
-    public Client(String hostname) {
+    public Client(String hostname, DataCallback callback) {
         this.port = Data.port();
         this.hostname = hostname;
-        this.parser = new Parser(this);
+        this.callback = callback;
     }
 
     /**
@@ -41,8 +39,8 @@ public class Client extends Controller implements ParserCallback {
         System.out.println("[CLIENT] connecting to server on port " + this.port);
         try {
             this.socket = new Socket(this.hostname, this.port);
-            DataInputStream in = new DataInputStream(socket.getInputStream());
-            this.outputStream = new DataOutputStream(socket.getOutputStream());
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            this.outputStream = new ObjectOutputStream(socket.getOutputStream());
 
             this.receiveThread = new Thread( () -> receive(in));
 
@@ -56,11 +54,11 @@ public class Client extends Controller implements ParserCallback {
 
     /**
      * Sends a message to the server.
-     * @param message The message to send.
+     * @param data The message to send.
      */
-    public void send(String message) {
+    public void send(Data data) {
         try {
-            this.outputStream.writeUTF(message);
+            this.outputStream.writeObject(data);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,11 +68,14 @@ public class Client extends Controller implements ParserCallback {
      * Receives a message from the server.
      * @param in The inputStream
      */
-    public void receive(DataInputStream in) {
+    public void receive(ObjectInputStream in) {
         while (isConnected) {
             try {
-                this.parser.parse(in.readUTF());
-            } catch (IOException e) {
+                Object object = in.readObject();
+                if (object instanceof Data) {
+                    callback.onDataReceived((Data) object);
+                }
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
@@ -88,17 +89,12 @@ public class Client extends Controller implements ParserCallback {
             e.printStackTrace();
         }
 
-        send("Disconnect");
+        //send("Disconnect");
 
         try {
             this.socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void onDataReceived(String data) {
-        System.out.println(data);
     }
 }

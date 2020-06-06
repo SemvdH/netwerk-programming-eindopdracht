@@ -1,16 +1,19 @@
 package netwerkprog.game.server;
 
+import netwerkprog.game.server.controllers.DataController;
 import netwerkprog.game.server.controllers.SessionController;
 
 import java.util.HashMap;
 
 public class Server {
     private SessionController sessionController;
+    private DataController dataController;
     private Thread sessionThread;
     private HashMap<String, Thread> gameThreads;
 
     public void start() {
-        this.sessionController = new SessionController();
+        this.sessionController = new SessionController(this);
+        this.dataController = new DataController();
 
         this.gameThreads = new HashMap<>();
         this.sessionThread = new Thread(sessionController);

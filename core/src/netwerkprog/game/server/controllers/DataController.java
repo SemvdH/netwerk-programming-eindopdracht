@@ -1,11 +1,14 @@
 package netwerkprog.game.server.controllers;
 
+import netwerkprog.game.util.data.CharacterData;
+import netwerkprog.game.util.data.Data;
+import netwerkprog.game.util.data.DataCallback;
 import netwerkprog.game.util.game.GameCharacter;
 
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class DataController {
+public class DataController implements DataCallback {
     private final HashSet<GameCharacter> gameCharacters;
 
     public DataController() {
@@ -43,5 +46,16 @@ public class DataController {
             }
         }
         throw new IllegalArgumentException("The character does not exist.");
+    }
+
+    @Override
+    public void onDataReceived(Data data) {
+        switch (data.getType()) {
+            case "Character" :
+                if (data.getPayload() instanceof CharacterData) {
+
+                }
+                break;
+        }
     }
 }
