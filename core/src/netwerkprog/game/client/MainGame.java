@@ -125,7 +125,7 @@ public class MainGame extends ApplicationAdapter {
         for (int i = 1; i <= 5; i++) {
             GameCharacter temp = new Agent("Agent" + i, characters[11][0], new BodySwap("Test"));
             int width = mapRenderer.getGameTiles()[0].length;
-            mapRenderer.getGameTiles()[3][width-(i+1)].visit(temp);
+            mapRenderer.getGameTiles()[3][width - (i + 1)].visit(temp);
             if (chosenFaction == Faction.MEGACORPORATION) {
                 this.team.addMember(temp);
             }
@@ -141,6 +141,7 @@ public class MainGame extends ApplicationAdapter {
         music.setVolume(.1f);
         music.play();
         music.setLooping(true);
+
     }
 
 

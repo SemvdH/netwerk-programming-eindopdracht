@@ -163,6 +163,7 @@ public class GameInputProcessor implements InputProcessor {
                             }
 //                            clicking on enemy
                             if (mainGame.hasCharacterSelected() && gameTile.containsCharacter() && gameTile.getCharacter().getFaction() != mainGame.getChosenFaction()) {
+                                if (mainGame.mapRenderer.getSurroundedTilesOfCurrentCharacter().contains(gameTile))
                                 gameTile.getCharacter().damage(10);
                             }
                             // set selected character
