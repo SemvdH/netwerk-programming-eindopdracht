@@ -35,4 +35,8 @@ public class Server {
 //            gameThreads.get(game).start();
 //        }
     }
+
+    public DataController getDataController() {
+        return dataController;
+    }
 }

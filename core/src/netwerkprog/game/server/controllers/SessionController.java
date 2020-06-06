@@ -3,9 +3,12 @@ package netwerkprog.game.server.controllers;
 import netwerkprog.game.server.Server;
 import netwerkprog.game.server.ServerClient;
 import netwerkprog.game.util.application.Controller;
+import netwerkprog.game.util.data.ConnectionData;
 import netwerkprog.game.util.data.Data;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -57,25 +60,48 @@ public class SessionController extends Controller {
      * @param socket The socket used for the client connections.
      */
     public void registerClient(Socket socket) {
-//        try {
-//            System.out.println("[SERVER] got new client on " + socket.getInetAddress().getHostAddress());
-//            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-//            DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-//
-//            outputStream.writeUTF("Enter username: ");
-//            String username = inputStream.readUTF();
-//
-//            System.out.println("[SERVER] got username " + username);
-//            ServerClient serverClient = new ServerClient(username, socket, this);
-//
-//            Thread t = new Thread(serverClient);
-//            t.start();
-//
-//            this.clientThreads.put(username,t);
-//            this.clients.add(serverClient);
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        }
+        try {
+            System.out.println("[SERVER] got new client on " + socket.getInetAddress().getHostAddress());
+            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+
+            String username;
+
+            outputStream.writeObject(new ConnectionData("Connect", "Please give a username"));
+            Object object = inputStream.readObject();
+            if (object instanceof Data) {
+                Data data = (Data) object;
+                if (data instanceof ConnectionData) {
+                    ConnectionData connectionData = (ConnectionData) data.getPayload();
+                    if (connectionData.getAction().equals("Connect")) {
+                        username = connectionData.getMessage();
+                    } else {
+                        //todo error messaging.
+                        registerClient(socket);
+                        return;
+                    }
+                } else {
+                    //todo error messaging.
+                    registerClient(socket);
+                    return;
+                }
+            } else {
+                //todo error messaging.
+                registerClient(socket);
+                return;
+            }
+
+            System.out.println("[SERVER] got username " + username);
+            ServerClient serverClient = new ServerClient(username, socket, this, server.getDataController());
+
+            Thread t = new Thread(serverClient);
+            t.start();
+
+            this.clientThreads.put(username,t);
+            this.clients.add(serverClient);
+        } catch (IOException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
