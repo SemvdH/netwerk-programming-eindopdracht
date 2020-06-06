@@ -90,7 +90,7 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
 //        playSong();
 
 
-//        connectToServer();
+        connectToServer();
     }
 
     private void initCharacters() {

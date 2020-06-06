@@ -1,6 +1,8 @@
 package netwerkprog.game.util.data;
 
-public class Data {
+import java.io.Serializable;
+
+public class Data implements Serializable {
     public static int port() {
         return 8000;
     }

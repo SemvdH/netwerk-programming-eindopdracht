@@ -1,21 +1,25 @@
 package netwerkprog.game.client.game.connections;
 
 import netwerkprog.game.util.application.Controller;
+import netwerkprog.game.util.data.ConnectionData;
 import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.DataCallback;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Arrays;
 
 public class Client extends Controller {
     private final int port;
     private final String hostname;
-    private boolean isConnected = true;
+    private boolean isConnected;
     private Socket socket;
     private Thread receiveThread;
     private DataCallback callback;
     private ObjectOutputStream outputStream;
+    private boolean connecting;
 
     public Client(String hostname, DataCallback callback) {
         this.port = Data.port();
@@ -37,18 +41,41 @@ public class Client extends Controller {
      */
     public void connect() {
         System.out.println("[CLIENT] connecting to server on port " + this.port);
+        this.connecting = true;
         try {
             this.socket = new Socket(this.hostname, this.port);
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             this.outputStream = new ObjectOutputStream(socket.getOutputStream());
-
+            register(in);
             this.receiveThread = new Thread( () -> receive(in));
-
         } catch (IOException e) {
+            this.connecting = false;
             System.out.println("[CLIENT] there was an error connecting : " + e.getMessage());
             StringBuilder sb = new StringBuilder("         Stacktrace : ");
             Arrays.stream(e.getStackTrace()).forEach(n -> sb.append("\t\t").append(n).append("\n"));
             System.out.println(sb.toString());
+        }
+    }
+
+    public void register(ObjectInputStream in) {
+        while (connecting) {
+            String username = "DEV";
+            send(new ConnectionData("Connect", username));
+            try {
+                Object object = in.readObject();
+                if (object instanceof Data) {
+                    Data data = (Data) object;
+                    if (data.getPayload() instanceof ConnectionData) {
+                        ConnectionData connectionData = (ConnectionData) data.getPayload();
+                        if (connectionData.getAction().equals("Connect") && connectionData.getMessage().equals("Confirm")){
+                            this.connecting = false;
+                            this.isConnected = true;
+                        }
+                    }
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -89,7 +116,7 @@ public class Client extends Controller {
             e.printStackTrace();
         }
 
-        //send("Disconnect");
+        send(new ConnectionData("Disconnect", "DEV"));
 
         try {
             this.socket.close();

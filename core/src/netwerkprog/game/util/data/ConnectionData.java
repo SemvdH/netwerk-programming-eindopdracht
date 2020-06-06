@@ -1,14 +1,16 @@
 package netwerkprog.game.util.data;
 
-public class ConnectionData extends Data {
+import java.io.Serializable;
+
+public class ConnectionData extends Data implements Serializable {
     private final String action;
     private final String message;
 
-    public ConnectionData(String action, String username) {
+    public ConnectionData(String action, String message) {
         super("Connection");
         super.setPayload(this);
         this.action = action;
-        this.message = username;
+        this.message = message;
     }
 
     public String getAction() {

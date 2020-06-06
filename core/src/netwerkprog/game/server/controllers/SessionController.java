@@ -65,34 +65,34 @@ public class SessionController extends Controller {
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
 
-            String username;
+            String username = "";
+            boolean registering = true;
 
-            outputStream.writeObject(new ConnectionData("Connect", "Please give a username"));
-            Object object = inputStream.readObject();
-            if (object instanceof Data) {
-                Data data = (Data) object;
-                if (data instanceof ConnectionData) {
-                    ConnectionData connectionData = (ConnectionData) data.getPayload();
-                    if (connectionData.getAction().equals("Connect")) {
-                        username = connectionData.getMessage();
+            while (registering) {
+                outputStream.writeObject(new ConnectionData("Connect", "Please give a username"));
+                Object object = inputStream.readObject();
+
+                if (object instanceof Data) {
+                    Data data = (Data) object;
+                    if (data instanceof ConnectionData) {
+                        ConnectionData connectionData = (ConnectionData) data.getPayload();
+                        if (connectionData.getAction().equals("Connect")) {
+                            username = connectionData.getMessage();
+                            outputStream.writeObject(new ConnectionData("Connect", "Confirm"));
+                            registering = false;
+                        } else {
+                            //todo error messaging.
+                        }
                     } else {
                         //todo error messaging.
-                        registerClient(socket);
-                        return;
                     }
                 } else {
                     //todo error messaging.
-                    registerClient(socket);
-                    return;
                 }
-            } else {
-                //todo error messaging.
-                registerClient(socket);
-                return;
             }
 
             System.out.println("[SERVER] got username " + username);
-            ServerClient serverClient = new ServerClient(username, socket, this, server.getDataController());
+            ServerClient serverClient = new ServerClient(username, inputStream, outputStream, this, server.getDataController());
 
             Thread t = new Thread(serverClient);
             t.start();

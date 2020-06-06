@@ -1,17 +1,15 @@
 package netwerkprog.game.util.game;
 
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
-
 import java.util.Objects;
 
-public abstract class GameCharacter extends Actor implements Comparable<GameCharacter> {
+public abstract class GameCharacter extends Actor implements Comparable<GameCharacter>, Serializable {
     protected String name;
     protected Faction faction;
     protected HashSet<Ability> abilities;

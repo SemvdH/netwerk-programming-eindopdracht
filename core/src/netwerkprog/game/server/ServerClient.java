@@ -2,13 +2,13 @@ package netwerkprog.game.server;
 
 import netwerkprog.game.server.controllers.DataController;
 import netwerkprog.game.server.controllers.SessionController;
+import netwerkprog.game.util.data.ConnectionData;
 import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.DataCallback;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 
 public class ServerClient implements Runnable {
     private ObjectInputStream in;
@@ -18,18 +18,13 @@ public class ServerClient implements Runnable {
     private final DataCallback callback;
     private boolean isConnected;
 
-    public ServerClient(String name, Socket socket, SessionController server, DataController dataController) {
+    public ServerClient(String name, ObjectInputStream in, ObjectOutputStream out, SessionController server, DataController dataController) {
         this.name = name;
         this.server = server;
         this.callback = dataController;
-        try {
-            this.in = new ObjectInputStream(socket.getInputStream());
-            this.out = new ObjectOutputStream(socket.getOutputStream());
-            this.isConnected = true;
-        } catch (IOException e) {
-            this.isConnected = false;
-            e.printStackTrace();
-        }
+        this.in = in;
+        this.out = out;
+        this.isConnected = true;
     }
 
     public void writeData(Data data) {
@@ -44,7 +39,19 @@ public class ServerClient implements Runnable {
     public void run() {
         while (this.isConnected) {
             try {
-                callback.onDataReceived((Data) this.in.readObject());
+                Object object = this.in.readObject();
+                if (object instanceof Data) {
+                    Data data = (Data) object;
+                    if (data.getPayload() instanceof ConnectionData) {
+                        ConnectionData connectionData = (ConnectionData) data.getPayload();
+                        if (connectionData.getAction().equals("Disconnect")) {
+                            this.isConnected = false;
+                            //todo properly remove thread.
+                        }
+                    } else {
+                        callback.onDataReceived((Data) this.in.readObject());
+                    }
+                }
             } catch (IOException e) {
                 System.out.println("[SERVERCLIENT] caught exception - " + e.getMessage());
                 System.out.println("[SERVERCLIENT] terminating failing connection...");
