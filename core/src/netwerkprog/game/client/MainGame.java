@@ -120,7 +120,6 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
         this.team = new Team();
         this.enemyTeam = new Team();
 
-
         System.out.println(this.chosenFaction);
         for (int i = 1; i <= 5; i++) {
             GameCharacter temp = new Hacker("hacker" + i, characters[5][0], new BodySwap("test"));
