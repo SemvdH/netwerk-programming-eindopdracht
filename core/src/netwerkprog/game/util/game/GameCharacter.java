@@ -6,13 +6,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import netwerkprog.game.client.game.map.GameTile;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class GameCharacter extends Actor implements Comparable<GameCharacter> {
+public abstract class GameCharacter extends Actor implements Comparable<GameCharacter>, Serializable {
     protected String name;
     protected Faction faction;
     protected HashSet<Ability> abilities;

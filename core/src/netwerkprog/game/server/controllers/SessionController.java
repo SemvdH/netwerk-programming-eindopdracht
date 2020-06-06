@@ -1,11 +1,13 @@
 package netwerkprog.game.server.controllers;
 
+import netwerkprog.game.server.Server;
 import netwerkprog.game.server.ServerClient;
 import netwerkprog.game.util.application.Controller;
+import netwerkprog.game.util.data.ConnectionData;
 import netwerkprog.game.util.data.Data;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,12 +19,14 @@ import java.util.Set;
  * The sessionController manages any connections from new clients and assigns individual threads to said clients.
  */
 public class SessionController extends Controller {
+    private Server server;
     private ServerSocket serverSocket;
     private final ArrayList<ServerClient> clients = new ArrayList<>();
     private final HashMap<String, Thread> clientThreads = new HashMap<>();
     private boolean listening;
 
-    public SessionController() {
+    public SessionController(Server server) {
+        this.server = server;
         this.listening = true;
     }
 
@@ -59,43 +63,66 @@ public class SessionController extends Controller {
         try {
             System.out.println("[SERVER] got new client on " + socket.getInetAddress().getHostAddress());
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-            DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
 
-            outputStream.writeUTF("Enter username: ");
-            String username = inputStream.readUTF();
+            String username = "";
+            boolean registering = true;
+
+            while (registering) {
+                outputStream.writeObject(new ConnectionData("Connect", "Please give a username"));
+                Object object = inputStream.readObject();
+
+                if (object instanceof Data) {
+                    Data data = (Data) object;
+                    if (data instanceof ConnectionData) {
+                        ConnectionData connectionData = (ConnectionData) data.getPayload();
+                        if (connectionData.getAction().equals("Connect")) {
+                            username = connectionData.getMessage();
+                            outputStream.writeObject(new ConnectionData("Connect", "Confirm"));
+                            registering = false;
+                        } else {
+                            //todo error messaging.
+                        }
+                    } else {
+                        //todo error messaging.
+                    }
+                } else {
+                    //todo error messaging.
+                }
+            }
 
             System.out.println("[SERVER] got username " + username);
-            ServerClient serverClient = new ServerClient(username, socket, this);
+            ServerClient serverClient = new ServerClient(username, inputStream, outputStream, this, server.getDataController());
 
             Thread t = new Thread(serverClient);
             t.start();
 
             this.clientThreads.put(username,t);
             this.clients.add(serverClient);
-        } catch (IOException ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
     }
 
     /**
      * Sends a server message to all connected clients.
-     * @param text message.
+     * @param data message.
      */
-    public void serverMessage(String text) {
+    public void serverMessage(Data data) {
         for (ServerClient serverClient : clients) {
-            serverClient.writeUTF(text);
+            serverClient.writeData(data);
         }
     }
 
     /**
      * Sends a message to a specific user.
      * @param name user.
-     * @param text message.
+     * @param data message.
      */
-    public void personalMessage(String name, String text) {
+    public void personalMessage(String name, Data data) {
         for (ServerClient serverClient : clients) {
             if (serverClient.getName().equals(name)) {
-                serverClient.writeUTF(text);
+                serverClient.writeData(data);
                 break;
             }
         }
@@ -113,7 +140,7 @@ public class SessionController extends Controller {
             e.printStackTrace();
         }
         this.clientThreads.remove(serverClient.getName());
-        this.serverMessage(serverClient.getName() + " left!");
+        //this.serverMessage(serverClient.getName() + " left!");
     }
 
     /**
