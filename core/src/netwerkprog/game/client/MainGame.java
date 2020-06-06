@@ -141,8 +141,6 @@ public class MainGame extends ApplicationAdapter {
         music.setVolume(.1f);
         music.play();
         music.setLooping(true);
-
-        connectToServer();
     }
 
 
