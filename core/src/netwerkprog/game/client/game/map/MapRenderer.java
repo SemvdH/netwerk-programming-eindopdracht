@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import netwerkprog.game.client.MainGame;
+import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.Renderable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -144,11 +145,13 @@ public class MapRenderer implements Renderable {
             int cy = y + direction[1];
             if (cy >= 0 && cy < gameTiles.length)
                 if (cx >= 0 && cx < gameTiles[cy].length)
-                    res.add(gameTiles[cy][cx]);
+                    if (gameTiles[cy][cx].getSymbol() != '#')
+                        res.add(gameTiles[cy][cx]);
         }
         surroundedTilesOfCurrentCharacter = res;
         return res;
     }
+
 
     public int getPos(GameTile tile, String choice) {
         for (int row = 0; row < this.gameTiles.length; row++) {

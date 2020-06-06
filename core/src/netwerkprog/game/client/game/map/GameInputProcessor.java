@@ -157,9 +157,11 @@ public class GameInputProcessor implements InputProcessor {
                             }
                             if (!mainGame.hasCharacterSelected() && gameTile.containsCharacter()) {
                                 mainGame.setSelectedCharacter(gameTile.getCharacter());
+                                mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col,row);
                             }
                             if (gameTile.containsCharacter() && !mainGame.getSelectedCharacter().equals(gameTile.getCharacter())) {
                                 mainGame.setSelectedCharacter(gameTile.getCharacter());
+                                mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col,row);
                             }
                             return true;
                         }

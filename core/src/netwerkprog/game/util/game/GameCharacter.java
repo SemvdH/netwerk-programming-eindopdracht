@@ -5,10 +5,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import netwerkprog.game.client.game.map.GameTile;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import java.util.List;
 import java.util.Objects;
 
 public abstract class GameCharacter extends Actor implements Comparable<GameCharacter> {
@@ -18,6 +21,7 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
     protected boolean override;
     protected TextureRegion textureRegion;
     protected int health;
+    protected List<GameTile> allowedToMove;
 
     public GameCharacter(String name, Faction faction, TextureRegion textureRegion, Ability... abilities) {
         super();
@@ -27,6 +31,7 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
         this.override = false;
         this.textureRegion = textureRegion;
         this.health = 100;
+        this.allowedToMove = new ArrayList<>();
     }
 
     public String getName() {
@@ -105,5 +110,13 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
                 ", x=" + super.getX() +
                 ", y=" + super.getY() +
                 '}';
+    }
+
+    public List<GameTile> getAllowedToMove() {
+        return allowedToMove;
+    }
+
+    public void setAllowedToMove(List<GameTile> allowedToMove) {
+        this.allowedToMove = allowedToMove;
     }
 }
