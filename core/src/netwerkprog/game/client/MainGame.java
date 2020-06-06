@@ -7,6 +7,8 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -18,6 +20,7 @@ import netwerkprog.game.client.game.map.MapRenderer;
 import netwerkprog.game.client.game.map.GameInputProcessor;
 import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.FrameRate;
+import netwerkprog.game.util.graphics.TextRenderer;
 
 public class MainGame extends ApplicationAdapter {
     SpriteBatch batch;
@@ -29,6 +32,10 @@ public class MainGame extends ApplicationAdapter {
     private GameInputProcessor gameInputProcessor;
     private GameCharacter selectedCharacter;
     private Team team;
+    private Team enemyTeam;
+    private TextRenderer textRenderer;
+    private BitmapFont font;
+
 
     private Map map;
     public MapRenderer mapRenderer;
@@ -55,6 +62,8 @@ public class MainGame extends ApplicationAdapter {
         screenHeight = Gdx.graphics.getHeight();
         frameRate = new FrameRate();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        textRenderer = new TextRenderer();
+        font = new BitmapFont();
 
 
         String[] strings = new String[]{
@@ -80,6 +89,7 @@ public class MainGame extends ApplicationAdapter {
         camera.viewportWidth = screenWidth / 2;
         camera.viewportHeight = screenHeight / 2;
         camera.update();
+
         initCharacters();
 //        this.tree.insert(new Hacker(,new BodySwap()));
 
@@ -93,7 +103,7 @@ public class MainGame extends ApplicationAdapter {
     private void initCharacters() {
         Texture texture = new Texture(Gdx.files.internal("core/assets/characters.png"));
         TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
-        this.testCharacter = new Hacker("harry",characters[1][0], new BodySwap("test"));
+        this.testCharacter = new Hacker("harryyyyyyyyyy",characters[1][0], new BodySwap("test"));
         GameCharacter character2 = new Hacker("test2",characters[2][0], new BodySwap("test"));
         this.setSelectedCharacter(testCharacter);
         mapRenderer.getGameTiles()[1][1].visit(testCharacter);
@@ -135,6 +145,13 @@ public class MainGame extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         mapRenderer.render();
         frameRate.render();
+        renderText();
+
+    }
+
+    private void renderText() {
+        String text = "Selected character: " + selectedCharacter.getName();
+        textRenderer.render(text,Gdx.graphics.getWidth() - text.length() * 6.5f,Gdx.graphics.getHeight() - 3);
     }
 
     /**
@@ -153,6 +170,7 @@ public class MainGame extends ApplicationAdapter {
         screenWidth = width;
         frameRate.resize(width, height);
         mapRenderer.resize(width, height);
+        textRenderer.resize(width,height);
     }
 
     @Override
@@ -163,6 +181,7 @@ public class MainGame extends ApplicationAdapter {
     @Override
     public void dispose() {
         batch.dispose();
+        textRenderer.dispose();
     }
 
     public float getScreenWidth() {

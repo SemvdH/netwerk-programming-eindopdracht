@@ -3,7 +3,9 @@ package netwerkprog.game.client.game.map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import netwerkprog.game.client.MainGame;
 import netwerkprog.game.util.graphics.Renderable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -17,8 +19,12 @@ public class MapRenderer implements Renderable {
     private OrthographicCamera cam;
     private static int x = 0;
     private static int y = 0;
+    private BitmapFont font;
+
+    private ShapeRenderer shapeRenderer;
 
     private MainGame mainGame;
+    private Texture square;
 
 
     public static TextureRegion FLOOR_TILE;
@@ -43,6 +49,8 @@ public class MapRenderer implements Renderable {
         cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.camera = camera;
         this.mainGame = MainGame.getInstance();
+        font = new BitmapFont();
+        square = new Texture(Gdx.files.internal("square.png"));
         makeTiles();
     }
 
@@ -100,9 +108,11 @@ public class MapRenderer implements Renderable {
             for (int col = 0; col < gameTiles[0].length; col++) {
                 GameTile cur = gameTileRow[col];
                 batch.draw(cur.getTextureRegion(), cur.x, cur.y);
+
                 if (cur.containsCharacter()) {
                     batch.draw(cur.getCharacter().getTextureRegion(), cur.x, cur.y);
-//                    System.out.println("drawing character at " + cur.x + " " + cur.y);
+                    if (cur.getCharacter().equals(mainGame.getSelectedCharacter()))
+                        batch.draw(square, cur.x, cur.y);
                 }
             }
         }

@@ -108,6 +108,10 @@ public class GameInputProcessor implements InputProcessor {
             }
 
             return true;
+        } else {
+            if (keycode == Input.Keys.ENTER) {
+
+            }
         }
         return false;
     }
@@ -132,7 +136,8 @@ public class GameInputProcessor implements InputProcessor {
                         if (mainGame.hasCharacterSelected() && !gameTile.containsCharacter()) {
 //                            System.out.println(mainGame.getSelectedCharacter());
                             removeCharacterFromTile(mainGame.getSelectedCharacter());
-                            gameTile.visit(mainGame.getSelectedCharacter());
+                            if (gameTile.getSymbol() != '#')
+                                gameTile.visit(mainGame.getSelectedCharacter());
                         }
                         if (!mainGame.hasCharacterSelected() && gameTile.containsCharacter()) {
                             mainGame.setSelectedCharacter(gameTile.getCharacter());
