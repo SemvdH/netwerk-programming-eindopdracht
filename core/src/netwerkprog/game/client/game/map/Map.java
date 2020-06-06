@@ -1,7 +1,5 @@
 package netwerkprog.game.client.game.map;
 
-import java.util.Arrays;
-
 /**
  * Map class to hold a 2d array of tiles which will specify the map
  */

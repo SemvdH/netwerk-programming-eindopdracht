@@ -6,7 +6,7 @@ import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
 
 public class Agent extends GameCharacter {
-    public Agent(TextureRegion textureRegion, Ability... abilities) {
-        super("Agent", Faction.MEGACORPORATION, textureRegion, abilities);
+    public Agent(String name, TextureRegion textureRegion, Ability... abilities) {
+        super(name, Faction.MEGACORPORATION, textureRegion, abilities);
     }
 }

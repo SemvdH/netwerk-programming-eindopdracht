@@ -3,24 +3,33 @@ package netwerkprog.game.client;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import netwerkprog.game.client.game.GAMESTATE;
+import netwerkprog.game.client.game.characters.Agent;
 import netwerkprog.game.client.game.characters.Hacker;
 import netwerkprog.game.client.game.characters.Team;
 import netwerkprog.game.client.game.characters.abilities.BodySwap;
 import netwerkprog.game.client.game.connections.Client;
+import netwerkprog.game.client.game.map.GameInputProcessor;
+import netwerkprog.game.client.game.map.GameTile;
 import netwerkprog.game.client.game.map.Map;
 import netwerkprog.game.client.game.map.MapRenderer;
-import netwerkprog.game.client.game.map.GameInputProcessor;
 import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.DataCallback;
+import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.FrameRate;
+import netwerkprog.game.util.graphics.TextRenderer;
+
+import java.awt.*;
 
 public class MainGame extends ApplicationAdapter implements DataCallback {
     SpriteBatch batch;
@@ -32,11 +41,16 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
     private GameInputProcessor gameInputProcessor;
     private GameCharacter selectedCharacter;
     private Team team;
+    private Team enemyTeam;
+    private TextRenderer textRenderer;
+    private BitmapFont font;
+    private GlyphLayout layout;
+    private GAMESTATE gamestate;
+    private Faction chosenFaction;
 
     private Map map;
     public MapRenderer mapRenderer;
-
-    public GameCharacter testCharacter;
+    public AssetManager assets;
 
     private static MainGame INSTANCE;
 
@@ -58,17 +72,20 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
         screenHeight = Gdx.graphics.getHeight();
         frameRate = new FrameRate();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
+        textRenderer = new TextRenderer();
+        font = new BitmapFont();
+        layout = new GlyphLayout();
+        assets = new AssetManager();
 
         String[] strings = new String[]{
                 "#########################",
                 "#xxxx                   #",
                 "#   x                   #",
-                "#   xxxx                #",
-                "#      xx               #",
-                "#       x               #",
-                "#       x               #",
-                "#       x               #",
+                "#   xxxx     xxxxx      #",
+                "#   xxxx     xxxxx      #",
+                "#   xxxx     xx xx      #",
+                "#       x    xxxxx      #",
+                "#       x    xxxx       #",
                 "#       x               #",
                 "#           xxxxxx      #",
                 "#            x          #",
@@ -83,7 +100,7 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
         camera.viewportWidth = screenWidth / 2;
         camera.viewportHeight = screenHeight / 2;
         camera.update();
-        initCharacters();
+        setGamestate(GAMESTATE.SELECTING_FACTION);
 //        this.tree.insert(new Hacker(,new BodySwap()));
 
 
@@ -93,16 +110,29 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
         connectToServer();
     }
 
-    private void initCharacters() {
-        Texture texture = new Texture(Gdx.files.internal("core/assets/characters.png"));
+    public void initCharacters() {
+        assets.load("core/assets/characters.png", Texture.class);
+        assets.finishLoading();
+        Texture texture = assets.get("core/assets/characters.png");
         TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
-        this.testCharacter = new Hacker("harry",characters[1][0], new BodySwap("test"));
-        GameCharacter character2 = new Hacker("test2",characters[2][0], new BodySwap("test"));
-        this.setSelectedCharacter(testCharacter);
-        mapRenderer.getGameTiles()[1][1].visit(testCharacter);
-        mapRenderer.getGameTiles()[1][2].visit(character2);
         this.team = new Team();
-        this.team.addMember(this.testCharacter, character2);
+
+        for (int i = 1; i <= 5; i++) {
+            GameCharacter temp = new Hacker("hacker" + i, characters[5][0], new BodySwap("test"));
+            mapRenderer.getGameTiles()[1][i].visit(temp);
+            if (chosenFaction == Faction.HACKER) {
+                this.team.addMember(temp);
+            }
+        }
+
+        for (int i = 1; i <= 5; i++) {
+            GameCharacter temp = new Agent("Agent" + i, characters[11][0], new BodySwap("Test"));
+            mapRenderer.getGameTiles()[3][i].visit(temp);
+            if (chosenFaction == Faction.MEGACORPORATION) {
+                this.team.addMember(temp);
+            }
+        }
+        this.setSelectedCharacter(this.team.get(0));
 
     }
 
@@ -132,12 +162,36 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
      */
     @Override
     public void render() {
-        update();
-        // clear screen
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        mapRenderer.render();
-        frameRate.render();
+        if (this.gamestate == GAMESTATE.PLAYING) {
+            update();
+            // clear screen
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            mapRenderer.render();
+            frameRate.render();
+            renderText();
+        } else if (this.gamestate == GAMESTATE.SELECTING_FACTION) {
+            renderString("FACTION SELECT\nPress 1 for mega corporation, press 2 for hackers", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
+        }
+
+    }
+
+    private void renderText() {
+        String text = "FACION: " + chosenFaction;
+        text += "\nSelected character: " + selectedCharacter.getName();
+        text += "\nHealth: " + selectedCharacter.getHealth();
+        layout.setText(font, text);
+        textRenderer.render(text, Gdx.graphics.getWidth() - layout.width - 5, Gdx.graphics.getHeight() - 3);
+    }
+
+    private void renderString(String text) {
+        layout.setText(font, text);
+        textRenderer.render(text, Gdx.graphics.getWidth() - layout.width - 5, Gdx.graphics.getHeight() - 3);
+    }
+
+    private void renderString(String text, float x, float y) {
+        layout.setText(font, text);
+        textRenderer.render(text, x - layout.width / 2f, x - layout.height / 2f);
     }
 
     /**
@@ -156,6 +210,7 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
         screenWidth = width;
         frameRate.resize(width, height);
         mapRenderer.resize(width, height);
+        textRenderer.resize(width, height);
     }
 
     @Override
@@ -166,6 +221,8 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
     @Override
     public void dispose() {
         batch.dispose();
+        textRenderer.dispose();
+        assets.dispose();
     }
 
     public float getScreenWidth() {
@@ -186,7 +243,25 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
 
     public void setSelectedCharacter(GameCharacter character) {
         this.selectedCharacter = character;
-        System.out.println("selected character set to : " + character);
+        GameTile characterTile = mapRenderer.getTile(character);
+        Point pos = mapRenderer.getPos(characterTile);
+        mapRenderer.setSurroundedTilesOfCurrentCharacter(pos.x, pos.y);
+    }
+
+    public GAMESTATE getGamestate() {
+        return gamestate;
+    }
+
+    public void setGamestate(GAMESTATE gamestate) {
+        this.gamestate = gamestate;
+    }
+
+    public Faction getChosenFaction() {
+        return chosenFaction;
+    }
+
+    public void setChosenFaction(Faction chosenFaction) {
+        this.chosenFaction = chosenFaction;
     }
 
     public GameCharacter getSelectedCharacter() {
@@ -203,6 +278,6 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
 
     @Override
     public void onDataReceived(Data data) {
-
+        
     }
 }
