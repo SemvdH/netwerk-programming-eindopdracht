@@ -8,7 +8,7 @@ public class RestartSessionControllerTest {
         SessionController sessionController;
         Thread sessionThread;
 
-        sessionController = new SessionController();
+        sessionController = new SessionController(null);
         sessionThread = new Thread(sessionController);
 
         sessionThread.start();
