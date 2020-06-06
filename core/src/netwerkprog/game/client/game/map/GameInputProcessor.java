@@ -149,7 +149,7 @@ public class GameInputProcessor implements InputProcessor {
 //                        System.out.println(gameTile + " row: " + row + ", col: " + col);
                             if (mainGame.hasCharacterSelected() && !gameTile.containsCharacter()) {
 //                            System.out.println(mainGame.getSelectedCharacter());
-                                if (gameTile.getSymbol() != '#') {
+                                if (gameTile.getSymbol() != '#' && mainGame.mapRenderer.getSurroundedTilesOfCurrentCharacter().contains(gameTile)) {
                                     removeCharacterFromTile(mainGame.getSelectedCharacter());
                                     gameTile.visit(mainGame.getSelectedCharacter());
                                     mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col,row);

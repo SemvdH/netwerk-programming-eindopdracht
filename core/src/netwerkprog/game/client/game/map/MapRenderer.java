@@ -11,6 +11,7 @@ import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.Renderable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -152,19 +153,28 @@ public class MapRenderer implements Renderable {
         return res;
     }
 
+    public GameTile getTile(GameCharacter character) {
+        for (GameTile[] tiles : this.gameTiles) {
+            for (GameTile tile : tiles) {
+                if (tile.containsCharacter())
+                    if (tile.getCharacter().equals(character)) {
+                        return tile;
+                    }
+            }
+        }
+        return null;
+    }
 
-    public int getPos(GameTile tile, String choice) {
+
+    public Point getPos(GameTile tile) {
         for (int row = 0; row < this.gameTiles.length; row++) {
             for (int col = 0; col < this.gameTiles[0].length; col++) {
                 if (gameTiles[row][col].equals(tile)) {
-                    if (choice.toLowerCase().equals("row"))
-                        return row;
-                    else if (choice.toLowerCase().equals("col"))
-                        return col;
+                    return new Point(col, row);
                 }
             }
         }
-        return -1;
+        return new Point(-1, -1);
     }
 
     @Override

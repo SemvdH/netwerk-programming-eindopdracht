@@ -17,6 +17,7 @@ import netwerkprog.game.client.game.GAMESTATE;
 import netwerkprog.game.client.game.characters.Hacker;
 import netwerkprog.game.client.game.characters.Team;
 import netwerkprog.game.client.game.characters.abilities.BodySwap;
+import netwerkprog.game.client.game.map.GameTile;
 import netwerkprog.game.client.game.map.Map;
 import netwerkprog.game.client.game.map.MapRenderer;
 import netwerkprog.game.client.game.map.GameInputProcessor;
@@ -24,6 +25,8 @@ import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.FrameRate;
 import netwerkprog.game.util.graphics.TextRenderer;
+
+import java.awt.*;
 
 public class MainGame extends ApplicationAdapter {
     SpriteBatch batch;
@@ -113,11 +116,11 @@ public class MainGame extends ApplicationAdapter {
         TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
         this.testCharacter = new Hacker("harryyyyyyyyyy", characters[1][0], new BodySwap("test"));
         GameCharacter character2 = new Hacker("test2", characters[2][0], new BodySwap("test"));
-        this.setSelectedCharacter(testCharacter);
         mapRenderer.getGameTiles()[1][1].visit(testCharacter);
         mapRenderer.getGameTiles()[1][2].visit(character2);
         this.team = new Team();
         this.team.addMember(this.testCharacter, character2);
+        this.setSelectedCharacter(testCharacter);
 
     }
 
@@ -156,7 +159,7 @@ public class MainGame extends ApplicationAdapter {
             frameRate.render();
             renderText();
         } else if (this.gamestate == GAMESTATE.SELECTING_FACTION) {
-            renderString("FACTION SELECT\nPress 1 for mega corporation, press 2 for hackers",Gdx.graphics.getWidth()/2f,Gdx.graphics.getHeight()/2f);
+            renderString("FACTION SELECT\nPress 1 for mega corporation, press 2 for hackers", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
         }
 
     }
@@ -176,7 +179,7 @@ public class MainGame extends ApplicationAdapter {
 
     private void renderString(String text, float x, float y) {
         layout.setText(font, text);
-        textRenderer.render(text, x - layout.width/2f, x - layout.height/2f);
+        textRenderer.render(text, x - layout.width / 2f, x - layout.height / 2f);
     }
 
     /**
@@ -227,7 +230,9 @@ public class MainGame extends ApplicationAdapter {
 
     public void setSelectedCharacter(GameCharacter character) {
         this.selectedCharacter = character;
-        System.out.println("selected character set to : " + character);
+        GameTile characterTile = mapRenderer.getTile(character);
+        Point pos = mapRenderer.getPos(characterTile);
+        mapRenderer.setSurroundedTilesOfCurrentCharacter(pos.x, pos.y);
     }
 
     public GAMESTATE getGamestate() {
