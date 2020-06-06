@@ -1,9 +1,11 @@
 package netwerkprog.game.util.game;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import netwerkprog.game.client.game.map.GameTile;
+import netwerkprog.game.util.application.Timer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +21,8 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
     protected TextureRegion textureRegion;
     protected int health;
     protected List<GameTile> allowedToMove;
+    protected boolean damageAnimation = false;
+    protected Timer hitAnimationTimer;
 
     public GameCharacter(String name, Faction faction, TextureRegion textureRegion, Ability... abilities) {
         super();
@@ -29,6 +33,7 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
         this.textureRegion = textureRegion;
         this.health = 100;
         this.allowedToMove = new ArrayList<>();
+        this.hitAnimationTimer = new Timer(5000);
     }
 
     public String getName() {
@@ -58,7 +63,9 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
 
     public void damage(int amount) {
         this.health -= amount;
-        if (this.health < 0) this. health = 0;
+        if (this.health < 0) this.health = 0;
+        this.damageAnimation = true;
+        this.hitAnimationTimer.start();
         System.out.println("OUCH character " + name + " was damaged for " + amount);
     }
 
@@ -88,6 +95,18 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
                 Objects.equals(name, character.name) &&
                 faction == character.faction &&
                 Objects.equals(abilities, character.abilities);
+    }
+
+    public void update(double deltaTime) {
+        this.hitAnimationTimer.update(deltaTime);
+
+//        if (this.isShowingAnimation()) {
+//            System.out.println("showing");
+            if (this.hitAnimationTimer.timeout()) {
+                System.out.println("timout");
+                this.damageAnimation = false;
+                this.hitAnimationTimer.stop();
+            }
     }
 
     @Override
@@ -120,5 +139,13 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
 
     public Faction getFaction() {
         return faction;
+    }
+
+    public boolean isShowingAnimation() {
+        return this.damageAnimation;
+    }
+
+    public void setShowingDamageAnimation(boolean damageAnimation) {
+        this.damageAnimation = damageAnimation;
     }
 }

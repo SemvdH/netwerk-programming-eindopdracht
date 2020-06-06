@@ -54,6 +54,12 @@ public class Team {
         return null;
     }
 
+    public void update(double deltaTime) {
+        for (GameCharacter character : this.members) {
+            character.update(deltaTime);
+        }
+    }
+
     public boolean isDead() {
         int dead = 0;
         for (GameCharacter character : this.members) {

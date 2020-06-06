@@ -38,6 +38,7 @@ public class Timer implements Updatable {
 
     public void start() {
         this.timeout = 0;
+        System.out.println("starting timer for " + wait + ", timeout is " + this.timeout);
     }
 
     public void stop() {
@@ -54,7 +55,7 @@ public class Timer implements Updatable {
     public boolean timeout() {
         if (this.timeout == -1) {
             // timeout has occurred and is not looped
-            return false;
+            return true;
         }
 
         if (this.timeout - 1 < 0) {
@@ -89,11 +90,14 @@ public class Timer implements Updatable {
 
     @Override
     public void update(double deltaTime) {
+        System.out.println("timeout: " + this.timeout);
         if (this.timeout != -1) {
             // Only update when timer is not aborted
             this.time += deltaTime;
+            System.out.println("time is " + this.time);
             if (this.time >= this.wait) {
                 // timeout occurred
+                System.out.println("timeout occurred, time is " + this.time);
                 this.time -= this.wait;
                 this.timeout++;
             }

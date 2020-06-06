@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.client.game.GAMESTATE;
 import netwerkprog.game.client.game.characters.Agent;
 import netwerkprog.game.client.game.characters.Hacker;
@@ -44,6 +45,7 @@ public class MainGame extends ApplicationAdapter {
     private GlyphLayout layout;
     private GAMESTATE gamestate;
     private Faction chosenFaction;
+    private long lastTimeCounted = 0;
 
     private Map map;
     public MapRenderer mapRenderer;
@@ -101,7 +103,7 @@ public class MainGame extends ApplicationAdapter {
 //        this.tree.insert(new Hacker(,new BodySwap()));
 
 
-        playSong();
+//        playSong();
 
 
 //        connectToServer();
@@ -113,6 +115,7 @@ public class MainGame extends ApplicationAdapter {
         Texture texture = assets.get("core/assets/characters.png");
         TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
         this.team = new Team();
+        this.enemyTeam = new Team();
 
         for (int i = 1; i <= 5; i++) {
             GameCharacter temp = new Hacker("hacker" + i, characters[5][0], new BodySwap("test"));
@@ -195,9 +198,12 @@ public class MainGame extends ApplicationAdapter {
      * update method that does all calculation before something is being drawn
      */
     public void update() {
+
         frameRate.update();
         camera.update();
         this.gameInputProcessor.update();
+        this.team.update(Gdx.graphics.getDeltaTime());
+        this.enemyTeam.update(Gdx.graphics.getDeltaTime());
     }
 
     @Override
