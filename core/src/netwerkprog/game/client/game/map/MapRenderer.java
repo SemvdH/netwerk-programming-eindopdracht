@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import netwerkprog.game.client.MainGame;
+import netwerkprog.game.util.application.Timer;
 import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.Renderable;
 
@@ -118,9 +119,9 @@ public class MapRenderer implements Renderable {
 
                 if (cur.containsCharacter()) {
                     batch.draw(cur.getCharacter().getTextureRegion(), cur.x, cur.y);
+
                     if (cur.getCharacter().equals(mainGame.getSelectedCharacter())) {
                         batch.draw(square, cur.x, cur.y);
-
                     }
                 }
             }

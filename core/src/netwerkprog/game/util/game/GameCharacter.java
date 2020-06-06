@@ -59,6 +59,7 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
     public void damage(int amount) {
         this.health -= amount;
         if (this.health < 0) this. health = 0;
+        System.out.println("OUCH character " + name + " was damaged for " + amount);
     }
 
     public boolean isDead() {

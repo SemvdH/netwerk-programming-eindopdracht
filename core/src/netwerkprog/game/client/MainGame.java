@@ -76,13 +76,13 @@ public class MainGame extends ApplicationAdapter {
 
         String[] strings = new String[]{
                 "#########################",
-                "#xxxx                   #",
-                "#   x                   #",
-                "#   xxxx     xxxxx      #",
-                "#   xxxx     xxxxx      #",
-                "#   xxxx     xx xx      #",
-                "#       x    xxxxx      #",
-                "#       x    xxxx       #",
+                "#xxxx        #          #",
+                "#   x        #          #",
+                "#   xxxx     #xxxx      #",
+                "#   xxxx     #xxxx      #",
+                "#   xxxx     #x xx      #",
+                "#       x    #xxxx      #",
+                "#       x    #xxx       #",
                 "#       x               #",
                 "#           xxxxxx      #",
                 "#            x          #",
@@ -101,7 +101,7 @@ public class MainGame extends ApplicationAdapter {
 //        this.tree.insert(new Hacker(,new BodySwap()));
 
 
-//        playSong();
+        playSong();
 
 
 //        connectToServer();
@@ -124,7 +124,8 @@ public class MainGame extends ApplicationAdapter {
 
         for (int i = 1; i <= 5; i++) {
             GameCharacter temp = new Agent("Agent" + i, characters[11][0], new BodySwap("Test"));
-            mapRenderer.getGameTiles()[3][i].visit(temp);
+            int width = mapRenderer.getGameTiles()[0].length;
+            mapRenderer.getGameTiles()[3][width-(i+1)].visit(temp);
             if (chosenFaction == Faction.MEGACORPORATION) {
                 this.team.addMember(temp);
             }
@@ -136,7 +137,7 @@ public class MainGame extends ApplicationAdapter {
 
     private void playSong() {
         // play music
-        Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("core/assets/music.mp3", Files.FileType.Internal));
+        Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("core/assets/earrape.mp3", Files.FileType.Internal));
         music.setVolume(.1f);
         music.play();
         music.setLooping(true);
