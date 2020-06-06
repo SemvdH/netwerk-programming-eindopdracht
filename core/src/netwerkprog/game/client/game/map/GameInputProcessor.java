@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.client.MainGame;
+import netwerkprog.game.client.game.GAMESTATE;
+import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
 
 import java.util.ArrayList;
@@ -89,25 +91,41 @@ public class GameInputProcessor implements InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
 //        System.out.println(camera.position.x + " , " + camera.position.y);
-        if (keysList.contains(keycode)) {
-            if (keycode == keysList.get(0)) {
-                this.isWPressed = false;
-                return true;
-            }
-            if (keycode == keysList.get(1)) {
-                this.isAPressed = false;
-                return true;
-            }
-            if (keycode == keysList.get(2)) {
-                this.isSPressed = false;
-                return true;
-            }
-            if (keycode == keysList.get(3)) {
-                this.isDPressed = false;
-                return true;
-            }
+        if (mainGame.getGamestate() == GAMESTATE.PLAYING) {
 
-            return true;
+            if (keysList.contains(keycode)) {
+                if (keycode == keysList.get(0)) {
+                    this.isWPressed = false;
+                    return true;
+                }
+                if (keycode == keysList.get(1)) {
+                    this.isAPressed = false;
+                    return true;
+                }
+                if (keycode == keysList.get(2)) {
+                    this.isSPressed = false;
+                    return true;
+                }
+                if (keycode == keysList.get(3)) {
+                    this.isDPressed = false;
+                    return true;
+                }
+
+                return true;
+            }
+        } else if (mainGame.getGamestate() == GAMESTATE.SELECTING_FACTION) {
+            if (keycode == Input.Keys.NUM_1) {
+                System.out.println("MEGA CORP");
+                mainGame.setChosenFaction(Faction.MEGACORPORATION);
+                mainGame.initCharacters();
+                mainGame.setGamestate(GAMESTATE.PLAYING);
+            }
+            if (keycode == Input.Keys.NUM_2) {
+                System.out.println("HACKER");
+                mainGame.setChosenFaction(Faction.HACKER);
+                mainGame.initCharacters();
+                mainGame.setGamestate(GAMESTATE.PLAYING);
+            }
         }
         return false;
     }
@@ -122,25 +140,37 @@ public class GameInputProcessor implements InputProcessor {
 
         Vector3 touchPoint = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(touchPoint);
+        if (mainGame.getGamestate() == GAMESTATE.PLAYING) {
 
-        for (int row = 0; row < mainGame.mapRenderer.getGameTiles().length; row++) {
-            for (int col = 0; col < mainGame.mapRenderer.getGameTiles()[0].length; col++) {
-                GameTile gameTile = mainGame.mapRenderer.getGameTiles()[row][col];
-                if (gameTile.contains(touchPoint.x, touchPoint.y)) {
-                    if (button == Input.Buttons.LEFT) {
+
+            for (int row = 0; row < mainGame.mapRenderer.getGameTiles().length; row++) {
+                for (int col = 0; col < mainGame.mapRenderer.getGameTiles()[0].length; col++) {
+                    GameTile gameTile = mainGame.mapRenderer.getGameTiles()[row][col];
+                    if (gameTile.contains(touchPoint.x, touchPoint.y)) {
+                        if (button == Input.Buttons.LEFT) {
 //                        System.out.println(gameTile + " row: " + row + ", col: " + col);
-                        if (mainGame.hasCharacterSelected() && !gameTile.containsCharacter()) {
+                            if (mainGame.hasCharacterSelected() && !gameTile.containsCharacter()) {
 //                            System.out.println(mainGame.getSelectedCharacter());
-                            removeCharacterFromTile(mainGame.getSelectedCharacter());
-                            gameTile.visit(mainGame.getSelectedCharacter());
+                                if (gameTile.getSymbol() != '#' && mainGame.mapRenderer.getSurroundedTilesOfCurrentCharacter().contains(gameTile)) {
+                                    removeCharacterFromTile(mainGame.getSelectedCharacter());
+                                    gameTile.visit(mainGame.getSelectedCharacter());
+                                    mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
+                                }
+                            }
+                            if (!mainGame.hasCharacterSelected() && gameTile.containsCharacter()) {
+                                if (gameTile.getCharacter().getFaction() == mainGame.getChosenFaction()) {
+                                    mainGame.setSelectedCharacter(gameTile.getCharacter());
+                                    mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
+                                }
+                            }
+                            if (gameTile.containsCharacter()
+                                    && !mainGame.getSelectedCharacter().equals(gameTile.getCharacter())
+                                    && gameTile.getCharacter().getFaction() == mainGame.getChosenFaction()) {
+                                mainGame.setSelectedCharacter(gameTile.getCharacter());
+                                mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
+                            }
+                            return true;
                         }
-                        if (!mainGame.hasCharacterSelected() && gameTile.containsCharacter()) {
-                            mainGame.setSelectedCharacter(gameTile.getCharacter());
-                        }
-                        if (gameTile.containsCharacter() && !mainGame.getSelectedCharacter().equals(gameTile.getCharacter())) {
-                            mainGame.setSelectedCharacter(gameTile.getCharacter());
-                        }
-                        return true;
                     }
                 }
             }
