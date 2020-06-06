@@ -18,10 +18,13 @@ import netwerkprog.game.client.game.characters.Agent;
 import netwerkprog.game.client.game.characters.Hacker;
 import netwerkprog.game.client.game.characters.Team;
 import netwerkprog.game.client.game.characters.abilities.BodySwap;
+import netwerkprog.game.client.game.connections.Client;
 import netwerkprog.game.client.game.map.GameInputProcessor;
 import netwerkprog.game.client.game.map.GameTile;
 import netwerkprog.game.client.game.map.Map;
 import netwerkprog.game.client.game.map.MapRenderer;
+import netwerkprog.game.util.data.Data;
+import netwerkprog.game.util.data.DataCallback;
 import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.FrameRate;
@@ -29,7 +32,7 @@ import netwerkprog.game.util.graphics.TextRenderer;
 
 import java.awt.*;
 
-public class MainGame extends ApplicationAdapter {
+public class MainGame extends ApplicationAdapter implements DataCallback {
     SpriteBatch batch;
     float screenWidth;
     float screenHeight;
@@ -106,7 +109,7 @@ public class MainGame extends ApplicationAdapter {
 //        playSong();
 
 
-//        connectToServer();
+        connectToServer();
     }
 
     public void initCharacters() {
@@ -156,7 +159,7 @@ public class MainGame extends ApplicationAdapter {
 
 
     private void connectToServer() {
-        client = new Thread(new Client("localhost"));
+        client = new Thread(new Client("localhost", this));
         try {
             client.start();
         } catch (Exception e) {
@@ -286,4 +289,8 @@ public class MainGame extends ApplicationAdapter {
         return team;
     }
 
+    @Override
+    public void onDataReceived(Data data) {
+        
+    }
 }
