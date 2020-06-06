@@ -3,6 +3,7 @@ package netwerkprog.game.client;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -45,9 +46,9 @@ public class MainGame extends ApplicationAdapter {
     private GAMESTATE gamestate;
     private Faction chosenFaction;
 
-
     private Map map;
     public MapRenderer mapRenderer;
+    public AssetManager assets;
 
     private static MainGame INSTANCE;
 
@@ -72,6 +73,7 @@ public class MainGame extends ApplicationAdapter {
         textRenderer = new TextRenderer();
         font = new BitmapFont();
         layout = new GlyphLayout();
+        assets = new AssetManager();
 
         String[] strings = new String[]{
                 "#########################",
@@ -107,7 +109,9 @@ public class MainGame extends ApplicationAdapter {
     }
 
     public void initCharacters() {
-        Texture texture = new Texture(Gdx.files.internal("core/assets/characters.png"));
+        assets.load("core/assets/characters.png",Texture.class);
+        assets.finishLoading();
+        Texture texture = assets.get("core/assets/characters.png");
         TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
         this.team = new Team();
 
@@ -216,6 +220,7 @@ public class MainGame extends ApplicationAdapter {
     public void dispose() {
         batch.dispose();
         textRenderer.dispose();
+        assets.dispose();
     }
 
     public float getScreenWidth() {

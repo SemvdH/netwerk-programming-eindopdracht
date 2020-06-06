@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Disposable;
 import netwerkprog.game.client.MainGame;
 import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.Renderable;
@@ -57,8 +58,6 @@ public class MapRenderer implements Renderable {
         this.camera = camera;
         this.mainGame = MainGame.getInstance();
         font = new BitmapFont();
-        square = new Texture(Gdx.files.internal("square.png"));
-        square2 = new Texture(Gdx.files.internal("square2.png"));
         makeTiles();
     }
 
@@ -66,7 +65,14 @@ public class MapRenderer implements Renderable {
      * loads all the images for the tiles and adds all the tiles to the array
      */
     private void makeTiles() {
-        Texture texture = new Texture(Gdx.files.internal(tilePath));
+        mainGame.assets.load("square.png", Texture.class);
+        mainGame.assets.load("square2.png", Texture.class);
+        mainGame.assets.load(tilePath, Texture.class);
+        mainGame.assets.finishLoading();
+        square = mainGame.assets.get("square.png");
+        square2 = mainGame.assets.get("square2.png");
+
+        Texture texture = mainGame.assets.get(tilePath);
         TextureRegion[][] tileTextures = TextureRegion.split(texture, 32, 32);
 
         FLOOR_TILE = tileTextures[1][6];
@@ -196,4 +202,5 @@ public class MapRenderer implements Renderable {
     public List<GameTile> getSurroundedTilesOfCurrentCharacter() {
         return surroundedTilesOfCurrentCharacter;
     }
+
 }
