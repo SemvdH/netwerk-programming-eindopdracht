@@ -40,36 +40,7 @@ import java.awt.*;
  * Main game class
  */
 public class MainGame extends Game implements ClientCallback {
-    SpriteBatch batch;
-    float screenWidth;
-    float screenHeight;
-    private FrameRate frameRate;
-    private Client client;
-    private OrthographicCamera camera;
-    private GameInputProcessor gameInputProcessor;
-    private GameCharacter selectedCharacter;
-    private Team team;
-    private Team enemyTeam;
-    private TextRenderer textRenderer;
-    private BitmapFont font;
-    private GlyphLayout layout;
-    private GAMESTATE gamestate;
-    private Faction chosenFaction;
-    private boolean gameOver = false;
-    private int turn = 0;
-    private boolean playersTurn = true;
-    private String username;
-    private boolean ready = false;
-    private boolean enemyReady = false;
-
-    private Map map;
-    public MapRenderer mapRenderer;
-    public AssetManager assets;
-
     private static MainGame INSTANCE;
-
-    private MainGame() {
-    }
 
     /**
      * return the instance of the main game.
@@ -82,19 +53,49 @@ public class MainGame extends Game implements ClientCallback {
         return INSTANCE;
     }
 
+    private GAMESTATE gamestate;
+    private Client client;
+    private FrameRate frameRate;
+    private OrthographicCamera camera;
+    private GameInputProcessor gameInputProcessor;
+    private SpriteBatch batch;
+    private BitmapFont font;
+    private GlyphLayout layout;
+    private TextRenderer textRenderer;
+    private Map map;
+    public MapRenderer mapRenderer; //todo public?
+    public AssetManager assets; //todo public?
+    private Faction chosenFaction;
+    private Team team;
+    private Team enemyTeam;
+    private GameCharacter selectedCharacter;
+    private float screenWidth;
+    private float screenHeight;
+    private String username;
+    private int turn = 0;
+    private boolean playersTurn = true;
+    private boolean ready = false;
+    private boolean enemyReady = false;
+    private boolean gameOver = false;
+
+    private MainGame() {
+    }
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
-        screenWidth = Gdx.graphics.getWidth();
-        screenHeight = Gdx.graphics.getHeight();
+        setGamestate(GAMESTATE.SELECTING_FACTION);
+        connectToServer();
         frameRate = new FrameRate();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        textRenderer = new TextRenderer();
+        camera.position.set(screenWidth / 2, screenHeight / 2, 0);
+        camera.viewportWidth = screenWidth / 2;
+        camera.viewportHeight = screenHeight / 2;
+        camera.update();
+        gameInputProcessor = new GameInputProcessor(camera);
+        batch = new SpriteBatch();
         font = new BitmapFont();
         layout = new GlyphLayout();
-        assets = new AssetManager();
-
+        textRenderer = new TextRenderer();
         String[] strings = new String[]{
                 "#########################",
                 "#xxxx        #          #",
@@ -111,15 +112,11 @@ public class MainGame extends Game implements ClientCallback {
                 "#########################"
         };
         map = new Map(strings);
-        gameInputProcessor = new GameInputProcessor(camera);
-        Gdx.input.setInputProcessor(gameInputProcessor);
         mapRenderer = new MapRenderer(map, 32, batch, camera);
-        camera.position.set(screenWidth / 2, screenHeight / 2, 0);
-        camera.viewportWidth = screenWidth / 2;
-        camera.viewportHeight = screenHeight / 2;
-        camera.update();
-        setGamestate(GAMESTATE.SELECTING_FACTION);
-        connectToServer();
+        assets = new AssetManager();
+        screenWidth = Gdx.graphics.getWidth();
+        screenHeight = Gdx.graphics.getHeight();
+        Gdx.input.setInputProcessor(gameInputProcessor);
         playSong();
     }
 
