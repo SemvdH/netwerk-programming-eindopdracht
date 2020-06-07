@@ -1,11 +1,7 @@
-package netwerkprog.game.server.controllers;
+package netwerkprog.game.server;
 
-import netwerkprog.game.server.Server;
-import netwerkprog.game.server.ServerClient;
 import netwerkprog.game.util.application.Controller;
-import netwerkprog.game.util.data.ConnectionData;
-import netwerkprog.game.util.data.Data;
-import netwerkprog.game.util.data.DataChangeCallback;
+import netwerkprog.game.util.data.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -19,15 +15,13 @@ import java.util.Set;
 /**
  * The sessionController manages any connections from new clients and assigns individual threads to said clients.
  */
-public class SessionController extends Controller implements DataChangeCallback {
-    private Server server;
+public class SessionController extends Controller implements DataCallback {
     private ServerSocket serverSocket;
     private final ArrayList<ServerClient> clients = new ArrayList<>();
     private final HashMap<String, Thread> clientThreads = new HashMap<>();
     private boolean listening;
 
-    public SessionController(Server server) {
-        this.server = server;
+    public SessionController() {
         this.listening = true;
     }
 
@@ -93,7 +87,7 @@ public class SessionController extends Controller implements DataChangeCallback 
             }
 
             System.out.println("[SERVER] got username " + username);
-            ServerClient serverClient = new ServerClient(username, inputStream, outputStream, this, server.getDataController());
+            ServerClient serverClient = new ServerClient(username, inputStream, outputStream, this);
 
             Thread t = new Thread(serverClient);
             t.start();
@@ -166,7 +160,7 @@ public class SessionController extends Controller implements DataChangeCallback 
     }
 
     @Override
-    public void onDataChange(Data data) {
-        serverMessage(data);
+    public void onDataReceived(Data data, DataSource source) {
+
     }
 }

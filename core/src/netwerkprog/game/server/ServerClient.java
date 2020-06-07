@@ -1,7 +1,5 @@
 package netwerkprog.game.server;
 
-import netwerkprog.game.server.controllers.DataController;
-import netwerkprog.game.server.controllers.SessionController;
 import netwerkprog.game.util.data.ConnectionData;
 import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.DataCallback;
@@ -12,17 +10,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class ServerClient implements Runnable, DataSource {
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
+    private final ObjectInputStream in;
+    private final ObjectOutputStream out;
     private final String name;
-    private final SessionController server;
     private final DataCallback callback;
     private boolean isConnected;
 
-    public ServerClient(String name, ObjectInputStream in, ObjectOutputStream out, SessionController server, DataController dataController) {
+    public ServerClient(String name, ObjectInputStream in, ObjectOutputStream out, DataCallback callback) {
         this.name = name;
-        this.server = server;
-        this.callback = dataController;
+        this.callback = callback;
         this.in = in;
         this.out = out;
         this.isConnected = true;

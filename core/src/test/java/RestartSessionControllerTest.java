@@ -1,4 +1,4 @@
-import netwerkprog.game.server.controllers.SessionController;
+import netwerkprog.game.server.SessionController;
 import org.junit.Test;
 
 public class RestartSessionControllerTest {
