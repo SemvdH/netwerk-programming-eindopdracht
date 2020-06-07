@@ -25,6 +25,7 @@ import netwerkprog.game.client.game.map.Map;
 import netwerkprog.game.client.game.map.MapRenderer;
 import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.connection.NameData;
+import netwerkprog.game.util.data.connection.ReadyData;
 import netwerkprog.game.util.data.connection.TeamData;
 import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
@@ -387,11 +388,29 @@ public class MainGame extends Game implements ClientCallback {
 
         } else if (data instanceof ReadyData) {
             ReadyData readyData = (ReadyData) data;
-            if (readyData.getUsername().equals(this.username)) {
-
+            if (!readyData.getUsername().equals(this.username)) {
+                this.enemyReady = true;
+                System.out.println("enemy is ready");
             }
         }
 
+    }
+
+    public void chooseHacker() {
+        System.out.println("chose HACKER");
+        setChosenFaction(Faction.HACKER);
+        send(new TeamData(Faction.MEGACORPORATION, getUsername()));
+//                mainGame.initCharacters();
+//                camera.translate(-400, 0);
+//                mainGame.setGamestate(GAMESTATE.PLAYING);
+    }
+
+    public void chooseMegaCorp() {
+        System.out.println("chose MEGA CORP");
+        setChosenFaction(Faction.MEGACORPORATION);
+        send(new TeamData(Faction.MEGACORPORATION, getUsername()));
+//                mainGame.initCharacters();
+//                mainGame.setGamestate(GAMESTATE.PLAYING);
     }
 
     public String getUsername() {
