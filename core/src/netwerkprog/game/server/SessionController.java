@@ -2,6 +2,7 @@ package netwerkprog.game.server;
 
 import netwerkprog.game.util.application.Controller;
 import netwerkprog.game.util.data.*;
+import netwerkprog.game.util.data.connection.ConnectionData;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
