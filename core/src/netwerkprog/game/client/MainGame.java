@@ -378,7 +378,6 @@ public class MainGame extends Game implements ClientCallback {
     }
 
     public void send(Data data) {
-        System.out.println("[MAINGAME] sending data " + data);
         this.client.writeData(data);
     }
 
@@ -416,7 +415,7 @@ public class MainGame extends Game implements ClientCallback {
             }
         } else if (data instanceof DamageData) {
             DamageData damageData = (DamageData) data;
-            team.get(damageData.getName()).damage(10);
+            team.get(damageData.getName()).damage(100);
         } else if (data instanceof TurnData) {
             this.playersTurn = !this.playersTurn;
         }
