@@ -15,7 +15,7 @@ public class Client implements Runnable {
     private boolean isConnected;
     private Socket socket;
     private Thread receiveThread;
-    private ClientCallback callback;
+    private final ClientCallback callback;
     private ObjectOutputStream outputStream;
     private boolean connecting;
 
@@ -67,8 +67,7 @@ public class Client implements Runnable {
 
     public void register(ObjectInputStream in) {
         while (connecting) {
-            String username = "DEV";
-            writeData(new ConnectionData("Connect", username));
+            writeData(new ConnectionData("Connect", "Request"));
             try {
                 Object object = in.readObject();
                 if (object instanceof Data) {
@@ -128,9 +127,7 @@ public class Client implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        writeData(new ConnectionData("Disconnect", "DEV"));
-
+        writeData(new ConnectionData("Disconnect", "Request"));
         try {
             this.socket.close();
         } catch (IOException e) {

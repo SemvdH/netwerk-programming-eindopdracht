@@ -41,7 +41,6 @@ public class ServerClient implements Runnable, DataSource {
         while (this.isConnected) {
             try {
                 Object object = this.in.readObject();
-                System.out.println("[SERVERCLIENT] got object " + object);
                 if (object instanceof Data) {
                     Data data = (Data) object;
                     if (data.getPayload() instanceof ConnectionData) {
