@@ -12,12 +12,12 @@ import java.util.Arrays;
 public class Client implements Runnable {
     private final int port;
     private final String hostname;
-    private boolean isConnected;
-    private Socket socket;
-    private Thread receiveThread;
     private final ClientCallback callback;
+    private Socket socket;
     private ObjectOutputStream outputStream;
+    private Thread receiveThread;
     private boolean connecting;
+    private boolean isConnected;
 
     public Client(String hostname, ClientCallback callback) {
         this.port = Data.port();
