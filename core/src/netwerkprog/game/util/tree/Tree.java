@@ -16,7 +16,7 @@ public interface Tree<E> extends Iterable<E> {
   public void inorder();
 
   /** Postorder traversal from the root */
-  public void postorder();
+  public void postOrder();
 
   /** Preorder traversal from the root */
   public void preorder();

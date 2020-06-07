@@ -320,6 +320,12 @@ public class MainGame extends Game implements ClientCallback {
         return map.getWidth();
     }
 
+    public void exit() {
+        client.disconnect();
+        dispose();
+        Gdx.app.exit();
+    }
+
     public void setSelectedCharacter(GameCharacter character) {
         if  (!character.isDead()) {
             this.selectedCharacter = character;

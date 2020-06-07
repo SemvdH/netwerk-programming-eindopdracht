@@ -141,7 +141,7 @@ public class BST<E extends Comparable<E>> extends AbstractTree<E> {
      * Post order traversal from the root
      */
     @Override
-    public void postorder() {
+    public void postOrder() {
         postorder(root);
     }
 

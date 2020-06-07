@@ -128,6 +128,10 @@ public class GameInputProcessor implements InputProcessor {
                 mainGame.chooseHacker();
             }
 
+        } else if (mainGame.getGamestate() == GAMESTATE.ENDED) {
+            if (keycode == Input.Keys.ESCAPE) {
+                mainGame.exit();
+            }
         }
         return false;
     }
