@@ -24,7 +24,9 @@ import netwerkprog.game.client.game.map.GameTile;
 import netwerkprog.game.client.game.map.Map;
 import netwerkprog.game.client.game.map.MapRenderer;
 import netwerkprog.game.util.data.Data;
+import netwerkprog.game.util.data.character.MoveData;
 import netwerkprog.game.util.data.connection.NameData;
+import netwerkprog.game.util.data.connection.ReadyData;
 import netwerkprog.game.util.data.connection.TeamData;
 import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
@@ -389,6 +391,13 @@ public class MainGame extends Game implements ClientCallback {
             ReadyData readyData = (ReadyData) data;
             if (readyData.getUsername().equals(this.username)) {
 
+            }
+        } else if (data instanceof MoveData) {
+            MoveData moveData = (MoveData) data;
+            if (moveData.getUsername().equals(this.username)) {
+                moveData.getTile().visit();
+            } else {
+                moveData.getTile().visit();
             }
         }
 
