@@ -227,8 +227,8 @@ public class MainGame extends Game implements ClientCallback {
 
     private void renderTurnText() {
         String text = playersTurn ? "Your turn, moves left: " + (3 - this.turn) : "Other player's turn";
-        layout.setText(font,text);
-        textRenderer.render(text, (Gdx.graphics.getWidth() / 2f) - layout.width / 2f,Gdx.graphics.getHeight() - 3);
+        layout.setText(font, text);
+        textRenderer.render(text, (Gdx.graphics.getWidth() / 2f) - layout.width / 2f, Gdx.graphics.getHeight() - 3);
     }
 
     /**
@@ -353,20 +353,31 @@ public class MainGame extends Game implements ClientCallback {
 
     @Override
     public void onDataReceived(Data data) {
-        System.out.println("[MAINGAME CALLBACK] Got data: " + data.toString());
+        System.out.println("[MAINGAME" + this.username +  "] Got data: " + data.toString());
         if (data instanceof NameData) {
-            System.out.println("[MAINGAME CALLBACK] got name data: " + data);
             this.username = ((NameData) data).getName();
-            System.out.println("[MAINGAME CALLBACK] username is: " + username);
+            System.out.println("[MAINGAME" + this.username +  "] username is: " + username);
         } else if (data instanceof TeamData) {
-            if (this.chosenFaction != null) {
+            // check if it is not our own message
+            if (!((TeamData) data).getUsername().equals(this.username)) {
+                // if we have already chosen a faction, so we were first
+                if (this.chosenFaction != null) {
+                    TeamData teamData = (TeamData) data;
+                    if (this.chosenFaction != teamData.getFaction()) {
+                        // other player chose other faction
+                        initCharacters();
+                        setGamestate(GAMESTATE.PLAYING);
+                    } else {
+                        // other player chose same faction, send back that that one
+                        // was already taken
+                    }
+                } else {
 
-            } else {
-
+                }
             }
 
         }
-        
+
     }
 
     public String getUsername() {
