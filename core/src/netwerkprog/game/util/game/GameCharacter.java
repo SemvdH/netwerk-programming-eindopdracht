@@ -1,7 +1,6 @@
 package netwerkprog.game.util.game;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import netwerkprog.game.client.game.map.GameTile;

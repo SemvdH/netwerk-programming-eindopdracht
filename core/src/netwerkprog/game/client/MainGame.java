@@ -27,7 +27,6 @@ import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.character.DamageData;
 import netwerkprog.game.util.data.character.MoveData;
 import netwerkprog.game.util.data.connection.NameData;
-import netwerkprog.game.util.data.connection.ReadyData;
 import netwerkprog.game.util.data.connection.TeamData;
 import netwerkprog.game.util.data.connection.TurnData;
 import netwerkprog.game.util.game.Faction;
@@ -37,6 +36,9 @@ import netwerkprog.game.util.graphics.TextRenderer;
 
 import java.awt.*;
 
+/**
+ * Main game class
+ */
 public class MainGame extends Game implements ClientCallback {
     SpriteBatch batch;
     float screenWidth;
@@ -69,6 +71,10 @@ public class MainGame extends Game implements ClientCallback {
     private MainGame() {
     }
 
+    /**
+     * return the instance of the main game.
+     * @return the main game
+     */
     public static MainGame getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new MainGame();
@@ -114,8 +120,12 @@ public class MainGame extends Game implements ClientCallback {
         camera.update();
         setGamestate(GAMESTATE.SELECTING_FACTION);
         connectToServer();
+        playSong();
     }
 
+    /**
+     * initialize all characters.
+     */
     public void initCharacters() {
         assets.load("core/assets/characters.png", Texture.class);
         assets.finishLoading();
@@ -152,7 +162,7 @@ public class MainGame extends Game implements ClientCallback {
 
     private void playSong() {
         // play music
-        Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("core/assets/earrape.mp3", Files.FileType.Internal));
+        Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("core/assets/beat.mp3", Files.FileType.Internal));
         music.setVolume(.1f);
         music.play();
         music.setLooping(true);
