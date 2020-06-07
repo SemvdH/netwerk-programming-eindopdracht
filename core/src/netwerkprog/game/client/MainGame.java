@@ -129,6 +129,7 @@ public class MainGame extends Game implements ClientCallback {
         enemyReady = false;
         playersTurn = true;
         turn = 0;
+        chosenFaction = null;
         setGamestate(GAMESTATE.SELECTING_FACTION);
         connectToServer();
 //        playSong();

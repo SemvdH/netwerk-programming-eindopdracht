@@ -24,7 +24,7 @@ public class TextRenderer implements Disposable {
             batch.dispose();
             font.dispose();
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            System.out.println("There was an error disposing textRenderer: " + e.getMessage());
         }
     }
 
