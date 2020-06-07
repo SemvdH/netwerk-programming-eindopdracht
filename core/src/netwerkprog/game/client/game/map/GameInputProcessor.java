@@ -120,12 +120,12 @@ public class GameInputProcessor implements InputProcessor {
         } else if (mainGame.getGamestate() == GAMESTATE.SELECTING_FACTION) {
             if (keycode == Input.Keys.NUM_1) {
                 System.out.println("choosing mega");
-                mainGame.send(new TeamData(Faction.MEGACORPORATION,mainGame.getUsername()));
+                mainGame.send(new TeamData(Faction.MEGACORPORATION, mainGame.getUsername()));
                 mainGame.chooseMegaCorp();
             }
             if (keycode == Input.Keys.NUM_2) {
                 System.out.println("choosing hacker");
-                mainGame.send(new TeamData(Faction.HACKER,mainGame.getUsername()));
+                mainGame.send(new TeamData(Faction.HACKER, mainGame.getUsername()));
                 mainGame.chooseHacker();
             }
 
@@ -160,31 +160,38 @@ public class GameInputProcessor implements InputProcessor {
                                         gameTile.visit(mainGame.getSelectedCharacter());
                                         mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
                                         mainGame.increaseTurn();
-                                        mainGame.send(new MoveData(mainGame.getUsername(),mainGame.getSelectedCharacter().getName(),gameTile));
+                                        mainGame.send(new MoveData(mainGame.getUsername(), mainGame.getSelectedCharacter().getName(), mainGame.mapRenderer.getPos(gameTile)));
                                     }
                                 }
 //                            clicking on enemy
                                 if (mainGame.hasCharacterSelected() && gameTile.containsCharacter() && gameTile.getCharacter().getFaction() != mainGame.getChosenFaction()) {
                                     if (mainGame.mapRenderer.getSurroundedTilesOfCurrentCharacter().contains(gameTile)) {
-                                        gameTile.getCharacter().damage(10);
-                                        mainGame.increaseTurn();
-                                        mainGame.send(new DamageData(gameTile.getCharacter().getName()));
+                                        if (!gameTile.getCharacter().isDead()) {
+                                            gameTile.getCharacter().damage(100);
+                                            mainGame.increaseTurn();
+                                            mainGame.send(new DamageData(gameTile.getCharacter().getName()));
+                                        }
                                     }
                                 }
                             }
                             // set selected character
                             if (!mainGame.hasCharacterSelected() && gameTile.containsCharacter()) {
                                 if (gameTile.getCharacter().getFaction() == mainGame.getChosenFaction()) {
-                                    mainGame.setSelectedCharacter(gameTile.getCharacter());
-                                    mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
+                                    if (!gameTile.getCharacter().isDead()) {
+                                        mainGame.setSelectedCharacter(gameTile.getCharacter());
+                                        mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
+                                    }
+
                                 }
                             }
                             // switch character
                             if (gameTile.containsCharacter()
                                     && !mainGame.getSelectedCharacter().equals(gameTile.getCharacter())
                                     && gameTile.getCharacter().getFaction() == mainGame.getChosenFaction()) {
-                                mainGame.setSelectedCharacter(gameTile.getCharacter());
-                                mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
+                                if (!gameTile.getCharacter().isDead()) {
+                                    mainGame.setSelectedCharacter(gameTile.getCharacter());
+                                    mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
+                                }
                             }
                             return true;
                         }
@@ -195,7 +202,7 @@ public class GameInputProcessor implements InputProcessor {
         return false;
     }
 
-    private void removeCharacterFromTile(GameCharacter character) {
+    public void removeCharacterFromTile(GameCharacter character) {
         rowLoop:
         for (int row = 0; row < mainGame.mapRenderer.getGameTiles().length; row++) {
             for (int col = 0; col < mainGame.mapRenderer.getGameTiles()[0].length; col++) {
