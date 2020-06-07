@@ -5,6 +5,7 @@ import netwerkprog.game.server.ServerClient;
 import netwerkprog.game.util.application.Controller;
 import netwerkprog.game.util.data.ConnectionData;
 import netwerkprog.game.util.data.Data;
+import netwerkprog.game.util.data.NameData;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -61,7 +62,7 @@ public class SessionController extends Controller {
      */
     public void registerClient(Socket socket) {
         try {
-            System.out.println("[SERVER] got new client on " + socket.getInetAddress().getHostAddress());
+            System.out.println("[SERVERCLIENT] got new client on " + socket.getInetAddress().getHostAddress());
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
 
@@ -91,11 +92,18 @@ public class SessionController extends Controller {
                 }
             }
 
-            System.out.println("[SERVER] got username " + username);
+            if (this.clients.isEmpty()) {
+                username = "player1";
+            } else {
+                username = "player" + (this.clients.size() + 1);
+            }
+            System.out.println("[SERVER] setting username: " + username);
             ServerClient serverClient = new ServerClient(username, inputStream, outputStream, this, server.getDataController());
 
             Thread t = new Thread(serverClient);
             t.start();
+
+            serverClient.writeData(new NameData(username));
 
             this.clientThreads.put(username,t);
             this.clients.add(serverClient);
