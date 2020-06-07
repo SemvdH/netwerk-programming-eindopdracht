@@ -145,8 +145,6 @@ public class MainGame extends Game implements ClientCallback {
         TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
         this.team = new Team();
         this.enemyTeam = new Team();
-
-        System.out.println(this.chosenFaction);
         for (int i = 1; i <= 5; i++) {
             GameCharacter temp = new Hacker("hacker" + i, characters[5][0], new BodySwap("test"));
             mapRenderer.getGameTiles()[1][i].visit(temp);
@@ -185,7 +183,7 @@ public class MainGame extends Game implements ClientCallback {
         try {
             t.start();
         } catch (Exception e) {
-            System.out.println("There was an error connecting : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

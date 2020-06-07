@@ -128,23 +128,17 @@ public class MapRenderer implements Renderable {
                 GameTile cur = gameTileRow[col];
                 //draw each tile
                 batch.draw(cur.getTextureRegion(), cur.x, cur.y);
-
                 if (cur.containsCharacter()) {
                     //draw each character on a tile
                     GameCharacter character = cur.getCharacter();
-
                     if (!character.isDead()) {
                         batch.draw(character.getTextureRegion(), cur.x, cur.y);
-
                         //if he's showing an animation, draw the hitmarker.
                         if (character.isShowingAnimation())
                             batch.draw(hitMarker, cur.x, cur.y);
-
                         // if hes selected, draw the green square
-                        if (cur.getCharacter().equals(mainGame.getSelectedCharacter()))
+                        if (character.equals(mainGame.getSelectedCharacter()))
                             batch.draw(square, cur.x, cur.y);
-
-
                     } else {
                         // if hes dead, draw a tombstone
                         batch.draw(tombStone, cur.x, cur.y);
