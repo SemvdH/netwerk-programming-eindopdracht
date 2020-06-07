@@ -410,7 +410,6 @@ public class MainGame extends Game implements ClientCallback {
 
     @Override
     public void onDataReceived(Data data) {
-        System.out.println("got data: " + data);
         if (data instanceof NameData) {
             this.username = ((NameData) data).getName();
             send(new PlayerConnectData(username));
@@ -444,9 +443,7 @@ public class MainGame extends Game implements ClientCallback {
         } else if (data instanceof TurnData) {
             this.playersTurn = !this.playersTurn;
         } else if (data instanceof PlayerConnectData) {
-            System.out.println("Got player connected");
             if (!((PlayerConnectData) data).getUsername().equals(this.username) && !this.otherPlayerConnected) {
-                System.out.println("player connect");
                 otherPlayerConnected = true;
                 send(new PlayerConnectData(username));
             }
