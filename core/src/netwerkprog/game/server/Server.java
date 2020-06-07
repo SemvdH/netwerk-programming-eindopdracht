@@ -13,7 +13,7 @@ public class Server {
 
     public void start() {
         this.sessionController = new SessionController(this);
-        this.dataController = new DataController();
+        this.dataController = new DataController(sessionController);
 
         this.gameThreads = new HashMap<>();
         this.sessionThread = new Thread(sessionController);
