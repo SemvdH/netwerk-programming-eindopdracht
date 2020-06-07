@@ -26,6 +26,8 @@ import netwerkprog.game.client.game.map.MapRenderer;
 import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.DataCallback;
 import netwerkprog.game.util.data.DataSource;
+import netwerkprog.game.util.data.NameData;
+import netwerkprog.game.util.data.TeamData;
 import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.FrameRate;
@@ -53,6 +55,7 @@ public class MainGame extends Game implements DataCallback {
     private boolean gameOver = false;
     private int turn = 0;
     private boolean playersTurn = true;
+    private String username;
 
     private Map map;
     public MapRenderer mapRenderer;
@@ -353,6 +356,22 @@ public class MainGame extends Game implements DataCallback {
     @Override
     public void onDataReceived(Data data, DataSource source) {
         System.out.println("[MAINGAME CALLBACK] Got data: " + data.toString());
+        if (data instanceof NameData) {
+            System.out.println("[MAINGAME CALLBACK] got name data: " + data);
+            this.username = ((NameData) data).getName();
+            System.out.println("[MAINGAME CALLBACK] username is: " + username);
+        } else if (data instanceof TeamData) {
+            if (this.chosenFaction != null) {
+
+            } else {
+
+            }
+
+        }
         
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

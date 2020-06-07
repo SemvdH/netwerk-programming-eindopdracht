@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.client.MainGame;
 import netwerkprog.game.client.game.GAMESTATE;
 import netwerkprog.game.util.data.Data;
+import netwerkprog.game.util.data.TeamData;
 import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
 
@@ -119,15 +120,17 @@ public class GameInputProcessor implements InputProcessor {
             if (keycode == Input.Keys.NUM_1) {
                 System.out.println("MEGA CORP");
                 mainGame.setChosenFaction(Faction.MEGACORPORATION);
-                mainGame.initCharacters();
-                mainGame.setGamestate(GAMESTATE.PLAYING);
+                mainGame.send(new TeamData(Faction.MEGACORPORATION, mainGame.getUsername()));
+//                mainGame.initCharacters();
+//                mainGame.setGamestate(GAMESTATE.PLAYING);
             }
             if (keycode == Input.Keys.NUM_2) {
                 System.out.println("HACKER");
                 mainGame.setChosenFaction(Faction.HACKER);
-                mainGame.initCharacters();
-                camera.translate(-400, 0);
-                mainGame.setGamestate(GAMESTATE.PLAYING);
+                mainGame.send(new TeamData(Faction.MEGACORPORATION, mainGame.getUsername()));
+//                mainGame.initCharacters();
+//                camera.translate(-400, 0);
+//                mainGame.setGamestate(GAMESTATE.PLAYING);
             }
 
         }
