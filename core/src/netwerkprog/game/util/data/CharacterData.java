@@ -2,9 +2,7 @@ package netwerkprog.game.util.data;
 
 import netwerkprog.game.util.game.GameCharacter;
 
-import java.io.Serializable;
-
-public class CharacterData extends Data implements Serializable {
+public class CharacterData extends Data {
     private final String name;
     private final GameCharacter character;
 
