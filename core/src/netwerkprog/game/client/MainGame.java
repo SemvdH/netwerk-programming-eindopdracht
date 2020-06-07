@@ -27,7 +27,6 @@ import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.character.DamageData;
 import netwerkprog.game.util.data.character.MoveData;
 import netwerkprog.game.util.data.connection.NameData;
-import netwerkprog.game.util.data.connection.ReadyData;
 import netwerkprog.game.util.data.connection.TeamData;
 import netwerkprog.game.util.data.connection.TurnData;
 import netwerkprog.game.util.game.Faction;

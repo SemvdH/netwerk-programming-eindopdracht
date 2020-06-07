@@ -1,6 +1,5 @@
 package netwerkprog.game.util.data.character;
 
-import netwerkprog.game.client.game.map.GameTile;
 import netwerkprog.game.util.data.Data;
 
 import java.awt.*;
