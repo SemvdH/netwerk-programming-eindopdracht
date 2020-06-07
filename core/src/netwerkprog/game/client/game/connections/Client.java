@@ -106,11 +106,9 @@ public class Client implements Runnable {
      * @param in The inputStream
      */
     public void receive(ObjectInputStream in) {
-        System.out.println("[CLIENT RECEIVE] connected: " + isConnected);
         while (isConnected) {
             try {
                 Object object = in.readObject();
-                System.out.println("[CLIENT] got object " + object);
                 if (object instanceof Data) {
                     callback.onDataReceived((Data) object);
                 }

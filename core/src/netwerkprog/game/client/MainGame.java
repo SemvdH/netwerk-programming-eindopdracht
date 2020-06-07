@@ -92,15 +92,11 @@ public class MainGame extends Game implements ClientCallback {
         screenHeight = Gdx.graphics.getHeight();
         frameRate = new FrameRate();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.set(screenWidth / 2, screenHeight / 2, 0);
-        camera.viewportWidth = screenWidth / 2;
-        camera.viewportHeight = screenHeight / 2;
-        camera.update();
-        gameInputProcessor = new GameInputProcessor(camera);
-        batch = new SpriteBatch();
+        textRenderer = new TextRenderer();
         font = new BitmapFont();
         layout = new GlyphLayout();
-        textRenderer = new TextRenderer();
+        assets = new AssetManager();
+
         String[] strings = new String[]{
                 "#########################",
                 "#xxxx        #          #",
@@ -117,13 +113,16 @@ public class MainGame extends Game implements ClientCallback {
                 "#########################"
         };
         map = new Map(strings);
-        mapRenderer = new MapRenderer(map, 32, batch, camera);
-        assets = new AssetManager();
-        screenWidth = Gdx.graphics.getWidth();
-        screenHeight = Gdx.graphics.getHeight();
+        gameInputProcessor = new GameInputProcessor(camera);
         Gdx.input.setInputProcessor(gameInputProcessor);
+        mapRenderer = new MapRenderer(map, 32, batch, camera);
+        camera.position.set(screenWidth / 2, screenHeight / 2, 0);
+        camera.viewportWidth = screenWidth / 2;
+        camera.viewportHeight = screenHeight / 2;
+        camera.update();
+        setGamestate(GAMESTATE.SELECTING_FACTION);
+        connectToServer();
         playSong();
-
     }
 
     /**
