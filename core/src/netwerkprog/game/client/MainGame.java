@@ -162,7 +162,7 @@ public class MainGame extends Game implements ClientCallback {
 
     private void playSong() {
         // play music
-        Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("core/assets/beat.mp3", Files.FileType.Internal));
+        Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("core/assets/sound/beat.mp3", Files.FileType.Internal));
         music.setVolume(.1f);
         music.play();
         music.setLooping(true);
@@ -205,7 +205,8 @@ public class MainGame extends Game implements ClientCallback {
             renderTurnText();
         } else if (this.gamestate == GAMESTATE.SELECTING_FACTION) {
             clearRender(67, 168, 186, 1);
-            renderString("FACTION SELECT\nYou are: " + username + "\nPress 1 for mega corporation, press 2 for hackers", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
+            String text = username == null ? "Connecting to server..." : "FACTION SELECT\nYou are: " + username + "\nPress 1 for mega corporation, press 2 for hackers";
+            renderString(text, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
             if (this.ready && this.enemyReady) {
                 if (this.chosenFaction == Faction.HACKER) {
                     chooseHacker();
@@ -392,7 +393,7 @@ public class MainGame extends Game implements ClientCallback {
         } else if (data instanceof TeamData) {
             // check if it is not our own message
             if (!((TeamData) data).getUsername().equals(this.username)) {
-                // if we have already chosen a faction, so we were first
+                // if we have not yet chosen a faction, select the opposing faction
                 TeamData teamData = (TeamData) data;
                 Faction enemyFaction = teamData.getFaction();
                 if (this.chosenFaction == null) {
@@ -410,7 +411,7 @@ public class MainGame extends Game implements ClientCallback {
             if (!moveData.getUsername().equals(this.username)) {
                 GameTile tile = mapRenderer.getGameTile(moveData.getPos());
                 GameCharacter character = enemyTeam.get(moveData.getCharacterName());
-                gameInputProcessor.removeCharacterFromTile(character);
+                mapRenderer.removeCharacterFromTile(character);
                 tile.visit(character);
             }
         } else if (data instanceof DamageData) {

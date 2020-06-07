@@ -2,28 +2,28 @@ package netwerkprog.game.util.tree;
 
 public interface Tree<E> extends Iterable<E> {
   /** Return true if the element is in the tree */
-  boolean search(E e);
+  public boolean search(E e);
 
   /** Insert element o into the binary tree
    * Return true if the element is inserted successfully */
-  boolean insert(E e);
+  public void insert(E e);
 
   /** Delete the specified element from the tree
    * Return true if the element is deleted successfully */
-  boolean delete(E e);
+  public void delete(E e);
 
   /** Inorder traversal from the root*/
-  void inorder();
+  public void inorder();
 
   /** Postorder traversal from the root */
-  void postorder();
+  public void postorder();
 
   /** Preorder traversal from the root */
-  void preorder();
+  public void preorder();
 
   /** Get the number of nodes in the tree */
-  int getSize();
+  public int getSize();
 
   /** Return true if the tree is empty */
-  boolean isEmpty();
+  public boolean isEmpty();
 }
