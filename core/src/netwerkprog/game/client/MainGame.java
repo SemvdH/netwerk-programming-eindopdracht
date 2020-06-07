@@ -85,6 +85,10 @@ public class MainGame extends Game implements ClientCallback {
 
     @Override
     public void create() {
+       init();
+    }
+
+    public void init() {
         batch = new SpriteBatch();
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
@@ -121,6 +125,7 @@ public class MainGame extends Game implements ClientCallback {
         setGamestate(GAMESTATE.SELECTING_FACTION);
         connectToServer();
         playSong();
+
     }
 
     /**
@@ -155,8 +160,6 @@ public class MainGame extends Game implements ClientCallback {
         }
 
         this.setSelectedCharacter(this.team.get(0));
-
-
     }
 
 
@@ -222,7 +225,7 @@ public class MainGame extends Game implements ClientCallback {
             } else if (this.team.isDead()) {
                 text += "Too bad! You lost!";
             }
-            text += "\nPress ESC to exit the game";
+            text += "\nPress ESC to exit the game, or ENTER to start a new game";
             renderString(text, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
         }
 
@@ -423,7 +426,7 @@ public class MainGame extends Game implements ClientCallback {
             }
         } else if (data instanceof DamageData) {
             DamageData damageData = (DamageData) data;
-            team.get(damageData.getName()).damage(100);
+            team.get(damageData.getName()).damage(10);
         } else if (data instanceof TurnData) {
             this.playersTurn = !this.playersTurn;
         }

@@ -131,6 +131,9 @@ public class GameInputProcessor implements InputProcessor {
         } else if (mainGame.getGamestate() == GAMESTATE.ENDED) {
             if (keycode == Input.Keys.ESCAPE) {
                 mainGame.exit();
+            } else if (keycode == Input.Keys.ENTER) {
+                mainGame.dispose();
+                mainGame.init();
             }
         }
         return false;
