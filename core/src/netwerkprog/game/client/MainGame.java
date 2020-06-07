@@ -108,10 +108,16 @@ public class MainGame extends Game implements ClientCallback {
                 "#   xxxx     #xxxx      #",
                 "#   xxxx     #x xx      #",
                 "#       x    #xxxx      #",
-                "#       x    #xxx       #",
-                "#       x               #",
-                "#           xxxxxx      #",
-                "#            x          #",
+                "#    #  x    #xxx   #   #",
+                "#    #  x    #      #   #",
+                "#    #      x#xxxx  #   #",
+                "#            #          #",
+                "#       x      xxxx x x #",
+                "#       x      xxxx x x #",
+                "#       x      xxxx x x #",
+                "#       x      xxxx x x #",
+                "#   ##  x   ## xxxx x x #",
+                "#       x #### xxxx x x #",
                 "#       x      xxxx x x #",
                 "#########################"
         };
@@ -152,7 +158,7 @@ public class MainGame extends Game implements ClientCallback {
 
             GameCharacter temp2 = new Agent("Agent" + i, characters[11][0], new BodySwap("Test"));
             int width = mapRenderer.getGameTiles()[0].length;
-            mapRenderer.getGameTiles()[3][width - (i + 1)].visit(temp2);
+            mapRenderer.getGameTiles()[1][width - (i + 1)].visit(temp2);
 
             if (chosenFaction == Faction.HACKER) {
                 this.team.addMember(temp);
@@ -214,9 +220,11 @@ public class MainGame extends Game implements ClientCallback {
         } else if (this.gamestate == GAMESTATE.SELECTING_FACTION) {
             clearRender(67, 168, 186, 1);
             String text = "";
-            if (otherPlayerConnected)
+            if (otherPlayerConnected) {
                 text = username == null ? "Connecting to server..." : "FACTION SELECT\nYou are: " + username + "\nPress 1 for mega corporation, press 2 for hackers";
-            else text = "Waiting for other player...";
+                text += "\n\n\nHOW TO PLAY:\nUse WASD to move the camera, and scroll to zoom.\nClick on one of your characters to select them, and click on one of the available surrounding squares to move.\n" +
+                        "Click on an enemy when he is in range to attack him.\nFirst to kill the other's team wins!\n\n\nGood luck!";
+            } else text = "Waiting for other player...";
             renderString(text, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
             if (this.ready && this.enemyReady) {
                 if (this.chosenFaction == Faction.HACKER) {

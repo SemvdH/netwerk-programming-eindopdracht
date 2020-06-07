@@ -32,7 +32,7 @@ public class ServerClient implements Runnable, DataSource {
         try {
             this.out.writeObject(data);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Connection suddenly terminated!");
         }
     }
 
