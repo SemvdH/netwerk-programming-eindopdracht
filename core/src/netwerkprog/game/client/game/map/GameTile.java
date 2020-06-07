@@ -20,6 +20,8 @@ public class GameTile extends Rectangle {
         super.height = textureRegion.getRegionHeight();
     }
 
+
+
     public GameCharacter getCharacter() {
         return character;
     }

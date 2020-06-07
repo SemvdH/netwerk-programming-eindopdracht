@@ -173,7 +173,7 @@ public class GameInputProcessor implements InputProcessor {
                                 if (mainGame.hasCharacterSelected() && gameTile.containsCharacter() && gameTile.getCharacter().getFaction() != mainGame.getChosenFaction()) {
                                     if (mainGame.mapRenderer.getSurroundedTilesOfCurrentCharacter().contains(gameTile)) {
                                         if (!gameTile.getCharacter().isDead()) {
-                                            gameTile.getCharacter().damage(100);
+                                            gameTile.getCharacter().damage(gameTile.getCharacter().getDamageAmount());
                                             mainGame.increaseTurn();
                                             mainGame.send(new DamageData(gameTile.getCharacter().getName()));
                                         }

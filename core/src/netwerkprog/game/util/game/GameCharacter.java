@@ -58,6 +58,9 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
         this.health += amount;
         if (this.health > 100) this.health = 10;
     }
+    public int getDamageAmount() {
+        return 10;
+    }
 
     public void damage(int amount) {
         this.health -= amount;

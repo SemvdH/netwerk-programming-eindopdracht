@@ -122,7 +122,7 @@ public class MainGame extends Game implements ClientCallback {
         camera.update();
         setGamestate(GAMESTATE.SELECTING_FACTION);
         connectToServer();
-        playSong();
+//        playSong();
     }
 
     /**
