@@ -37,7 +37,7 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
     float screenWidth;
     float screenHeight;
     private FrameRate frameRate;
-    private Thread client;
+    private Client client;
     private OrthographicCamera camera;
     private GameInputProcessor gameInputProcessor;
     private GameCharacter selectedCharacter;
@@ -49,6 +49,9 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
     private GAMESTATE gamestate;
     private Faction chosenFaction;
     private long lastTimeCounted = 0;
+    private boolean gameOver = false;
+    private int turn = 0;
+    private boolean playersTurn = true;
 
     private Map map;
     public MapRenderer mapRenderer;
@@ -130,18 +133,14 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
             mapRenderer.getGameTiles()[3][width - (i + 1)].visit(temp2);
 
             if (chosenFaction == Faction.HACKER) {
-                System.out.println("adding " + temp);
                 this.team.addMember(temp);
                 this.enemyTeam.addMember(temp2);
             }  if (chosenFaction == Faction.MEGACORPORATION) {
-                System.out.println("adding " + temp2);
                 this.team.addMember(temp2);
                 this.enemyTeam.addMember(temp);
             }
         }
 
-        System.out.println(this.team);
-        System.out.println(this.enemyTeam);
         this.setSelectedCharacter(this.team.get(0));
 
     }
@@ -158,12 +157,23 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
 
 
     private void connectToServer() {
-        client = new Thread(new Client("localhost", this));
+        client = new Client("localhost",this);
+        Thread t = new Thread(client);
         try {
-            client.start();
+            t.start();
         } catch (Exception e) {
             System.out.println("There was an error connecting : " + e.getMessage());
         }
+    }
+
+    private void clearRender() {
+        clearRender(0,0,0,1);
+    }
+
+    private void clearRender(float r, float g, float b, float alpha) {
+        Gdx.gl.glClearColor(r/255f, g/255f, b/255f, alpha);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
     }
 
     /**
@@ -174,13 +184,23 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
         if (this.gamestate == GAMESTATE.PLAYING) {
             update();
             // clear screen
-            Gdx.gl.glClearColor(0, 0, 0, 1);
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            clearRender();
             mapRenderer.render();
             frameRate.render();
             renderText();
+            renderTurnText();
         } else if (this.gamestate == GAMESTATE.SELECTING_FACTION) {
+            clearRender(67, 168, 186,1);
             renderString("FACTION SELECT\nPress 1 for mega corporation, press 2 for hackers", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
+        } else if (this.gamestate == GAMESTATE.ENDED) {
+            clearRender(67, 168, 186,1);
+            String text = "Game ended!\n";
+            if (this.enemyTeam.isDead()) {
+                text += "Congratulations! You won!";
+            } else if (this.team.isDead()) {
+                text += "Too bad! You lost!";
+            }
+            renderString(text, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
         }
 
     }
@@ -203,6 +223,12 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
         textRenderer.render(text, x - layout.width / 2f, x - layout.height / 2f);
     }
 
+    private void renderTurnText() {
+        String text = playersTurn ? "Your turn, moves left: " + (3 - this.turn) : "Other player's turn";
+        layout.setText(font,text);
+        textRenderer.render(text, (Gdx.graphics.getWidth() / 2f) - layout.width / 2f,Gdx.graphics.getHeight() - 3);
+    }
+
     /**
      * update method that does all calculation before something is being drawn
      */
@@ -213,6 +239,12 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
         this.gameInputProcessor.update();
         this.team.update(Gdx.graphics.getDeltaTime());
         this.enemyTeam.update(Gdx.graphics.getDeltaTime());
+        if (this.team.isDead() || this.enemyTeam.isDead()) {
+            this.setGameOver(true);
+        }
+        if (this.isGameOver()) {
+            this.setGamestate(GAMESTATE.ENDED);
+        }
     }
 
     @Override
@@ -288,8 +320,38 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
         return team;
     }
 
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void increaseTurn() {
+        this.turn++;
+        if (turn == 3) {
+            this.turn = 0;
+            this.setPlayersTurn(false);
+        }
+    }
+
+    public boolean isPlayersTurn() {
+        return this.playersTurn;
+    }
+
+    public void setPlayersTurn(boolean playersTurn) {
+        this.playersTurn = playersTurn;
+    }
+
+    public void send(Data data) {
+        System.out.println("[MAINGAME] sending data " + data);
+        this.client.send(data);
+    }
+
     @Override
     public void onDataReceived(Data data) {
+        System.out.println("[MAINGAME] Got data: " + data.toString());
         
     }
 }

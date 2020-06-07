@@ -29,4 +29,11 @@ public class Data implements Serializable {
     public Data getPayload() {
         return payload;
     }
+
+    @Override
+    public String toString() {
+        return "Data{" +
+                "objectType='" + objectType + '\'' +
+                '}';
+    }
 }

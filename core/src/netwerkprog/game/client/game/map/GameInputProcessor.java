@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.client.MainGame;
 import netwerkprog.game.client.game.GAMESTATE;
+import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
 
@@ -144,8 +145,6 @@ public class GameInputProcessor implements InputProcessor {
         Vector3 touchPoint = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(touchPoint);
         if (mainGame.getGamestate() == GAMESTATE.PLAYING) {
-
-
             for (int row = 0; row < mainGame.mapRenderer.getGameTiles().length; row++) {
                 for (int col = 0; col < mainGame.mapRenderer.getGameTiles()[0].length; col++) {
                     GameTile gameTile = mainGame.mapRenderer.getGameTiles()[row][col];
@@ -153,19 +152,25 @@ public class GameInputProcessor implements InputProcessor {
                         if (button == Input.Buttons.LEFT) {
 
                             // moving selected character
-                            if (mainGame.hasCharacterSelected() && !gameTile.containsCharacter()) {
+                            if (mainGame.isPlayersTurn()) {
 
-                                if (gameTile.getSymbol() != '#' && mainGame.mapRenderer.getSurroundedTilesOfCurrentCharacter().contains(gameTile)) {
-                                    removeCharacterFromTile(mainGame.getSelectedCharacter());
-                                    gameTile.visit(mainGame.getSelectedCharacter());
-                                    mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
+                                if (mainGame.hasCharacterSelected() && !gameTile.containsCharacter()) {
+
+                                    if (gameTile.getSymbol() != '#' && mainGame.mapRenderer.getSurroundedTilesOfCurrentCharacter().contains(gameTile)) {
+                                        removeCharacterFromTile(mainGame.getSelectedCharacter());
+                                        gameTile.visit(mainGame.getSelectedCharacter());
+                                        mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
+                                        mainGame.increaseTurn();
+                                        mainGame.send(new Data("move"));
+                                    }
                                 }
-                            }
 //                            clicking on enemy
-                            if (mainGame.hasCharacterSelected() && gameTile.containsCharacter() && gameTile.getCharacter().getFaction() != mainGame.getChosenFaction()) {
-                                if (mainGame.mapRenderer.getSurroundedTilesOfCurrentCharacter().contains(gameTile)) {
-                                    gameTile.getCharacter().damage(10);
+                                if (mainGame.hasCharacterSelected() && gameTile.containsCharacter() && gameTile.getCharacter().getFaction() != mainGame.getChosenFaction()) {
+                                    if (mainGame.mapRenderer.getSurroundedTilesOfCurrentCharacter().contains(gameTile)) {
+                                        gameTile.getCharacter().damage(10);
+                                        mainGame.increaseTurn();
 
+                                    }
                                 }
                             }
                             // set selected character

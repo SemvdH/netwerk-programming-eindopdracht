@@ -39,4 +39,8 @@ public class Server {
     public DataController getDataController() {
         return dataController;
     }
+
+    public void setDataController(DataController dataController) {
+        this.dataController = dataController;
+    }
 }

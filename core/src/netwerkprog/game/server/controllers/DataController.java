@@ -1,5 +1,6 @@
 package netwerkprog.game.server.controllers;
 
+import netwerkprog.game.client.MainGame;
 import netwerkprog.game.util.data.CharacterData;
 import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.DataCallback;
@@ -50,6 +51,7 @@ public class DataController implements DataCallback {
 
     @Override
     public void onDataReceived(Data data) {
+        System.out.println("[DATACONTROLLER] got data: " + data);
         switch (data.getType()) {
             case "Character" :
                 if (data.getPayload() instanceof CharacterData) {

@@ -29,6 +29,7 @@ public class ServerClient implements Runnable {
 
     public void writeData(Data data) {
         try {
+            System.out.println("[SERVERCLIENT] writing data " + data);
             this.out.writeObject(data);
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,6 +41,7 @@ public class ServerClient implements Runnable {
         while (this.isConnected) {
             try {
                 Object object = this.in.readObject();
+                System.out.println("[SERVERCLIENT] got object " + object);
                 if (object instanceof Data) {
                     Data data = (Data) object;
                     if (data.getPayload() instanceof ConnectionData) {
@@ -49,7 +51,9 @@ public class ServerClient implements Runnable {
                             //todo properly remove thread.
                         }
                     } else {
-                        callback.onDataReceived((Data) this.in.readObject());
+//                        callback.onDataReceived((Data) this.in.readObject());
+                        System.out.println("[SERVERCLIENT] got data: " + data + ", sending callback");
+                        callback.onDataReceived(data);
                     }
                 }
             } catch (IOException e) {

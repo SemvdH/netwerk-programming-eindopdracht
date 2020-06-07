@@ -33,7 +33,16 @@ public class Client extends Controller {
     @Override
     public void run() {
         this.connect();
-        this.receiveThread.start();
+        try {
+            if (this.receiveThread != null){
+                System.out.println("[CLIENT RUN] starting receive thread");
+                this.receiveThread.start();
+            }
+            else System.out.println("[CLIENT] couldnt connect to server, the receiving thread was null!");
+        } catch (Exception e) {
+            System.out.println("[CLIENT] error connecting to server: " + e.getMessage() + ", cause: " + e.getCause().toString());
+        }
+
     }
 
     /**
@@ -47,7 +56,7 @@ public class Client extends Controller {
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             this.outputStream = new ObjectOutputStream(socket.getOutputStream());
             register(in);
-            this.receiveThread = new Thread( () -> receive(in));
+            this.receiveThread = new Thread(() -> receive(in));
         } catch (IOException e) {
             this.connecting = false;
             System.out.println("[CLIENT] there was an error connecting : " + e.getMessage());
@@ -67,7 +76,7 @@ public class Client extends Controller {
                     Data data = (Data) object;
                     if (data.getPayload() instanceof ConnectionData) {
                         ConnectionData connectionData = (ConnectionData) data.getPayload();
-                        if (connectionData.getAction().equals("Connect") && connectionData.getMessage().equals("Confirm")){
+                        if (connectionData.getAction().equals("Connect") && connectionData.getMessage().equals("Confirm")) {
                             this.connecting = false;
                             this.isConnected = true;
                         }
@@ -81,10 +90,12 @@ public class Client extends Controller {
 
     /**
      * Sends a message to the server.
+     *
      * @param data The message to send.
      */
     public void send(Data data) {
         try {
+            System.out.println("[CLIENT] writing data " + data);
             this.outputStream.writeObject(data);
         } catch (IOException e) {
             e.printStackTrace();
@@ -93,12 +104,15 @@ public class Client extends Controller {
 
     /**
      * Receives a message from the server.
+     *
      * @param in The inputStream
      */
     public void receive(ObjectInputStream in) {
+        System.out.println("[CLIENT RECEIVE] connected: " + isConnected);
         while (isConnected) {
             try {
                 Object object = in.readObject();
+                System.out.println("[CLIENT] got object " + object);
                 if (object instanceof Data) {
                     callback.onDataReceived((Data) object);
                 }
