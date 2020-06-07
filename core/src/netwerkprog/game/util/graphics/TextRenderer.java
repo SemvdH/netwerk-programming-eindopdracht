@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 
 public class TextRenderer implements Disposable {
-    private BitmapFont font;
-    private SpriteBatch batch;
+    private final BitmapFont font;
+    private final SpriteBatch batch;
     private OrthographicCamera cam;
 
     public TextRenderer() {

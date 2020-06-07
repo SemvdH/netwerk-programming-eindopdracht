@@ -1,19 +1,13 @@
 package netwerkprog.game.util.tree;
 
-import java.util.Iterator;
-
 public class BST<E extends Comparable<E>> extends AbstractTree<E> {
     protected TreeNode<E> root;
     protected int size = 0;
 
-    // Helper methode
     public int sum () {
         return this.sum(this.getRoot());
     }
 
-    // Opgave 1b (10 punten): Maak de recursieve methode sum af in de klasse bst.BST. Deze methode telt de getallen
-    // van alle elementen van de binaire zoekboom bij elkaar op. De methode geeft de totale som terug van alle getallen
-    // in de boom.
     public int sum( TreeNode<E> node ) {
         // Schrijf hier jouw code...
         if (node == null) {
@@ -24,13 +18,10 @@ public class BST<E extends Comparable<E>> extends AbstractTree<E> {
         return sum(node.left) + sum(node.right);
     }
 
-    // Helper methode
     public int totalLeaves () {
         return this.totalLeaves(this.getRoot());
     }
-    // Opgave 1c (10 punten): Maak de methode totalLeaves af om de klasse bst.BST. Deze methode telt het aantal
-    // bladeren (leaves) van de gegeven binaire zoekboom en geeft deze terug. Je hoeft deze methode niet recursief te
-    // implementeren. Het mag wel.
+
     public int totalLeaves ( TreeNode<E> node ) {
        if (node == null) {
            return 0;
@@ -58,7 +49,6 @@ public class BST<E extends Comparable<E>> extends AbstractTree<E> {
 
     private boolean search(E e, TreeNode<E> tree)
     {
-        // nog niet correct
         if (tree == null)
         {
             return false;
@@ -337,18 +327,4 @@ public class BST<E extends Comparable<E>> extends AbstractTree<E> {
                 ", " + res +
                 '}';
     }
-
-    //         if (tree == null) {
-    //             return false;
-    //         }
-    //         else if (e.compareTo(tree.element) > 0) {
-    //             return search(e, tree.right);
-    //         }
-    //         else if (e.compareTo(tree.element) < 0) {
-    //             return search(e, tree.left);
-    //         }
-    //         else {
-    //             return true;
-    //         }
-    // 
 }
