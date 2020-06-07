@@ -193,6 +193,17 @@ public class MapRenderer implements Renderable {
         return new Point(-1, -1);
     }
 
+    public GameTile getGameTile(Point pos) {
+        for (int row = 0; row < this.gameTiles.length; row++) {
+            for (int col = 0; col < this.gameTiles[0].length; col++) {
+                if (row == pos.y && col == pos.x) {
+                    return this.gameTiles[row][col];
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     public void update(double deltaTime) {
 

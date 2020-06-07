@@ -376,38 +376,26 @@ public class MainGame extends Game implements ClientCallback {
         } else if (data instanceof TeamData) {
             // check if it is not our own message
             if (!((TeamData) data).getUsername().equals(this.username)) {
-                System.out.println(username + "got team data: " + ((TeamData) data).getFaction());
                 // if we have already chosen a faction, so we were first
                 TeamData teamData = (TeamData) data;
                 enemyFaction = teamData.getFaction();
-                System.out.println("Got enemy faction: " + enemyFaction);
                 if (this.chosenFaction == null) {
                     if (enemyFaction == Faction.HACKER) {
-                        System.out.println("enemy is hacker");
                         this.chosenFaction = Faction.MEGACORPORATION;
                         this.enemyReady = true;
                         this.ready = true;
                     } else {
-                        System.out.println("enemy is mega corp");
                         this.chosenFaction = Faction.HACKER;
                         this.enemyReady = true;
                         this.ready = true;
                     }
                 }
             }
-
-        } else if (data instanceof ReadyData) {
-            ReadyData readyData = (ReadyData) data;
-            if (!readyData.getUsername().equals(this.username)) {
-                this.enemyReady = true;
-                System.out.println("enemy is ready");
-            }
         } else if (data instanceof MoveData) {
             MoveData moveData = (MoveData) data;
-            if (moveData.getUsername().equals(this.username)) {
-                moveData.getTile().visit(team.get(moveData.getCharacterName()));
-            } else {
-                moveData.getTile().visit(enemyTeam.get(moveData.getCharacterName()));
+            if (!moveData.getUsername().equals(this.username)) {
+                GameTile tile = mapRenderer.getGameTile(moveData.getPos());
+                tile.visit(enemyTeam.get(moveData.getCharacterName()));
             }
         } else if (data instanceof DamageData) {
             DamageData damageData = (DamageData) data;
