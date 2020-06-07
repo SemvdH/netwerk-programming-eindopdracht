@@ -94,7 +94,6 @@ public class GameInputProcessor implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-//        System.out.println(camera.position.x + " , " + camera.position.y);
         if (mainGame.getGamestate() == GAMESTATE.PLAYING) {
 
             if (keysList.contains(keycode)) {
@@ -156,14 +155,14 @@ public class GameInputProcessor implements InputProcessor {
                                 if (mainGame.hasCharacterSelected() && !gameTile.containsCharacter()) {
 
                                     if (gameTile.getSymbol() != '#' && mainGame.mapRenderer.getSurroundedTilesOfCurrentCharacter().contains(gameTile)) {
-                                        removeCharacterFromTile(mainGame.getSelectedCharacter());
+                                        mainGame.mapRenderer.removeCharacterFromTile(mainGame.getSelectedCharacter());
                                         gameTile.visit(mainGame.getSelectedCharacter());
                                         mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
                                         mainGame.increaseTurn();
                                         mainGame.send(new MoveData(mainGame.getUsername(), mainGame.getSelectedCharacter().getName(), mainGame.mapRenderer.getPos(gameTile)));
                                     }
                                 }
-//                            clicking on enemy
+                                //  clicking on enemy
                                 if (mainGame.hasCharacterSelected() && gameTile.containsCharacter() && gameTile.getCharacter().getFaction() != mainGame.getChosenFaction()) {
                                     if (mainGame.mapRenderer.getSurroundedTilesOfCurrentCharacter().contains(gameTile)) {
                                         if (!gameTile.getCharacter().isDead()) {
@@ -202,18 +201,7 @@ public class GameInputProcessor implements InputProcessor {
         return false;
     }
 
-    public void removeCharacterFromTile(GameCharacter character) {
-        rowLoop:
-        for (int row = 0; row < mainGame.mapRenderer.getGameTiles().length; row++) {
-            for (int col = 0; col < mainGame.mapRenderer.getGameTiles()[0].length; col++) {
-                GameTile gameTile = mainGame.mapRenderer.getGameTiles()[row][col];
-                if (gameTile.containsCharacter() && gameTile.getCharacter().equals(character)) {
-                    gameTile.removeCharacter();
-                    break rowLoop;
-                }
-            }
-        }
-    }
+
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {

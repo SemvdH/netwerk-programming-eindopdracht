@@ -241,6 +241,23 @@ public class MapRenderer implements Renderable {
     }
 
     /**
+     * remove character from tile
+     * @param character the character to remove
+     */
+    public void removeCharacterFromTile(GameCharacter character) {
+        rowLoop:
+        for (int row = 0; row < getGameTiles().length; row++) {
+            for (int col = 0; col < getGameTiles()[0].length; col++) {
+                GameTile gameTile = getGameTiles()[row][col];
+                if (gameTile.containsCharacter() && gameTile.getCharacter().equals(character)) {
+                    gameTile.removeCharacter();
+                    break rowLoop;
+                }
+            }
+        }
+    }
+
+    /**
      * resize the screen
      * @param screenWidth the width of the screen
      * @param screenHeight the height of the screen
