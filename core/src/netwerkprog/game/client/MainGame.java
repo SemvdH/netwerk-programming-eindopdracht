@@ -205,7 +205,7 @@ public class MainGame extends Game implements ClientCallback {
             if (this.ready && this.enemyReady) {
                 if (this.chosenFaction == Faction.HACKER) {
                     chooseHacker();
-                } else {
+                } else if (this.chosenFaction == Faction.MEGACORPORATION){
                     chooseMegaCorp();
                 }
             }
@@ -223,7 +223,7 @@ public class MainGame extends Game implements ClientCallback {
     }
 
     private void renderText() {
-        String text = "FACION: " + chosenFaction;
+        String text = "FACTION: " + chosenFaction;
         text += "\nSelected character: " + selectedCharacter.getName();
         text += "\nHealth: " + selectedCharacter.getHealth();
         layout.setText(font, text);
