@@ -1,6 +1,5 @@
 package netwerkprog.game.server;
 
-import netwerkprog.game.util.application.Controller;
 import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.connection.ConnectionData;
 import netwerkprog.game.util.data.connection.NameData;
@@ -11,19 +10,17 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
 
 /**
  * The sessionController manages any connections from new clients and assigns individual threads to said clients.
  */
-public class SessionController extends Controller implements DataCallback {
+public class SessionController implements DataCallback, Runnable {
     private ServerSocket serverSocket;
-    private final ArrayList<ServerClient> clients = new ArrayList<>();
-    private final HashMap<String, Thread> clientThreads = new HashMap<>();
+    private final ArrayList<ServerClient> clients;
     private boolean listening;
 
     public SessionController() {
+        this.clients = new ArrayList<>();
         this.listening = true;
     }
 
@@ -58,96 +55,33 @@ public class SessionController extends Controller implements DataCallback {
      */
     public void registerClient(Socket socket) {
         try {
-            System.out.println("[SERVER] got new client on " + socket.getInetAddress().getHostAddress());
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-
-            String username = "";
+            String username;
             boolean registering = true;
-
             while (registering) {
                 outputStream.writeObject(new ConnectionData("Connect", "Please give a username"));
                 Object object = inputStream.readObject();
-
                 if (object instanceof Data) {
                     Data data = (Data) object;
                     if (data instanceof ConnectionData) {
                         ConnectionData connectionData = (ConnectionData) data.getPayload();
                         if (connectionData.getAction().equals("Connect")) {
-                            username = connectionData.getMessage();
                             outputStream.writeObject(new ConnectionData("Connect", "Confirm"));
                             registering = false;
-                        } else {
-                            //todo error messaging.
                         }
-                    } else {
-                        //todo error messaging.
                     }
-                } else {
-                    //todo error messaging.
                 }
             }
-
             username = "player" + (this.clients.size() + 1);
-            System.out.println("[SERVER] set username " + username);
-            ServerClient serverClient = new ServerClient(username, inputStream, outputStream, this);
-
+            ServerClient serverClient = new ServerClient(username, this, this, inputStream, outputStream);
             Thread t = new Thread(serverClient);
             t.start();
-
             serverClient.writeData(new NameData(username));
-            this.clientThreads.put(username,t);
             this.clients.add(serverClient);
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
-    }
-
-    /**
-     * Sends a server message to all connected clients.
-     * @param data message.
-     */
-    public void serverMessage(Data data) {
-        for (ServerClient serverClient : clients) {
-            serverClient.writeData(data);
-        }
-    }
-
-    /**
-     * Sends a message to a specific user.
-     * @param name user.
-     * @param data message.
-     */
-    public void personalMessage(String name, Data data) {
-        for (ServerClient serverClient : clients) {
-            if (serverClient.getName().equals(name)) {
-                serverClient.writeData(data);
-                break;
-            }
-        }
-    }
-
-    /**
-     * Removes a client from the server.
-     * @param serverClient The client to remove.
-     */
-    public void removeClient(ServerClient serverClient) {
-        this.clients.remove(serverClient);
-        try {
-            this.clientThreads.get(serverClient.getName()).join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        this.clientThreads.remove(serverClient.getName());
-        //this.serverMessage(serverClient.getName() + " left!");
-    }
-
-    /**
-     * Gets a list of all connected users.
-     * @return Set of all connected users.
-     */
-    public Set<String> getUsernames() {
-        return this.clientThreads.keySet();
     }
 
     /**
@@ -160,7 +94,14 @@ public class SessionController extends Controller implements DataCallback {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("[SERVER] networking shutdown ");
+    }
+
+    /**
+     * Disconnects the client from the server list.
+     * @param client The Client to disconnect.
+     */
+    public void disconnect(ServerClient client) {
+        this.clients.remove(client);
     }
 
     @Override

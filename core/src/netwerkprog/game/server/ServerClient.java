@@ -8,23 +8,28 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class ServerClient implements Runnable, DataSource {
+    private final String name;
+    private final SessionController server;
+    private final DataCallback callback;
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
-    private final String name;
-    private final DataCallback callback;
     private boolean isConnected;
 
-    public ServerClient(String name, ObjectInputStream in, ObjectOutputStream out, DataCallback callback) {
+    public ServerClient(String name, SessionController server, DataCallback callback, ObjectInputStream in, ObjectOutputStream out) {
         this.name = name;
+        this.server = server;
         this.callback = callback;
         this.in = in;
         this.out = out;
         this.isConnected = true;
     }
 
+    /**
+     * Writes data to the connected client.
+     * @param data The data object to write.
+     */
     public void writeData(Data data) {
         try {
-            System.out.println("[SERVERCLIENT] writing data " + data);
             this.out.writeObject(data);
         } catch (IOException e) {
             e.printStackTrace();
@@ -43,19 +48,14 @@ public class ServerClient implements Runnable, DataSource {
                         ConnectionData connectionData = (ConnectionData) data.getPayload();
                         if (connectionData.getAction().equals("Disconnect")) {
                             this.isConnected = false;
-                            //todo properly remove thread.
+                            this.server.disconnect(this);
                         }
                     } else {
-//                        callback.onDataReceived((Data) this.in.readObject());
-                        System.out.println("[SERVERCLIENT] got data: " + data + ", sending callback");
                         callback.onDataReceived(data, this);
                     }
                 }
             } catch (IOException e) {
-                System.out.println("[SERVERCLIENT] caught exception - " + e.getMessage());
-                System.out.println("[SERVERCLIENT] terminating failing connection...");
                 this.isConnected = false;
-                System.out.println("[SERVERCLIENT] done!");
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
