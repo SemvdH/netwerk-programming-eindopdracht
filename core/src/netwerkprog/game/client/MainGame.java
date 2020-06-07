@@ -389,8 +389,9 @@ public class MainGame extends Game implements ClientCallback {
 
         } else if (data instanceof ReadyData) {
             ReadyData readyData = (ReadyData) data;
-            if (readyData.getUsername().equals(this.username)) {
-
+            if (!readyData.getUsername().equals(this.username)) {
+                this.enemyReady = true;
+                System.out.println("enemy is ready");
             }
         } else if (data instanceof MoveData) {
             MoveData moveData = (MoveData) data;
@@ -401,6 +402,23 @@ public class MainGame extends Game implements ClientCallback {
             }
         }
 
+    }
+
+    public void chooseHacker() {
+        System.out.println("chose HACKER");
+        setChosenFaction(Faction.HACKER);
+        send(new TeamData(Faction.MEGACORPORATION, getUsername()));
+//                mainGame.initCharacters();
+//                camera.translate(-400, 0);
+//                mainGame.setGamestate(GAMESTATE.PLAYING);
+    }
+
+    public void chooseMegaCorp() {
+        System.out.println("chose MEGA CORP");
+        setChosenFaction(Faction.MEGACORPORATION);
+        send(new TeamData(Faction.MEGACORPORATION, getUsername()));
+//                mainGame.initCharacters();
+//                mainGame.setGamestate(GAMESTATE.PLAYING);
     }
 
     public String getUsername() {

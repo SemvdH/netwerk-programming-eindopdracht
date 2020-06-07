@@ -42,6 +42,15 @@ public class Team {
         return null;
     }
 
+    public GameCharacter get(String username) {
+        for (GameCharacter cur : this.members) {
+            if (cur.getName().equals(username)) {
+                return cur;
+            }
+        }
+        return null;
+    }
+
     public GameCharacter get(int position) {
         if (position >= this.members.getSize()) {
             throw new IndexOutOfBoundsException("position out of range");
