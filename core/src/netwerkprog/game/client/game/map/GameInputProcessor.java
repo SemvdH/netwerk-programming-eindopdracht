@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.client.MainGame;
 import netwerkprog.game.client.game.GAMESTATE;
-import netwerkprog.game.util.data.Data;
+import netwerkprog.game.util.data.character.DamageData;
 import netwerkprog.game.util.data.character.MoveData;
 import netwerkprog.game.util.game.GameCharacter;
 
@@ -154,7 +154,7 @@ public class GameInputProcessor implements InputProcessor {
                                         gameTile.visit(mainGame.getSelectedCharacter());
                                         mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
                                         mainGame.increaseTurn();
-                                        mainGame.send(new Data("move"));
+                                        mainGame.send(new MoveData(mainGame.getUsername(),mainGame.getSelectedCharacter().getName(),gameTile));
                                     }
                                 }
 //                            clicking on enemy
@@ -162,7 +162,7 @@ public class GameInputProcessor implements InputProcessor {
                                     if (mainGame.mapRenderer.getSurroundedTilesOfCurrentCharacter().contains(gameTile)) {
                                         gameTile.getCharacter().damage(10);
                                         mainGame.increaseTurn();
-
+                                        mainGame.send(new DamageData(gameTile.getCharacter().getName()));
                                     }
                                 }
                             }
@@ -180,7 +180,6 @@ public class GameInputProcessor implements InputProcessor {
                                 mainGame.setSelectedCharacter(gameTile.getCharacter());
                                 mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
                             }
-                            mainGame.send(new MoveData(mainGame.getUsername(),mainGame.getSelectedCharacter().getName(),gameTile));
                             return true;
                         }
                     }
