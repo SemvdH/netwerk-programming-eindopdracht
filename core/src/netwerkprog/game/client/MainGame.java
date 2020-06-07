@@ -393,7 +393,7 @@ public class MainGame extends Game implements ClientCallback {
         } else if (data instanceof TeamData) {
             // check if it is not our own message
             if (!((TeamData) data).getUsername().equals(this.username)) {
-                // if we have already chosen a faction, so we were first
+                // if we have not yet chosen a faction, select the opposing faction
                 TeamData teamData = (TeamData) data;
                 Faction enemyFaction = teamData.getFaction();
                 if (this.chosenFaction == null) {

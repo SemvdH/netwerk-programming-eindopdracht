@@ -6,11 +6,11 @@ public interface Tree<E> extends Iterable<E> {
 
   /** Insert element o into the binary tree
    * Return true if the element is inserted successfully */
-  public boolean insert(E e);
+  public void insert(E e);
 
   /** Delete the specified element from the tree
    * Return true if the element is deleted successfully */
-  public boolean delete(E e);
+  public void delete(E e);
 
   /** Inorder traversal from the root*/
   public void inorder();
