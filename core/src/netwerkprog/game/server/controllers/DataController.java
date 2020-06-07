@@ -1,9 +1,9 @@
 package netwerkprog.game.server.controllers;
 
-import netwerkprog.game.server.ServerClient;
 import netwerkprog.game.util.data.CharacterData;
 import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.DataCallback;
+import netwerkprog.game.util.data.DataSource;
 import netwerkprog.game.util.game.GameCharacter;
 
 import java.util.Arrays;
@@ -50,7 +50,7 @@ public class DataController implements DataCallback {
     }
 
     @Override
-    public void onDataReceived(Data data, ServerClient client) {
+    public void onDataReceived(Data data, DataSource source) {
         System.out.println("[DATACONTROLLER] got data: " + data);
         switch (data.getType()) {
             case "Character" :

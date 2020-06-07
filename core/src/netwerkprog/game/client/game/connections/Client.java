@@ -4,6 +4,7 @@ import netwerkprog.game.util.application.Controller;
 import netwerkprog.game.util.data.ConnectionData;
 import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.DataCallback;
+import netwerkprog.game.util.data.DataSource;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,7 +12,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Arrays;
 
-public class Client extends Controller {
+public class Client extends Controller implements DataSource {
     private final int port;
     private final String hostname;
     private boolean isConnected;
@@ -69,7 +70,7 @@ public class Client extends Controller {
     public void register(ObjectInputStream in) {
         while (connecting) {
             String username = "DEV";
-            send(new ConnectionData("Connect", username));
+            writeData(new ConnectionData("Connect", username));
             try {
                 Object object = in.readObject();
                 if (object instanceof Data) {
@@ -93,7 +94,7 @@ public class Client extends Controller {
      *
      * @param data The message to send.
      */
-    public void send(Data data) {
+    public void writeData(Data data) {
         try {
             System.out.println("[CLIENT] writing data " + data);
             this.outputStream.writeObject(data);
@@ -114,7 +115,7 @@ public class Client extends Controller {
                 Object object = in.readObject();
                 System.out.println("[CLIENT] got object " + object);
                 if (object instanceof Data) {
-                    callback.onDataReceived((Data) object);
+                    callback.onDataReceived((Data) object, this);
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
@@ -130,7 +131,7 @@ public class Client extends Controller {
             e.printStackTrace();
         }
 
-        send(new ConnectionData("Disconnect", "DEV"));
+        writeData(new ConnectionData("Disconnect", "DEV"));
 
         try {
             this.socket.close();

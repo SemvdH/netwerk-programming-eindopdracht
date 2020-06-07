@@ -5,12 +5,13 @@ import netwerkprog.game.server.controllers.SessionController;
 import netwerkprog.game.util.data.ConnectionData;
 import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.DataCallback;
+import netwerkprog.game.util.data.DataSource;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-public class ServerClient implements Runnable {
+public class ServerClient implements Runnable, DataSource {
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private final String name;
@@ -53,7 +54,7 @@ public class ServerClient implements Runnable {
                     } else {
 //                        callback.onDataReceived((Data) this.in.readObject());
                         System.out.println("[SERVERCLIENT] got data: " + data + ", sending callback");
-                        callback.onDataReceived(data);
+                        callback.onDataReceived(data, this);
                     }
                 }
             } catch (IOException e) {

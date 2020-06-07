@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.client.game.GAMESTATE;
 import netwerkprog.game.client.game.characters.Agent;
 import netwerkprog.game.client.game.characters.Hacker;
@@ -25,6 +24,7 @@ import netwerkprog.game.client.game.map.Map;
 import netwerkprog.game.client.game.map.MapRenderer;
 import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.DataCallback;
+import netwerkprog.game.util.data.DataSource;
 import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.FrameRate;
@@ -346,11 +346,11 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
 
     public void send(Data data) {
         System.out.println("[MAINGAME] sending data " + data);
-        this.client.send(data);
+        this.client.writeData(data);
     }
 
     @Override
-    public void onDataReceived(Data data) {
+    public void onDataReceived(Data data, DataSource source) {
         System.out.println("[MAINGAME] Got data: " + data.toString());
         
     }
