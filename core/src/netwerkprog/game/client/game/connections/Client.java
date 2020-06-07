@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Arrays;
 
 public class Client implements Runnable {
     private final int port;
@@ -33,12 +32,10 @@ public class Client implements Runnable {
         this.connect();
         try {
             if (this.receiveThread != null){
-                System.out.println("[CLIENT RUN] starting receive thread");
                 this.receiveThread.start();
             }
-            else System.out.println("[CLIENT] couldnt connect to server, the receiving thread was null!");
         } catch (Exception e) {
-            System.out.println("[CLIENT] error connecting to server: " + e.getMessage() + ", cause: " + e.getCause().toString());
+            e.printStackTrace();
         }
 
     }
@@ -47,7 +44,6 @@ public class Client implements Runnable {
      * Connects the client to the server.
      */
     public void connect() {
-        System.out.println("[CLIENT] connecting to server on port " + this.port);
         this.connecting = true;
         try {
             this.socket = new Socket(this.hostname, this.port);
@@ -57,12 +53,8 @@ public class Client implements Runnable {
             this.receiveThread = new Thread(() -> receive(in));
         } catch (IOException e) {
             this.connecting = false;
-            System.out.println("[CLIENT] there was an error connecting : " + e.getMessage());
-            StringBuilder sb = new StringBuilder("         Stacktrace : ");
-            Arrays.stream(e.getStackTrace()).forEach(n -> sb.append("\t\t").append(n).append("\n"));
-            System.out.println(sb.toString());
+            e.printStackTrace();
         }
-        System.out.println("[CLIENT CONNECT] connected");
     }
 
     public void register(ObjectInputStream in) {
@@ -93,7 +85,6 @@ public class Client implements Runnable {
      */
     public void writeData(Data data) {
         try {
-            System.out.println("[CLIENT] writing data " + data);
             this.outputStream.writeObject(data);
         } catch (IOException e) {
             e.printStackTrace();

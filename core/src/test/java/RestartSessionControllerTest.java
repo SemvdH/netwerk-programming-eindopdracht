@@ -23,7 +23,6 @@ public class RestartSessionControllerTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println(sessionThread.getState());
         sessionThread = new Thread(sessionController);
         sessionThread.start();
     }

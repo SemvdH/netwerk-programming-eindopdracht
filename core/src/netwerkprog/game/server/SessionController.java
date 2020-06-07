@@ -41,7 +41,6 @@ public class SessionController implements DataCallback, Runnable {
     public void listen() {
         try {
             this.serverSocket = new ServerSocket(Data.port());
-            System.out.println("[SERVER] listening on port " + Data.port());
             registerClient(serverSocket.accept());
             this.serverSocket.close();
         } catch (IOException ex) {

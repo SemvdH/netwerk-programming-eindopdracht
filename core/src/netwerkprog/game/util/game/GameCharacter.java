@@ -69,8 +69,6 @@ public abstract class GameCharacter extends Actor implements Comparable<GameChar
         }
 
         this.damageAnimation = true;
-
-        System.out.println("OUCH character " + name + " was damaged for " + amount + ", animation: " + this.isShowingAnimation());
     }
 
     public boolean isDead() {
