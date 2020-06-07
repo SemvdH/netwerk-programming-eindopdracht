@@ -36,6 +36,7 @@ public class MapRenderer implements Renderable {
     private GameTile[][] gameTiles;
     private List<GameTile> surroundedTilesOfCurrentCharacter;
 
+    public static int[][] directions = new int[][]{{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}};
 
     /**
      * makea a new mapRenderer object
@@ -62,14 +63,15 @@ public class MapRenderer implements Renderable {
         mainGame.assets.load("square.png", Texture.class);
         mainGame.assets.load("square2.png", Texture.class);
         mainGame.assets.load(tilePath, Texture.class);
-        mainGame.assets.load("hit.png",Texture.class);
-        mainGame.assets.load("dead.png",Texture.class);
+        mainGame.assets.load("hit.png", Texture.class);
+        mainGame.assets.load("dead.png", Texture.class);
         mainGame.assets.finishLoading();
         square = mainGame.assets.get("square.png");
         square2 = mainGame.assets.get("square2.png");
         hitMarker = mainGame.assets.get("hit.png");
         tombStone = mainGame.assets.get("dead.png");
 
+        // load the texture file
         Texture texture = mainGame.assets.get(tilePath);
         TextureRegion[][] tileTextures = TextureRegion.split(texture, 32, 32);
 
@@ -77,8 +79,10 @@ public class MapRenderer implements Renderable {
         WALL_TILE = tileTextures[0][4];
         PATH_TILE = tileTextures[4][6];
 
+        // init the array
         this.gameTiles = new GameTile[map.getHeight()][map.getWidth()];
 
+        // for each game tile, put the corresponding tile image in the array
         for (int row = map.getHeight(); row >= 0; row--) {
             y += 32;
             x = 0;
@@ -111,6 +115,9 @@ public class MapRenderer implements Renderable {
         this.map = map;
     }
 
+    /**
+     * method that renders the whole map
+     */
     @Override
     public void render() {
         batch.begin();
@@ -119,25 +126,28 @@ public class MapRenderer implements Renderable {
         for (GameTile[] gameTileRow : gameTiles) {
             for (int col = 0; col < gameTiles[0].length; col++) {
                 GameTile cur = gameTileRow[col];
+                //draw each tile
                 batch.draw(cur.getTextureRegion(), cur.x, cur.y);
 
                 if (cur.containsCharacter()) {
+                    //draw each character on a tile
                     GameCharacter character = cur.getCharacter();
+
                     if (!character.isDead()) {
                         batch.draw(character.getTextureRegion(), cur.x, cur.y);
-//                    System.out.println("character " + character.getName() + " showing: " + character.isShowingAnimation());
-                        if (character.isShowingAnimation()) {
-//                        System.out.println("animation");
+
+                        //if he's showing an animation, draw the hitmarker.
+                        if (character.isShowingAnimation())
                             batch.draw(hitMarker, cur.x, cur.y);
-                        }
 
-
-                        if (cur.getCharacter().equals(mainGame.getSelectedCharacter())) {
+                        // if hes selected, draw the green square
+                        if (cur.getCharacter().equals(mainGame.getSelectedCharacter()))
                             batch.draw(square, cur.x, cur.y);
-                        }
+
 
                     } else {
-                        batch.draw(tombStone,cur.x,cur.y);
+                        // if hes dead, draw a tombstone
+                        batch.draw(tombStone, cur.x, cur.y);
                     }
                 }
             }
@@ -153,10 +163,15 @@ public class MapRenderer implements Renderable {
         y = 0;
     }
 
-    public static int[][] directions = new int[][]{{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}};
 
-    public List<GameTile> setSurroundedTilesOfCurrentCharacter(int x, int y) {
-        List<GameTile> res = new ArrayList<GameTile>();
+
+    /**
+     * gets the 8 surrounding tiles of the character, to see where he can move.
+     * @param x the x position of the character
+     * @param y the y position of the character
+     */
+    public void setSurroundedTilesOfCurrentCharacter(int x, int y) {
+        List<GameTile> res = new ArrayList<>();
         for (int[] direction : directions) {
             int cx = x + direction[0];
             int cy = y + direction[1];
@@ -166,9 +181,13 @@ public class MapRenderer implements Renderable {
                         res.add(gameTiles[cy][cx]);
         }
         surroundedTilesOfCurrentCharacter = res;
-        return res;
     }
 
+    /**
+     * gets the game tile of the character.
+     * @param character the character
+     * @return the game tile of the character, null if it is not found
+     */
     public GameTile getTile(GameCharacter character) {
         for (GameTile[] tiles : this.gameTiles) {
             for (GameTile tile : tiles) {
@@ -181,7 +200,19 @@ public class MapRenderer implements Renderable {
         return null;
     }
 
+    public void dispose() {
+        tombStone.dispose();
+        square.dispose();
+        square2.dispose();
+        hitMarker.dispose();
+    }
 
+
+    /**
+     * gets the position of the specified tile.
+     * @param tile the tile to get the position of
+     * @return the position of the tile, a point of -1,-1 if the tile is not found
+     */
     public Point getPos(GameTile tile) {
         for (int row = 0; row < this.gameTiles.length; row++) {
             for (int col = 0; col < this.gameTiles[0].length; col++) {
@@ -193,6 +224,11 @@ public class MapRenderer implements Renderable {
         return new Point(-1, -1);
     }
 
+    /**
+     * gets the game tile at the specified position.
+     * @param pos the position of the tile
+     * @return the game tile on the position, <code>null</code> if it is not found
+     */
     public GameTile getGameTile(Point pos) {
         for (int row = 0; row < this.gameTiles.length; row++) {
             for (int col = 0; col < this.gameTiles[0].length; col++) {
@@ -204,11 +240,11 @@ public class MapRenderer implements Renderable {
         return null;
     }
 
-    @Override
-    public void update(double deltaTime) {
-
-    }
-
+    /**
+     * resize the screen
+     * @param screenWidth the width of the screen
+     * @param screenHeight the height of the screen
+     */
     public void resize(int screenWidth, int screenHeight) {
         cam = new OrthographicCamera(screenWidth, screenHeight);
         cam.translate(screenWidth / 2f, screenHeight / 2f);
@@ -216,10 +252,18 @@ public class MapRenderer implements Renderable {
         batch.setProjectionMatrix(cam.combined);
     }
 
+    /**
+     * return the game tiles
+     * @return the game tiles.
+     */
     public GameTile[][] getGameTiles() {
         return gameTiles;
     }
 
+    /**
+     * get the surrounding tiles of character
+     * @return the surrounding tiles of character
+     */
     public List<GameTile> getSurroundedTilesOfCurrentCharacter() {
         return surroundedTilesOfCurrentCharacter;
     }
