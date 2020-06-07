@@ -5,8 +5,8 @@ public abstract class AbstractTree<E> implements Tree<E> {
   public void inorder() {
   }
 
-  @Override /* Postorder traversal from the root */
-  public void postorder() {
+  @Override /* Post order traversal from the root */
+  public void postOrder() {
   }
 
   @Override /* Preorder traversal from the root */

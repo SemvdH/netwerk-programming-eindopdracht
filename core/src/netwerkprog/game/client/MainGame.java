@@ -219,6 +219,7 @@ public class MainGame extends Game implements ClientCallback {
             } else if (this.team.isDead()) {
                 text += "Too bad! You lost!";
             }
+            text += "\nPress ESC to exit the game";
             renderString(text, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
         }
 
@@ -315,6 +316,12 @@ public class MainGame extends Game implements ClientCallback {
 
     public int getHorizontalTileAmount() {
         return map.getWidth();
+    }
+
+    public void exit() {
+        client.disconnect();
+        dispose();
+        Gdx.app.exit();
     }
 
     public void setSelectedCharacter(GameCharacter character) {
