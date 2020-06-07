@@ -10,9 +10,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.client.MainGame;
 import netwerkprog.game.client.game.GAMESTATE;
 import netwerkprog.game.util.data.Data;
-import netwerkprog.game.util.data.connection.ReadyData;
-import netwerkprog.game.util.data.connection.TeamData;
-import netwerkprog.game.util.game.Faction;
+import netwerkprog.game.util.data.character.MoveData;
 import netwerkprog.game.util.game.GameCharacter;
 
 import java.util.ArrayList;
@@ -182,6 +180,7 @@ public class GameInputProcessor implements InputProcessor {
                                 mainGame.setSelectedCharacter(gameTile.getCharacter());
                                 mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
                             }
+                            mainGame.send(new MoveData(mainGame.getUsername(),mainGame.getSelectedCharacter().getName(),gameTile));
                             return true;
                         }
                     }

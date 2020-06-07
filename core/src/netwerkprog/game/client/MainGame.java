@@ -396,9 +396,9 @@ public class MainGame extends Game implements ClientCallback {
         } else if (data instanceof MoveData) {
             MoveData moveData = (MoveData) data;
             if (moveData.getUsername().equals(this.username)) {
-                moveData.getTile().visit();
+                moveData.getTile().visit(team.get(moveData.getCharacterName()));
             } else {
-                moveData.getTile().visit();
+                moveData.getTile().visit(enemyTeam.get(moveData.getCharacterName()));
             }
         }
 
