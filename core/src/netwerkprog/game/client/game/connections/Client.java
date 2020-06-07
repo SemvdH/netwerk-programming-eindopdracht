@@ -12,12 +12,12 @@ import java.util.Arrays;
 public class Client implements Runnable {
     private final int port;
     private final String hostname;
-    private boolean isConnected;
+    private final ClientCallback callback;
     private Socket socket;
-    private Thread receiveThread;
-    private ClientCallback callback;
     private ObjectOutputStream outputStream;
+    private Thread receiveThread;
     private boolean connecting;
+    private boolean isConnected;
 
     public Client(String hostname, ClientCallback callback) {
         this.port = Data.port();
@@ -67,8 +67,7 @@ public class Client implements Runnable {
 
     public void register(ObjectInputStream in) {
         while (connecting) {
-            String username = "DEV";
-            writeData(new ConnectionData("Connect", username));
+            writeData(new ConnectionData("Connect", "Request"));
             try {
                 Object object = in.readObject();
                 if (object instanceof Data) {
@@ -128,9 +127,7 @@ public class Client implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        writeData(new ConnectionData("Disconnect", "DEV"));
-
+        writeData(new ConnectionData("Disconnect", "Request"));
         try {
             this.socket.close();
         } catch (IOException e) {
