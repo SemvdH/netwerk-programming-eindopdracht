@@ -116,7 +116,7 @@ public class GameInputProcessor implements InputProcessor {
 
                 return true;
             }
-        } else if (mainGame.getGamestate() == GAMESTATE.SELECTING_FACTION) {
+        } else if (mainGame.getGamestate() == GAMESTATE.SELECTING_FACTION && mainGame.isOtherPlayerConnected()) {
             if (keycode == Input.Keys.NUM_1) {
                 System.out.println("choosing mega");
                 mainGame.send(new TeamData(Faction.MEGACORPORATION, mainGame.getUsername()));

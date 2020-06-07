@@ -27,6 +27,7 @@ import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.character.DamageData;
 import netwerkprog.game.util.data.character.MoveData;
 import netwerkprog.game.util.data.connection.NameData;
+import netwerkprog.game.util.data.connection.PlayerConnectData;
 import netwerkprog.game.util.data.connection.TeamData;
 import netwerkprog.game.util.data.connection.TurnData;
 import netwerkprog.game.util.game.Faction;
@@ -44,6 +45,7 @@ public class MainGame extends Game implements ClientCallback {
 
     /**
      * return the instance of the main game.
+     *
      * @return the main game
      */
     public static MainGame getInstance() {
@@ -72,18 +74,19 @@ public class MainGame extends Game implements ClientCallback {
     private float screenWidth;
     private float screenHeight;
     private String username;
-    private int turn = 0;
-    private boolean playersTurn = true;
-    private boolean ready = false;
-    private boolean enemyReady = false;
-    private boolean gameOver = false;
+    private int turn;
+    private boolean playersTurn;
+    private boolean ready;
+    private boolean enemyReady;
+    private boolean gameOver;
+    private boolean otherPlayerConnected;
 
     private MainGame() {
     }
 
     @Override
     public void create() {
-       init();
+        init();
     }
 
     public void init() {
@@ -120,6 +123,12 @@ public class MainGame extends Game implements ClientCallback {
         camera.viewportWidth = screenWidth / 2;
         camera.viewportHeight = screenHeight / 2;
         camera.update();
+        otherPlayerConnected = false;
+        gameOver = false;
+        ready = false;
+        enemyReady = false;
+        playersTurn = true;
+        turn = 0;
         setGamestate(GAMESTATE.SELECTING_FACTION);
         connectToServer();
 //        playSong();
@@ -205,12 +214,15 @@ public class MainGame extends Game implements ClientCallback {
             renderTurnText();
         } else if (this.gamestate == GAMESTATE.SELECTING_FACTION) {
             clearRender(67, 168, 186, 1);
-            String text = username == null ? "Connecting to server..." : "FACTION SELECT\nYou are: " + username + "\nPress 1 for mega corporation, press 2 for hackers";
+            String text = "";
+            if (otherPlayerConnected)
+                text = username == null ? "Connecting to server..." : "FACTION SELECT\nYou are: " + username + "\nPress 1 for mega corporation, press 2 for hackers";
+            else text = "Waiting for other player...";
             renderString(text, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
             if (this.ready && this.enemyReady) {
                 if (this.chosenFaction == Faction.HACKER) {
                     chooseHacker();
-                } else if (this.chosenFaction == Faction.MEGACORPORATION){
+                } else if (this.chosenFaction == Faction.MEGACORPORATION) {
                     chooseMegaCorp();
                 }
             }
@@ -328,7 +340,7 @@ public class MainGame extends Game implements ClientCallback {
     }
 
     public void setSelectedCharacter(GameCharacter character) {
-        if  (!character.isDead()) {
+        if (!character.isDead()) {
             this.selectedCharacter = character;
             GameTile characterTile = mapRenderer.getTile(character);
             Point pos = mapRenderer.getPos(characterTile);
@@ -372,6 +384,10 @@ public class MainGame extends Game implements ClientCallback {
         return gameOver;
     }
 
+    public boolean isOtherPlayerConnected() {
+        return otherPlayerConnected;
+    }
+
     public void increaseTurn() {
         this.turn++;
         if (turn == 3) {
@@ -395,8 +411,10 @@ public class MainGame extends Game implements ClientCallback {
 
     @Override
     public void onDataReceived(Data data) {
+        System.out.println("got data: " + data);
         if (data instanceof NameData) {
             this.username = ((NameData) data).getName();
+            send(new PlayerConnectData(username));
         } else if (data instanceof TeamData) {
             // check if it is not our own message
             if (!((TeamData) data).getUsername().equals(this.username)) {
@@ -426,6 +444,13 @@ public class MainGame extends Game implements ClientCallback {
             team.get(damageData.getName()).damage(10);
         } else if (data instanceof TurnData) {
             this.playersTurn = !this.playersTurn;
+        } else if (data instanceof PlayerConnectData) {
+            System.out.println("Got player connected");
+            if (!((PlayerConnectData) data).getUsername().equals(this.username) && !this.otherPlayerConnected) {
+                System.out.println("player connect");
+                otherPlayerConnected = true;
+                send(new PlayerConnectData(username));
+            }
         }
 
     }
