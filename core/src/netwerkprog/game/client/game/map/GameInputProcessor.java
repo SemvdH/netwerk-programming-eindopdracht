@@ -160,7 +160,7 @@ public class GameInputProcessor implements InputProcessor {
                                         gameTile.visit(mainGame.getSelectedCharacter());
                                         mainGame.mapRenderer.setSurroundedTilesOfCurrentCharacter(col, row);
                                         mainGame.increaseTurn();
-                                        mainGame.send(new MoveData(mainGame.getUsername(),mainGame.getSelectedCharacter().getName(),gameTile));
+                                        mainGame.send(new MoveData(mainGame.getUsername(),mainGame.getSelectedCharacter().getName(),mainGame.mapRenderer.getPos(gameTile)));
                                     }
                                 }
 //                            clicking on enemy
@@ -195,7 +195,7 @@ public class GameInputProcessor implements InputProcessor {
         return false;
     }
 
-    private void removeCharacterFromTile(GameCharacter character) {
+    public void removeCharacterFromTile(GameCharacter character) {
         rowLoop:
         for (int row = 0; row < mainGame.mapRenderer.getGameTiles().length; row++) {
             for (int col = 0; col < mainGame.mapRenderer.getGameTiles()[0].length; col++) {

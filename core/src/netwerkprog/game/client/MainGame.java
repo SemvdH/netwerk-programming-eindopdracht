@@ -29,6 +29,7 @@ import netwerkprog.game.util.data.character.MoveData;
 import netwerkprog.game.util.data.connection.NameData;
 import netwerkprog.game.util.data.connection.ReadyData;
 import netwerkprog.game.util.data.connection.TeamData;
+import netwerkprog.game.util.data.connection.TurnData;
 import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
 import netwerkprog.game.util.graphics.FrameRate;
@@ -254,13 +255,24 @@ public class MainGame extends Game implements ClientCallback {
         frameRate.update();
         camera.update();
         this.gameInputProcessor.update();
-        this.team.update(Gdx.graphics.getDeltaTime());
-        this.enemyTeam.update(Gdx.graphics.getDeltaTime());
+
         if (this.team.isDead() || this.enemyTeam.isDead()) {
             this.setGameOver(true);
         }
         if (this.isGameOver()) {
             this.setGamestate(GAMESTATE.ENDED);
+        }
+
+        if (selectedCharacter.isDead()) {
+            nextCharacter(selectedCharacter);
+        }
+        this.team.update(Gdx.graphics.getDeltaTime());
+        this.enemyTeam.update(Gdx.graphics.getDeltaTime());
+    }
+
+    private void nextCharacter(GameCharacter c) {
+        for (GameCharacter character : this.team.getMembers()) {
+            if (!character.equals(c)) this.setSelectedCharacter(character);
         }
     }
 
@@ -304,10 +316,12 @@ public class MainGame extends Game implements ClientCallback {
     }
 
     public void setSelectedCharacter(GameCharacter character) {
-        this.selectedCharacter = character;
-        GameTile characterTile = mapRenderer.getTile(character);
-        Point pos = mapRenderer.getPos(characterTile);
-        mapRenderer.setSurroundedTilesOfCurrentCharacter(pos.x, pos.y);
+        if  (!character.isDead()) {
+            this.selectedCharacter = character;
+            GameTile characterTile = mapRenderer.getTile(character);
+            Point pos = mapRenderer.getPos(characterTile);
+            mapRenderer.setSurroundedTilesOfCurrentCharacter(pos.x, pos.y);
+        }
     }
 
     public GAMESTATE getGamestate() {
@@ -351,6 +365,7 @@ public class MainGame extends Game implements ClientCallback {
         if (turn == 3) {
             this.turn = 0;
             this.setPlayersTurn(false);
+            send(new TurnData());
         }
     }
 
@@ -395,11 +410,15 @@ public class MainGame extends Game implements ClientCallback {
             MoveData moveData = (MoveData) data;
             if (!moveData.getUsername().equals(this.username)) {
                 GameTile tile = mapRenderer.getGameTile(moveData.getPos());
-                tile.visit(enemyTeam.get(moveData.getCharacterName()));
+                GameCharacter character = enemyTeam.get(moveData.getCharacterName());
+                gameInputProcessor.removeCharacterFromTile(character);
+                tile.visit(character);
             }
         } else if (data instanceof DamageData) {
             DamageData damageData = (DamageData) data;
             team.get(damageData.getName()).damage(10);
+        } else if (data instanceof TurnData) {
+            this.playersTurn = !this.playersTurn;
         }
 
     }
@@ -412,6 +431,7 @@ public class MainGame extends Game implements ClientCallback {
         initCharacters();
         camera.translate(-400, 0);
 
+        this.playersTurn = true;
         setGamestate(GAMESTATE.PLAYING);
     }
 
@@ -420,6 +440,7 @@ public class MainGame extends Game implements ClientCallback {
         setChosenFaction(Faction.MEGACORPORATION);
         send(new TeamData(Faction.MEGACORPORATION, getUsername()));
         initCharacters();
+        this.playersTurn = false;
         setGamestate(GAMESTATE.PLAYING);
     }
 
