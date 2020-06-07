@@ -1,5 +1,6 @@
-package netwerkprog.game.util.data;
+package netwerkprog.game.util.data.connection;
 
+import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.game.Faction;
 
 public class TeamData extends Data {

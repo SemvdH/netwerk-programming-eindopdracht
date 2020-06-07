@@ -10,8 +10,8 @@ import com.badlogic.gdx.utils.TimeUtils;
 import netwerkprog.game.client.MainGame;
 import netwerkprog.game.client.game.GAMESTATE;
 import netwerkprog.game.util.data.Data;
-import netwerkprog.game.util.data.ReadyData;
-import netwerkprog.game.util.data.TeamData;
+import netwerkprog.game.util.data.connection.ReadyData;
+import netwerkprog.game.util.data.connection.TeamData;
 import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
 
