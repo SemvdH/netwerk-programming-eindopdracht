@@ -10,4 +10,8 @@ public class DamageData extends Data {
         super.setPayload(this);
         this.name = name;
     }
+
+    public String getName() {
+        return name;
+    }
 }
