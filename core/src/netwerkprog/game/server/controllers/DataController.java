@@ -54,6 +54,7 @@ public class DataController implements DataCallback {
     @Override
     public void onDataReceived(Data data, DataSource source) {
         System.out.println("[DATACONTROLLER] got data: " + data);
+        source.writeData(data);
         switch (data.getType()) {
             case "Character" :
                 if (data.getPayload() instanceof CharacterData) {

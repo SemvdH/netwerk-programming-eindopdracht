@@ -2,6 +2,7 @@ package netwerkprog.game.client;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
@@ -32,7 +33,7 @@ import netwerkprog.game.util.graphics.TextRenderer;
 
 import java.awt.*;
 
-public class MainGame extends ApplicationAdapter implements DataCallback {
+public class MainGame extends Game implements DataCallback {
     SpriteBatch batch;
     float screenWidth;
     float screenHeight;
@@ -351,7 +352,7 @@ public class MainGame extends ApplicationAdapter implements DataCallback {
 
     @Override
     public void onDataReceived(Data data, DataSource source) {
-        System.out.println("[MAINGAME] Got data: " + data.toString());
+        System.out.println("[MAINGAME CALLBACK] Got data: " + data.toString());
         
     }
 }

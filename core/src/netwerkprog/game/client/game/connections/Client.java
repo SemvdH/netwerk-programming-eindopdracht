@@ -65,6 +65,7 @@ public class Client extends Controller implements DataSource {
             Arrays.stream(e.getStackTrace()).forEach(n -> sb.append("\t\t").append(n).append("\n"));
             System.out.println(sb.toString());
         }
+        System.out.println("[CLIENT CONNECT] connected");
     }
 
     public void register(ObjectInputStream in) {
