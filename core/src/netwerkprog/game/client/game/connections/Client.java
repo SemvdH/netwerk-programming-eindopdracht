@@ -1,9 +1,7 @@
 package netwerkprog.game.client.game.connections;
 
-import com.badlogic.gdx.Gdx;
-import netwerkprog.game.util.application.Controller;
-import netwerkprog.game.util.data.connection.ConnectionData;
 import netwerkprog.game.util.data.Data;
+import netwerkprog.game.util.data.connection.ConnectionData;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,7 +9,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Arrays;
 
-public class Client extends Controller {
+public class Client implements Runnable {
     private final int port;
     private final String hostname;
     private boolean isConnected;

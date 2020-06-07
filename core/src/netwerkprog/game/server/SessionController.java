@@ -1,6 +1,5 @@
 package netwerkprog.game.server;
 
-import netwerkprog.game.util.application.Controller;
 import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.connection.ConnectionData;
 import netwerkprog.game.util.data.connection.NameData;
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 /**
  * The sessionController manages any connections from new clients and assigns individual threads to said clients.
  */
-public class SessionController extends Controller implements DataCallback {
+public class SessionController implements DataCallback, Runnable {
     private ServerSocket serverSocket;
     private final ArrayList<ServerClient> clients;
     private boolean listening;
