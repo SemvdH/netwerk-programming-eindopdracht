@@ -3,8 +3,6 @@ package netwerkprog.game.client.game.connections;
 import netwerkprog.game.util.application.Controller;
 import netwerkprog.game.util.data.ConnectionData;
 import netwerkprog.game.util.data.Data;
-import netwerkprog.game.util.data.DataCallback;
-import netwerkprog.game.util.data.DataSource;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,17 +10,17 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Arrays;
 
-public class Client extends Controller implements DataSource {
+public class Client extends Controller {
     private final int port;
     private final String hostname;
     private boolean isConnected;
     private Socket socket;
     private Thread receiveThread;
-    private DataCallback callback;
+    private ClientCallback callback;
     private ObjectOutputStream outputStream;
     private boolean connecting;
 
-    public Client(String hostname, DataCallback callback) {
+    public Client(String hostname, ClientCallback callback) {
         this.port = Data.port();
         this.hostname = hostname;
         this.callback = callback;
@@ -116,7 +114,7 @@ public class Client extends Controller implements DataSource {
                 Object object = in.readObject();
                 System.out.println("[CLIENT] got object " + object);
                 if (object instanceof Data) {
-                    callback.onDataReceived((Data) object, this);
+                    callback.onDataReceived((Data) object);
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();

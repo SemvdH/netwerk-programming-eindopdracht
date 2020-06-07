@@ -2,8 +2,6 @@ package netwerkprog.game.server;
 
 import netwerkprog.game.util.data.ConnectionData;
 import netwerkprog.game.util.data.Data;
-import netwerkprog.game.util.data.DataCallback;
-import netwerkprog.game.util.data.DataSource;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

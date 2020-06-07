@@ -1,6 +1,5 @@
 package netwerkprog.game.client;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -19,13 +18,12 @@ import netwerkprog.game.client.game.characters.Hacker;
 import netwerkprog.game.client.game.characters.Team;
 import netwerkprog.game.client.game.characters.abilities.BodySwap;
 import netwerkprog.game.client.game.connections.Client;
+import netwerkprog.game.client.game.connections.ClientCallback;
 import netwerkprog.game.client.game.map.GameInputProcessor;
 import netwerkprog.game.client.game.map.GameTile;
 import netwerkprog.game.client.game.map.Map;
 import netwerkprog.game.client.game.map.MapRenderer;
 import netwerkprog.game.util.data.Data;
-import netwerkprog.game.util.data.DataCallback;
-import netwerkprog.game.util.data.DataSource;
 import netwerkprog.game.util.data.NameData;
 import netwerkprog.game.util.data.TeamData;
 import netwerkprog.game.util.game.Faction;
@@ -35,7 +33,7 @@ import netwerkprog.game.util.graphics.TextRenderer;
 
 import java.awt.*;
 
-public class MainGame extends Game implements DataCallback {
+public class MainGame extends Game implements ClientCallback {
     SpriteBatch batch;
     float screenWidth;
     float screenHeight;
@@ -354,7 +352,7 @@ public class MainGame extends Game implements DataCallback {
     }
 
     @Override
-    public void onDataReceived(Data data, DataSource source) {
+    public void onDataReceived(Data data) {
         System.out.println("[MAINGAME CALLBACK] Got data: " + data.toString());
         if (data instanceof NameData) {
             System.out.println("[MAINGAME CALLBACK] got name data: " + data);
