@@ -17,10 +17,15 @@ public class TextRenderer implements Disposable {
         cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
     }
+
     @Override
     public void dispose() {
-        font.dispose();
-        batch.dispose();
+        try {
+            batch.dispose();
+            font.dispose();
+        } catch (IllegalArgumentException e) {
+            System.out.println("error: " + e.getMessage());
+        }
     }
 
     public void resize(int screenWidth, int screenHeight) {

@@ -50,6 +50,7 @@ public class MainGame extends Game implements ClientCallback {
     private GlyphLayout layout;
     private GAMESTATE gamestate;
     private Faction chosenFaction;
+    private Faction enemyFaction;
     private long lastTimeCounted = 0;
     private boolean gameOver = false;
     private int turn = 0;
@@ -57,6 +58,7 @@ public class MainGame extends Game implements ClientCallback {
     private String username;
     private boolean ready = false;
     private boolean enemyReady = false;
+    private Texture texture;
 
     private Map map;
     public MapRenderer mapRenderer;
@@ -123,7 +125,7 @@ public class MainGame extends Game implements ClientCallback {
     public void initCharacters() {
         assets.load("core/assets/characters.png", Texture.class);
         assets.finishLoading();
-        Texture texture = assets.get("core/assets/characters.png");
+        texture = assets.get("core/assets/characters.png", Texture.class);
         TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
         this.team = new Team();
         this.enemyTeam = new Team();
@@ -198,6 +200,13 @@ public class MainGame extends Game implements ClientCallback {
         } else if (this.gamestate == GAMESTATE.SELECTING_FACTION) {
             clearRender(67, 168, 186, 1);
             renderString("FACTION SELECT\nYou are: " + username + "\nPress 1 for mega corporation, press 2 for hackers", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
+            if (this.ready && this.enemyReady) {
+                if (this.chosenFaction == Faction.HACKER) {
+                    chooseHacker();
+                } else {
+                    chooseMegaCorp();
+                }
+            }
         } else if (this.gamestate == GAMESTATE.ENDED) {
             clearRender(67, 168, 186, 1);
             String text = "Game ended!\n";
@@ -273,6 +282,7 @@ public class MainGame extends Game implements ClientCallback {
         batch.dispose();
         textRenderer.dispose();
         assets.dispose();
+        textRenderer.dispose();
     }
 
     public float getScreenWidth() {
@@ -367,22 +377,20 @@ public class MainGame extends Game implements ClientCallback {
                 System.out.println(username + "got team data: " + ((TeamData) data).getFaction());
                 // if we have already chosen a faction, so we were first
                 TeamData teamData = (TeamData) data;
-                if (this.chosenFaction != null) {
-                    if (!this.chosenFaction.equals((teamData.getFaction()))) {
-                        initCharacters();
-                        setGamestate(GAMESTATE.PLAYING);
-                        send(new ReadyData(username));
+                enemyFaction = teamData.getFaction();
+                System.out.println("Got enemy faction: " + enemyFaction);
+                if (this.chosenFaction == null) {
+                    if (enemyFaction == Faction.HACKER) {
+                        System.out.println("enemy is hacker");
+                        this.chosenFaction = Faction.MEGACORPORATION;
+                        this.enemyReady = true;
+                        this.ready = true;
+                    } else {
+                        System.out.println("enemy is mega corp");
+                        this.chosenFaction = Faction.HACKER;
+                        this.enemyReady = true;
+                        this.ready = true;
                     }
-                } else {
-                    if (teamData.getFaction() == Faction.HACKER) {
-                        this.setChosenFaction(Faction.MEGACORPORATION);
-                    } else if (teamData.getFaction() == Faction.MEGACORPORATION) {
-                        this.setChosenFaction(Faction.HACKER);
-                    }
-                    System.out.println("FACTION NOT CHOSEN, it is now " + getChosenFaction());
-                    initCharacters();
-                    setGamestate(GAMESTATE.PLAYING);
-                    send(new ReadyData(username));
                 }
             }
 
@@ -400,17 +408,19 @@ public class MainGame extends Game implements ClientCallback {
         System.out.println("chose HACKER");
         setChosenFaction(Faction.HACKER);
         send(new TeamData(Faction.MEGACORPORATION, getUsername()));
-//                mainGame.initCharacters();
-//                camera.translate(-400, 0);
-//                mainGame.setGamestate(GAMESTATE.PLAYING);
+
+        initCharacters();
+        camera.translate(-400, 0);
+
+        setGamestate(GAMESTATE.PLAYING);
     }
 
     public void chooseMegaCorp() {
         System.out.println("chose MEGA CORP");
         setChosenFaction(Faction.MEGACORPORATION);
         send(new TeamData(Faction.MEGACORPORATION, getUsername()));
-//                mainGame.initCharacters();
-//                mainGame.setGamestate(GAMESTATE.PLAYING);
+        initCharacters();
+        setGamestate(GAMESTATE.PLAYING);
     }
 
     public String getUsername() {

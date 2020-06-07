@@ -119,10 +119,10 @@ public class GameInputProcessor implements InputProcessor {
             }
         } else if (mainGame.getGamestate() == GAMESTATE.SELECTING_FACTION) {
             if (keycode == Input.Keys.NUM_1) {
-                mainGame.chooseMegaCorp();
+                mainGame.send(new TeamData(Faction.MEGACORPORATION,mainGame.getUsername()));
             }
             if (keycode == Input.Keys.NUM_2) {
-             mainGame.chooseHacker();
+                mainGame.send(new TeamData(Faction.HACKER,mainGame.getUsername()));
             }
 
         }
