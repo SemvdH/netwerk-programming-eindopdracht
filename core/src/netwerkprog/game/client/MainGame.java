@@ -353,10 +353,10 @@ public class MainGame extends Game implements ClientCallback {
 
     @Override
     public void onDataReceived(Data data) {
-        System.out.println("[MAINGAME CALLBACK] Got data: " + data.toString());
+        System.out.println("[MAINGAME" + this.username +  "] Got data: " + data.toString());
         if (data instanceof NameData) {
             this.username = ((NameData) data).getName();
-            System.out.println("[MAINGAME CALLBACK] username is: " + username);
+            System.out.println("[MAINGAME" + this.username +  "] username is: " + username);
         } else if (data instanceof TeamData) {
             // check if it is not our own message
             if (!((TeamData) data).getUsername().equals(this.username)) {
