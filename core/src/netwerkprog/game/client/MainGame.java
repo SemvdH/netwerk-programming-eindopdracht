@@ -25,6 +25,7 @@ import netwerkprog.game.client.game.map.Map;
 import netwerkprog.game.client.game.map.MapRenderer;
 import netwerkprog.game.util.data.Data;
 import netwerkprog.game.util.data.NameData;
+import netwerkprog.game.util.data.ReadyData;
 import netwerkprog.game.util.data.TeamData;
 import netwerkprog.game.util.game.Faction;
 import netwerkprog.game.util.game.GameCharacter;
@@ -54,6 +55,8 @@ public class MainGame extends Game implements ClientCallback {
     private int turn = 0;
     private boolean playersTurn = true;
     private String username;
+    private boolean ready = false;
+    private boolean enemyReady = false;
 
     private Map map;
     public MapRenderer mapRenderer;
@@ -137,7 +140,8 @@ public class MainGame extends Game implements ClientCallback {
             if (chosenFaction == Faction.HACKER) {
                 this.team.addMember(temp);
                 this.enemyTeam.addMember(temp2);
-            }  if (chosenFaction == Faction.MEGACORPORATION) {
+            }
+            if (chosenFaction == Faction.MEGACORPORATION) {
                 this.team.addMember(temp2);
                 this.enemyTeam.addMember(temp);
             }
@@ -159,7 +163,7 @@ public class MainGame extends Game implements ClientCallback {
 
 
     private void connectToServer() {
-        client = new Client("localhost",this);
+        client = new Client("localhost", this);
         Thread t = new Thread(client);
         try {
             t.start();
@@ -169,11 +173,11 @@ public class MainGame extends Game implements ClientCallback {
     }
 
     private void clearRender() {
-        clearRender(0,0,0,1);
+        clearRender(0, 0, 0, 1);
     }
 
     private void clearRender(float r, float g, float b, float alpha) {
-        Gdx.gl.glClearColor(r/255f, g/255f, b/255f, alpha);
+        Gdx.gl.glClearColor(r / 255f, g / 255f, b / 255f, alpha);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
     }
@@ -192,10 +196,10 @@ public class MainGame extends Game implements ClientCallback {
             renderText();
             renderTurnText();
         } else if (this.gamestate == GAMESTATE.SELECTING_FACTION) {
-            clearRender(67, 168, 186,1);
-            renderString("FACTION SELECT\nPress 1 for mega corporation, press 2 for hackers", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
+            clearRender(67, 168, 186, 1);
+            renderString("FACTION SELECT\nYou are: " + username + "\nPress 1 for mega corporation, press 2 for hackers", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
         } else if (this.gamestate == GAMESTATE.ENDED) {
-            clearRender(67, 168, 186,1);
+            clearRender(67, 168, 186, 1);
             String text = "Game ended!\n";
             if (this.enemyTeam.isDead()) {
                 text += "Congratulations! You won!";
@@ -353,34 +357,61 @@ public class MainGame extends Game implements ClientCallback {
 
     @Override
     public void onDataReceived(Data data) {
-        System.out.println("[MAINGAME" + this.username +  "] Got data: " + data.toString());
+//        System.out.println("[MAINGAME" + this.username +  "] Got data: " + data.toString());
         if (data instanceof NameData) {
             this.username = ((NameData) data).getName();
-            System.out.println("[MAINGAME" + this.username +  "] username is: " + username);
+//            System.out.println("[MAINGAME" + this.username +  "] username is: " + username);
         } else if (data instanceof TeamData) {
             // check if it is not our own message
             if (!((TeamData) data).getUsername().equals(this.username)) {
+                System.out.println(username + "got team data: " + ((TeamData) data).getFaction());
                 // if we have already chosen a faction, so we were first
+                TeamData teamData = (TeamData) data;
                 if (this.chosenFaction != null) {
-                    TeamData teamData = (TeamData) data;
-                    if (this.chosenFaction != teamData.getFaction()) {
-                        // other player chose other faction
+                    if (!this.chosenFaction.equals((teamData.getFaction()))) {
                         initCharacters();
                         setGamestate(GAMESTATE.PLAYING);
-                    } else {
-                        // other player chose same faction, send back that that one
-                        // was already taken
+                        send(new ReadyData(username));
                     }
                 } else {
-
+                    if (teamData.getFaction() == Faction.HACKER) {
+                        this.setChosenFaction(Faction.MEGACORPORATION);
+                    } else if (teamData.getFaction() == Faction.MEGACORPORATION) {
+                        this.setChosenFaction(Faction.HACKER);
+                    }
+                    System.out.println("FACTION NOT CHOSEN, it is now " + getChosenFaction());
+                    initCharacters();
+                    setGamestate(GAMESTATE.PLAYING);
+                    send(new ReadyData(username));
                 }
             }
 
+        } else if (data instanceof ReadyData) {
+            ReadyData readyData = (ReadyData) data;
+            if (readyData.getUsername().equals(this.username)) {
+
+            }
         }
 
     }
 
     public String getUsername() {
         return username;
+    }
+
+    public boolean isEnemyReady() {
+        return enemyReady;
+    }
+
+    public boolean isReady() {
+        return ready;
+    }
+
+    public void setReady(boolean ready) {
+        this.ready = ready;
+    }
+
+    public void setEnemyReady(boolean enemyReady) {
+        this.enemyReady = enemyReady;
     }
 }
