@@ -86,12 +86,14 @@ public class SessionController extends Controller implements DataCallback {
                 }
             }
 
-            System.out.println("[SERVER] got username " + username);
+            username = "player" + (this.clients.size() + 1);
+            System.out.println("[SERVER] set username " + username);
             ServerClient serverClient = new ServerClient(username, inputStream, outputStream, this);
 
             Thread t = new Thread(serverClient);
             t.start();
 
+            serverClient.writeData(new NameData(username));
             this.clientThreads.put(username,t);
             this.clients.add(serverClient);
         } catch (IOException | ClassNotFoundException ex) {
