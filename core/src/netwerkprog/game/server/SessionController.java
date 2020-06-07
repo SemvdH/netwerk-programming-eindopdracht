@@ -161,6 +161,10 @@ public class SessionController extends Controller implements DataCallback {
 
     @Override
     public void onDataReceived(Data data, DataSource source) {
-
+        for (ServerClient client: clients) {
+            if (!client.getName().equals(source.getName())){
+                client.writeData(data);
+            }
+        }
     }
 }
