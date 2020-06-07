@@ -1,23 +1,23 @@
 package netwerkprog.game.server.controllers;
 
-import netwerkprog.game.util.data.CharacterData;
-import netwerkprog.game.util.data.Data;
-import netwerkprog.game.util.data.DataCallback;
-import netwerkprog.game.util.data.DataSource;
+import netwerkprog.game.util.data.*;
 import netwerkprog.game.util.game.GameCharacter;
 
 import java.util.Arrays;
 import java.util.HashSet;
 
 public class DataController implements DataCallback {
+    private final DataChangeCallback callback;
     private final HashSet<GameCharacter> gameCharacters;
 
-    public DataController() {
+    public DataController(DataChangeCallback callback) {
+        this.callback = callback;
         gameCharacters = new HashSet<>();
     }
 
     public void addCharacter(GameCharacter gameCharacter) {
         this.gameCharacters.add(gameCharacter);
+        callback.onDataChange(new CharacterData(gameCharacter.getName(), gameCharacter));
     }
 
     public void addAllCharacters(GameCharacter... gameCharacters) {
@@ -26,10 +26,12 @@ public class DataController implements DataCallback {
 
     public void removeCharacter(String name) {
         this.gameCharacters.removeIf(character -> character.getName().equals(name));
+        callback.onDataChange(new CharacterData(name, getCharacter(name))); //todo modify Character data to allow for removal.
     }
 
-    public void removeCharacter(GameCharacter character) {
-        this.gameCharacters.remove(character);
+    public void removeCharacter(GameCharacter gameCharacter) {
+        this.gameCharacters.remove(gameCharacter);
+        callback.onDataChange(new CharacterData(gameCharacter.getName(), gameCharacter)); //todo modify Character data to allow for removal.
     }
 
     public void clearCharacters() {
