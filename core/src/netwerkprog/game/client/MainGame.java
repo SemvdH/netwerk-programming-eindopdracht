@@ -53,15 +53,12 @@ public class MainGame extends Game implements ClientCallback {
     private GlyphLayout layout;
     private GAMESTATE gamestate;
     private Faction chosenFaction;
-    private Faction enemyFaction;
-    private long lastTimeCounted = 0;
     private boolean gameOver = false;
     private int turn = 0;
     private boolean playersTurn = true;
     private String username;
     private boolean ready = false;
     private boolean enemyReady = false;
-    private Texture texture;
 
     private Map map;
     public MapRenderer mapRenderer;
@@ -116,19 +113,14 @@ public class MainGame extends Game implements ClientCallback {
         camera.viewportHeight = screenHeight / 2;
         camera.update();
         setGamestate(GAMESTATE.SELECTING_FACTION);
-//        this.tree.insert(new Hacker(,new BodySwap()));
-
-
-//        playSong();
-
-
         connectToServer();
     }
 
     public void initCharacters() {
         assets.load("core/assets/characters.png", Texture.class);
         assets.finishLoading();
-        texture = assets.get("core/assets/characters.png", Texture.class);
+
+        Texture texture = assets.get("core/assets/characters.png", Texture.class);
         TextureRegion[][] characters = TextureRegion.split(texture, 32, 32);
         this.team = new Team();
         this.enemyTeam = new Team();
@@ -153,6 +145,7 @@ public class MainGame extends Game implements ClientCallback {
         }
 
         this.setSelectedCharacter(this.team.get(0));
+
 
     }
 
@@ -297,6 +290,7 @@ public class MainGame extends Game implements ClientCallback {
         textRenderer.dispose();
         assets.dispose();
         textRenderer.dispose();
+        mapRenderer.dispose();
     }
 
     public float getScreenWidth() {
@@ -383,26 +377,22 @@ public class MainGame extends Game implements ClientCallback {
 
     @Override
     public void onDataReceived(Data data) {
-//        System.out.println("[MAINGAME" + this.username +  "] Got data: " + data.toString());
         if (data instanceof NameData) {
             this.username = ((NameData) data).getName();
-//            System.out.println("[MAINGAME" + this.username +  "] username is: " + username);
         } else if (data instanceof TeamData) {
             // check if it is not our own message
             if (!((TeamData) data).getUsername().equals(this.username)) {
                 // if we have already chosen a faction, so we were first
                 TeamData teamData = (TeamData) data;
-                enemyFaction = teamData.getFaction();
+                Faction enemyFaction = teamData.getFaction();
                 if (this.chosenFaction == null) {
                     if (enemyFaction == Faction.HACKER) {
                         this.chosenFaction = Faction.MEGACORPORATION;
-                        this.enemyReady = true;
-                        this.ready = true;
                     } else {
                         this.chosenFaction = Faction.HACKER;
-                        this.enemyReady = true;
-                        this.ready = true;
                     }
+                    this.enemyReady = true;
+                    this.ready = true;
                 }
             }
         } else if (data instanceof MoveData) {
@@ -423,7 +413,6 @@ public class MainGame extends Game implements ClientCallback {
     }
 
     public void chooseHacker() {
-        System.out.println("chose HACKER");
         setChosenFaction(Faction.HACKER);
         send(new TeamData(Faction.MEGACORPORATION, getUsername()));
 
@@ -435,7 +424,6 @@ public class MainGame extends Game implements ClientCallback {
     }
 
     public void chooseMegaCorp() {
-        System.out.println("chose MEGA CORP");
         setChosenFaction(Faction.MEGACORPORATION);
         send(new TeamData(Faction.MEGACORPORATION, getUsername()));
         initCharacters();
